@@ -1,0 +1,54 @@
+class RouteNames {
+  static const String login = '/login';
+
+
+  //Dashboard
+  static const String studentDashboard = '/student_dashboard';
+  static const String teacherDashboard = '/teacher_dashboard';
+  static const String parentDashboard = '/parent_dashboard';
+  static const String adminDashboard = '/admin_dashboard';
+
+  // Funcionalidades do Aluno
+  static const String studentGrades = '/student_grades';
+  static const String studentAttendance = '/student_attendance';
+  static const String studentTasks = '/student_tasks';
+  static const String studentCalendar = '/student_calendar';
+  static const String studentSettings = '/student_settings';
+  static const String studentHelp = '/student_help';
+
+
+  // Funcionalidades do Professor
+  static const String teacherClasses = '/teacher_classes';
+  static const String teacherAssignments = '/teacher_assignments';
+  static const String teacherAttendance = '/teacher_attendance';
+  static const String teacherCalendar = '/teacher_calendar';
+  static const String teacherSettings = '/teacher_settings';
+
+  // Funcionalidades do Responsável
+  static const String parentChildren = '/parent_children';
+  static const String parentGrades = '/parent_grades';
+  static const String parentAttendance = '/parent_attendance';
+  static const String parentCalendar = '/parent_calendar';
+  static const String parentSettings = '/parent_settings';
+
+  // Funcionalidades do Administrador
+  static const String adminUsers = '/admin_users';
+  static const String adminReports = '/admin_reports';
+  static const String adminSettings = '/admin_settings';
+
+  // paginas de detalhes
+  static const String taskDetails = '/task_details';
+  static const String messageDetails = '/message_details';
+  static const String gradeDetails = '/grade_details';
+
+  // paginas de formulario 
+  static const String editProfile = '/edit_profile';
+  static const String changePassword = '/change_password';
+  static const String contactSupport = '/contact_support';
+  static const String addTask = '/add_task';
+
+  //paginas de Erro
+  static const String notFound = '/not_found';
+  static const String internalServerError = '/internal_server_error';
+  static const String error = '/error';
+}
