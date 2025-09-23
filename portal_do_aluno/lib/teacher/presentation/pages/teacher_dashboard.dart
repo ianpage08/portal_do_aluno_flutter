@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class TeacherDashboard extends StatelessWidget {
   const TeacherDashboard({super.key});
@@ -60,34 +62,36 @@ class TeacherDashboard extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildMenuCard(context, Icons.class_, 'Minhas Turmas', () {}),
+                  _buildMenuCard(context, Icons.class_, 'Minhas Turmas', () {
+                    NavigatorService.navigateTo(RouteNames.teacherClasses);
+                  }),
 
-                  _buildMenuCard(
-                    context,
-                    Icons.school,
-                    'Frequência',
-                    () {},
-                  ),
-                  _buildMenuCard(
-                    context,
-                    Icons.assignment,
-                    'Lançar Notas',
-                    () {},
-                  ),
+                  _buildMenuCard(context, Icons.school, 'Frequência', () {
+                    NavigatorService.navigateTo(RouteNames.teacherAttendance);
+                  }),
+                  _buildMenuCard(context, Icons.assignment, 'Lançar Notas', () {
+                    NavigatorService.navigateTo(RouteNames.teacherAssignments);
+                  }),
                   _buildMenuCard(
                     context,
                     Icons.event,
                     'Agenda de Aulas',
-                    () {},
+                    () {
+                      NavigatorService.navigateTo(RouteNames.teacherCalendar);
+                    },
                   ),
-                  _buildMenuCard(context, Icons.message, 'Mensagens', () {}),
+                  _buildMenuCard(context, Icons.message, 'Mensagens', () {
+                    NavigatorService.navigateTo(RouteNames.teacherCalendar);
+                  }),
                   _buildMenuCard(
                     context,
                     Icons.settings,
                     'Configurações',
                     () {},
                   ),
-                  _buildMenuCard(context, Icons.help, 'Ajuda', () {}),
+                  _buildMenuCard(context, Icons.help, 'Ajuda', () {
+                    NavigatorService.navigateTo(RouteNames.taskDetails);
+                  }),
                 ],
               ),
             ),
@@ -106,7 +110,7 @@ class TeacherDashboard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: InkWell(
-        onTap: null,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(8),

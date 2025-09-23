@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -64,26 +66,42 @@ class AdminDashboard extends StatelessWidget {
                     context,
                     Icons.person_add_alt_1_rounded,
                     'Gestão de Usuários',
-                    () {},
+                    () {
+                      NavigatorService.navigateTo(RouteNames.adminGestao);
+                    },
                   ),
-                  _buildMenuCard(context, Icons.home, 'Gestão Escolar', () {}),
+                  _buildMenuCard(context, Icons.home, 'Gestão Escolar', () {
+                    NavigatorService.navigateTo(RouteNames.adminGestaoEscolar);
+                  }),
                   _buildMenuCard(
                     context,
                     Icons.graphic_eq_rounded,
                     'Relatorio gerencias',
-                    () {},
+                    () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminRelatoriosGerenciais,
+                      );
+                    },
                   ),
                   _buildMenuCard(
                     context,
                     Icons.security_outlined,
                     'Segurança e Permissões',
-                    () {},
+                    () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminSegurancaEPermissoes,
+                      );
+                    },
                   ),
                   _buildMenuCard(
                     context,
                     Icons.message,
                     'Comunicação Institicional',
-                    () {},
+                    () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminComunicacaoInstiticional,
+                      );
+                    },
                   ),
                   _buildMenuCard(
                     context,
@@ -128,7 +146,7 @@ class AdminDashboard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: InkWell(
-        onTap: null,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(8),

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gesta_academica.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_usuarios.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/relatorios_e_idicadores.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/pages/login_page.dart';
 import 'package:portal_do_aluno/student/presentatton/pages/attendace_page.dart';
@@ -6,11 +12,21 @@ import 'package:portal_do_aluno/student/presentatton/pages/calendar_page.dart';
 import 'package:portal_do_aluno/student/presentatton/pages/grades_page.dart';
 import 'package:portal_do_aluno/student/presentatton/pages/notices_page.dart';
 import 'package:portal_do_aluno/student/presentatton/pages/student_dashboard.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/add_grade_page.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/class_page.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
 
 Map<String, WidgetBuilder> get routes => {
   RouteNames.login: (context) => const LoginPage(),
-  RouteNames.adminDashboard: (context) => const LoginPage(),
+  RouteNames.adminDashboard: (context) => const AdminDashboard(),
   RouteNames.adminReports: (context) => const LoginPage(),
+  RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
+  RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
+  RouteNames.adminComunicacaoInstiticional: (context) => const  ComunicacaoInstitucionalPage(),
+  RouteNames.adminRelatoriosGerenciais: (context) =>
+      const RelatoriosGerenciais(),
+  RouteNames.adminSegurancaEPermissoes: (context) =>
+      const SegurancaEPermissoes(),
   RouteNames.changePassword: (context) => const LoginPage(),
   RouteNames.contactSupport: (context) => const LoginPage(),
   RouteNames.editProfile: (context) => const LoginPage(),
@@ -32,12 +48,12 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.messageDetails: (context) => const LoginPage(),
   RouteNames.gradeDetails: (context) => const LoginPage(),
   // rotas do Professor
-  RouteNames.teacherDashboard: (context) => const LoginPage(),
-  RouteNames.teacherAssignments: (context) => const LoginPage(),
-  RouteNames.teacherAttendance: (context) => const LoginPage(),
-  RouteNames.teacherCalendar: (context) => const LoginPage(),
+  RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
+  RouteNames.teacherAssignments: (context) => const ClassModel(),
+  RouteNames.teacherAttendance: (context) => const AttendancePage(),
+  RouteNames.teacherCalendar: (context) => const CalendarPage(),
   RouteNames.teacherSettings: (context) => const LoginPage(),
-  RouteNames.teacherClasses: (context) => const LoginPage(),
+  RouteNames.teacherClasses: (context) => ClassPage(),
   // rotas do Responsável
   RouteNames.parentDashboard: (context) => const LoginPage(),
   RouteNames.parentChildren: (context) => const LoginPage(),

@@ -1,7 +1,6 @@
 class RouteNames {
   static const String login = '/login';
 
-
   //Dashboard
   static const String studentDashboard = '/student_dashboard';
   static const String teacherDashboard = '/teacher_dashboard';
@@ -15,7 +14,6 @@ class RouteNames {
   static const String studentCalendar = '/student_calendar';
   static const String studentSettings = '/student_settings';
   static const String studentHelp = '/student_help';
-
 
   // Funcionalidades do Professor
   static const String teacherClasses = '/teacher_classes';
@@ -35,13 +33,27 @@ class RouteNames {
   static const String adminUsers = '/admin_users';
   static const String adminReports = '/admin_reports';
   static const String adminSettings = '/admin_settings';
+  static const String adminGestao = '/admin_gestao';
+  static const String adminGestaoEscolar = '/admin_gestao_escolar';
+  static const String adminRelatoriosGerenciais =
+      '/admin_relatorios_gerenciais';
+  static const String adminSegurancaEPermissoes =
+      '/admin_seguranca_e_permissoes';
+  static const String adminComunicacaoInstiticional =
+      '/admin_comunicacao_institicional';
+  static const String adminGerarDocumentos = '/admin_gerar_documentos';
+  static const String adminManutecao = '/admin_manutecao';
+  static const String adminSuporte = '/admin_suporte';
+  static const String adminConfiguracoesDoSistema =
+      '/admin_configuracoes_do_sistema';
+  static const String adminAjuda = '/admin_ajuda';
 
   // paginas de detalhes
   static const String taskDetails = '/task_details';
   static const String messageDetails = '/message_details';
   static const String gradeDetails = '/grade_details';
 
-  // paginas de formulario 
+  // paginas de formulario
   static const String editProfile = '/edit_profile';
   static const String changePassword = '/change_password';
   static const String contactSupport = '/contact_support';

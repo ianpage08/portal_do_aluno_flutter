@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+
 //import 'package:portal_do_aluno/navigation/route_names.dart';
 import '../../core/app_constants/app_constants.dart';
 import '../../core/app_constants/colors.dart';
@@ -269,11 +270,11 @@ class _LoginPageState extends State<LoginPage> {
       final password = _passwordController.text;
 
       UserType userType = UserType.student;
-      if (cpf == '11122233344') {
+      if (cpf == '85300011122') {
+        userType = UserType.student;
+      } else if (cpf == '11122233344') {
         userType = UserType.teacher;
       } else if (cpf == '55566677788') {
-        userType = UserType.parent;
-      } else if (cpf == '00000000000') {
         userType = UserType.admin;
       }
 
