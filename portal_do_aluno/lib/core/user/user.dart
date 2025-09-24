@@ -59,7 +59,7 @@ Por que id: ID é único, então serve como hash */
   @override
   int get hashCode => id.hashCode;
 
-  get ToJasonSafe => null;
+  get toJasonSafe => null;
 
 Map<String, dynamic> toJsonSafe() {
   return {

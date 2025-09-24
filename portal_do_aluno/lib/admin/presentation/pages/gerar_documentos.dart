@@ -12,7 +12,9 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeAlunoController = TextEditingController();
   final TextEditingController _dataController = TextEditingController();
-  
+  final TextEditingController _observacoesController = TextEditingController();
+  final TextEditingController _anoEscolarController = TextEditingController();
+
   String? tipoDeDocumento;
   final List<Map<String, dynamic>> documentos = [
     {
@@ -47,8 +49,18 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
       appBar: const CustomAppBar(title: 'Gerar Documentos'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(children: [_buildCardTipoDoc()]),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildCardTipoDoc(),
+              const SizedBox(height: 16),
+              _buildCardInfo(),
+              const SizedBox(height: 16),
+              _buildPreVizualizacao(),
+              const SizedBox(height: 16),
+              _buildButoesDeAcao(),
+            ],
+          ),
         ),
       ),
     );
@@ -64,7 +76,10 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
               children: [
                 Icon(Icons.description, color: Colors.deepPurple),
                 SizedBox(width: 16),
-                Text('Tipo de Documento'),
+                Text(
+                  'Tipo de Documento',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -134,6 +149,266 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   }
 
   Widget _buildCardInfo() {
-    return Card();
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.person, color: Colors.deepPurpleAccent),
+                SizedBox(width: 16),
+                Text(
+                  'Dados do Documento',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _nomeAlunoController,
+                    decoration: InputDecoration(
+                      labelText: 'Nome Completo',
+                      prefixIcon: const Icon(Icons.person),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Digite o nome completo';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _dataController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.calendar_today),
+                      labelText: 'Data de Nascimento',
+                      hintText: '10/06/2025',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Digite a data de nascimento';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _anoEscolarController,
+                    decoration: InputDecoration(
+                      labelText: 'Ano Escolar',
+                      prefixIcon: const Icon(Icons.school),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Digite o ano escolar';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _observacoesController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Observações (Opcional)',
+                      prefixIcon: const Icon(Icons.note),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreVizualizacao() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.description, color: Colors.deepPurpleAccent),
+                    SizedBox(width: 8),
+                    Text(
+                      'Pré-vizualização',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.deepPurpleAccent,
+                  ),
+                  onPressed: _atualizarPreVizualizacao,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.refresh),
+                      SizedBox(width: 8),
+                      Text('Atualizar'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Icon(Icons.note_add),
+                const SizedBox(width: 5),
+                Text(tipoDeDocumento ?? 'Selecione um tipo de documento'),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                const Icon(Icons.person, color: Colors.deepPurpleAccent),
+                const SizedBox(width: 5),
+                Text('Nome: ${_nomeAlunoController.text} '),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                const Icon(
+                  Icons.calendar_month_outlined,
+                  color: Colors.deepPurpleAccent,
+                ),
+                const SizedBox(width: 5),
+                Text('Data de Nascimento: ${_dataController.text}'),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                const Icon(
+                  Icons.calendar_today,
+                  color: Colors.deepPurpleAccent,
+                ),
+                const SizedBox(width: 5),
+                Text('Ano Escolar: ${_anoEscolarController.text} '),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButoesDeAcao() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _gerarDocumento,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurpleAccent,
+              foregroundColor: Colors.white,
+            ),
+
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.save),
+                SizedBox(width: 8),
+                Text('Gerar Documento'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _limparCampos,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.clear),
+                SizedBox(width: 8),
+                Text('Limpar Campos'),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _atualizarPreVizualizacao() {
+    setState(() {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Atulizado com sucesso!')));
+    });
+  }
+
+  void _gerarDocumento() {
+    if (_formKey.currentState!.validate() && tipoDeDocumento != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gerado com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  void _limparCampos() {
+    setState(() {
+      _nomeAlunoController.clear();
+      _anoEscolarController.clear();
+      _dataController.clear();
+      _observacoesController.clear();
+      tipoDeDocumento = null;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Limpo com sucesso!'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _nomeAlunoController.dispose(); // libera o TextEditingController
+    _anoEscolarController.dispose();
+    _dataController.dispose(); // idem
+    _observacoesController.dispose(); // idem
+    super.dispose(); // chama o dispose da classe pai
   }
 }
