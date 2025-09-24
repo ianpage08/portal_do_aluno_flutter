@@ -1,4 +1,3 @@
-// Página de Matrículas
 import 'package:flutter/material.dart';
 
 class MatriculasPage extends StatefulWidget {
@@ -35,6 +34,9 @@ class _MatriculasPageState extends State<MatriculasPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ativos = matriculas.where((m) => m['status'] == 'Ativo').length;
+    final pendentes = matriculas.where((m) => m['status'] == 'Pendente').length;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Matrículas'),
@@ -54,35 +56,30 @@ class _MatriculasPageState extends State<MatriculasPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Cards resumo
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    color: Colors.green,
-                    child: const Text(
-                      'Ativos',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
-                    ),
+                Expanded(
+                  child: _buildResumoCard(
+                    titulo: 'Ativos',
+                    quantidade: ativos,
+                    cor: Colors.green,
+                    icone: Icons.check_circle,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    color: Colors.orange,
-                    child: const Text(
-                      'Pedentes',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
-                    ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildResumoCard(
+                    titulo: 'Pendentes',
+                    quantidade: pendentes,
+                    cor: Colors.orange,
+                    icone: Icons.pending_actions,
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            // Lista de matrículas
             Expanded(
               child: ListView.builder(
                 itemCount: matriculas.length,
@@ -95,61 +92,77 @@ class _MatriculasPageState extends State<MatriculasPage> {
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: isAtivo ? Colors.green : Colors.orange,
-                        child: Text(matricula['matricula'].substring(4)),
+                        child: Icon(
+                          isAtivo ? Icons.check : Icons.hourglass_bottom,
+                          color: Colors.white,
+                        ),
                       ),
                       title: Text(matricula['aluno']),
                       subtitle: Text(
                         '${matricula['matricula']} • ${matricula['turma']} • ${matricula['data']}',
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          PopupMenuButton<String>(
-                            onSelected: (value) {
-                              switch (value) {
-                                case 'Editar':
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'TODO: Editar matrícula ${matricula['matricula']}',
-                                      ),
-                                    ),
-                                  );
-                                  break;
-                                case 'Transferir':
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'TODO: Transferir ${matricula['aluno']}',
-                                      ),
-                                    ),
-                                  );
-                                  break;
-                                case 'Cancelar':
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'TODO: Cancelar matrícula ${matricula['matricula']}',
-                                      ),
-                                    ),
-                                  );
-                                  break;
-                              }
-                            },
-                            itemBuilder: (context) => const [
-                              PopupMenuItem(
-                                value: 'Editar',
-                                child: Text('Editar'),
-                              ),
-                              PopupMenuItem(
-                                value: 'Transferir',
-                                child: Text('Transferir'),
-                              ),
-                              PopupMenuItem(
-                                value: 'Cancelar',
-                                child: Text('Cancelar'),
-                              ),
-                            ],
+                      trailing: PopupMenuButton<String>(
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'Editar':
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'TODO: Editar matrícula ${matricula['matricula']}',
+                                  ),
+                                ),
+                              );
+                              break;
+                            case 'Transferir':
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'TODO: Transferir ${matricula['aluno']}',
+                                  ),
+                                ),
+                              );
+                              break;
+                            case 'Cancelar':
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'TODO: Cancelar matrícula ${matricula['matricula']}',
+                                  ),
+                                ),
+                              );
+                              break;
+                          }
+                        },
+                        itemBuilder: (context) => const [
+                          PopupMenuItem(
+                            value: 'Editar',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, size: 18),
+                                SizedBox(width: 8),
+                                Text('Editar'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'Transferir',
+                            child: Row(
+                              children: [
+                                Icon(Icons.swap_horiz, size: 18),
+                                SizedBox(width: 8),
+                                Text('Transferir'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'Cancelar',
+                            child: Row(
+                              children: [
+                                Icon(Icons.cancel, size: 18),
+                                SizedBox(width: 8),
+                                Text('Cancelar'),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -157,6 +170,37 @@ class _MatriculasPageState extends State<MatriculasPage> {
                   );
                 },
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResumoCard({
+    required String titulo,
+    required int quantidade,
+    required Color cor,
+    required IconData icone,
+  }) {
+    return Card(
+      color: cor.withOpacity(0.1),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Icon(icone, color: cor, size: 36),
+            Text(
+              quantidade.toString(),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: cor,
+              ),
+            ),
+            Text(
+              titulo,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ],
         ),

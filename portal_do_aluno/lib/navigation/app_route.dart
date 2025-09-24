@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gesta_academica.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_usuarios.dart';
@@ -7,11 +8,11 @@ import 'package:portal_do_aluno/admin/presentation/pages/relatorios_e_idicadores
 import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/pages/login_page.dart';
-import 'package:portal_do_aluno/student/presentatton/pages/attendace_page.dart';
-import 'package:portal_do_aluno/student/presentatton/pages/calendar_page.dart';
-import 'package:portal_do_aluno/student/presentatton/pages/grades_page.dart';
-import 'package:portal_do_aluno/student/presentatton/pages/notices_page.dart';
-import 'package:portal_do_aluno/student/presentatton/pages/student_dashboard.dart';
+import 'package:portal_do_aluno/student/presentation/pages/attendace_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/notices_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/add_grade_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/class_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
@@ -22,6 +23,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminReports: (context) => const LoginPage(),
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
+  RouteNames.adminGeracaoDocumentos: (context) => const GerarDocumentosPage(),
   RouteNames.adminComunicacaoInstiticional: (context) => const  ComunicacaoInstitucionalPage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),

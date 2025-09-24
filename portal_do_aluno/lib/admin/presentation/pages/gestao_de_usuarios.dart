@@ -89,55 +89,72 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Gestao de Usuarios'),
+      appBar: const CustomAppBar(title: 'Gestão de Usuários'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Expanded(
               child: ListView(
-                children: usuarios.map((usuarios) {
+                children: usuarios.map((usuario) {
                   return Card(
-                    elevation: 2,
-                    clipBehavior: Clip.antiAlias,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    shadowColor: Colors.blueAccent,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.person),
-                              const SizedBox(width: 10),
-                              Text('${usuarios.perfil}:'),
-                              const SizedBox(width: 5),
-                              Text(usuarios.nome),
+                              const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.blueAccent,
+                                child: Icon(Icons.person, color: Colors.white),
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    usuario.nome,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    usuario.perfil,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                           PopupMenuButton<String>(
                             onSelected: (value) {
-                              if (value == 'Editar') {
-                                print('Editar ${usuarios.nome}');
-                              } else if (value == 'Excluir') {
-                                print('Excluir ${usuarios.nome}');
-                              } else if (value == 'resetar senha') {
-                                print('resetar senha ${usuarios.nome}');
-                              } else if (value == 'Detalhes') {
-                                // removido o espaço extra
+                              if (value == 'Detalhes') {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) {
-                                      return const DetalhesAluno();
-                                    },
+                                    builder: (context) => const DetalhesAluno(),
                                   ),
                                 );
                               }
                             },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                             itemBuilder: (context) => <PopupMenuEntry<String>>[
                               const PopupMenuItem<String>(
-                                value:
-                                    'Detalhes', // removido o espaço extra aqui
+                                value: 'Detalhes',
                                 child: Text('Detalhes'),
                               ),
                               const PopupMenuItem<String>(
@@ -149,8 +166,7 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
                                 child: Text('Excluir'),
                               ),
                               const PopupMenuItem<String>(
-                                value:
-                                    'resetar senha', // corrigido para coincidir com o onSelected
+                                value: 'resetar senha',
                                 child: Text('Resetar senha'),
                               ),
                             ],
@@ -163,7 +179,6 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
               ),
             ),
             const SizedBox(height: 20),
-
             Padding(
               padding: const EdgeInsets.only(bottom: 50),
               child: Column(
@@ -174,23 +189,30 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
                       children: [
                         TextFormField(
                           controller: nomeController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Nome Completo do Aluno',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[100],
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
-
                           child: TextButton(
                             style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.blueAccent,
                               foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             onPressed: showtipoPerfilModal,
                             child: Text(
-                              'Tipo de Usuario : ${isSelectedTipo ?? '_______'}',
+                              'Tipo de Usuário: ${isSelectedTipo ?? '_______'}',
                               style: const TextStyle(fontSize: 18),
                             ),
                           ),
@@ -198,25 +220,41 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: ElevatedButton(
-                          style: const ButtonStyle(),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            elevation: 3,
+                          ),
                           onPressed: _adicionarUsuario,
                           child: const Text(
-                            'Adicionar ',
+                            'Adicionar',
                             style: TextStyle(fontSize: 18),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: Colors.redAccent,
+                            foregroundColor: Colors.white,
+                            elevation: 3,
+                          ),
                           onPressed: _limparCampos,
                           child: const Text(
                             'Limpar Dados',

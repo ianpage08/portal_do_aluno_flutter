@@ -107,7 +107,11 @@ class AdminDashboard extends StatelessWidget {
                     context,
                     Icons.dock_outlined,
                     'Gerar Documentos',
-                    () {},
+                    () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminGeracaoDocumentos,
+                      );
+                    },
                   ),
                   _buildMenuCard(
                     context,

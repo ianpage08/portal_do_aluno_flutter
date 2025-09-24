@@ -32,11 +32,11 @@ class _NoticesPageState extends State<NoticesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Notícias'),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Lista de notícias
             Expanded(
               child: _noticias.isEmpty
                   ? const Center(
@@ -46,6 +46,7 @@ class _NoticesPageState extends State<NoticesPage> {
                           fontSize: 20,
                           fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.italic,
+                          color: Colors.grey,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -54,24 +55,42 @@ class _NoticesPageState extends State<NoticesPage> {
                       itemCount: _noticias.length,
                       itemBuilder: (context, index) {
                         return Card(
-                          elevation: 2,
+                          elevation: 3,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          shadowColor: Colors.deepPurpleAccent[200],
                           child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 20,
+                            ),
+                            leading: CircleAvatar(
+                              radius: 22,
+                              backgroundColor: Colors.deepPurpleAccent[200],
+                              child: const Icon(
+                                Icons.person,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
                             title: const Text(
                               'Professor tal',
                               style: TextStyle(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
                               ),
                             ),
-                            subtitle: Text(
-                              _noticias[index],
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: Text(
+                                _noticias[index],
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
                           ),
@@ -80,6 +99,7 @@ class _NoticesPageState extends State<NoticesPage> {
                     ),
             ),
             const SizedBox(height: 16),
+            // Formulário de envio
             Form(
               key: _formKey,
               child: Padding(
@@ -96,9 +116,16 @@ class _NoticesPageState extends State<NoticesPage> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          labelText: 'Digite sua mensagem',
+                          hintText: 'Digite sua mensagem',
+                          filled: true,
+                          fillColor: Colors.deepPurple[50],
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 16,
+                          ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
                           ),
                         ),
                       ),
@@ -107,12 +134,14 @@ class _NoticesPageState extends State<NoticesPage> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(18),
                         backgroundColor: Colors.deepPurple,
                         foregroundColor: Colors.white,
+                        shadowColor: Colors.deepPurpleAccent[100],
+                        elevation: 4,
                       ),
                       onPressed: _addNoticia,
-                      child: const Icon(Icons.add, size: 20),
+                      child: const Icon(Icons.add, size: 24),
                     ),
                   ],
                 ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -13,7 +15,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      backgroundColor: backGround ?? Colors.deepPurple, // cor padrão se não passar nada
+      backgroundColor:
+          backGround ?? Colors.deepPurple, // cor padrão se não passar nada
       centerTitle: true,
       foregroundColor: Colors.white,
       actions: [
@@ -25,12 +28,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         IconButton(
           onPressed: () {
-            // ação de logout
+            NavigatorService.navigateTo(RouteNames.login);
           },
           icon: const Icon(Icons.logout),
         ),
       ],
     );
-    
   }
 }
