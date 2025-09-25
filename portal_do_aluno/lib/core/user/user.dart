@@ -1,13 +1,14 @@
+
 enum UserType { student, teacher, parent, admin }
 
-class User {
-  final int id;
+class Usuario {
+  final String id;
   final String cpf;
   final String name;
   final String password;
   final UserType type;
 
-  User({
+  Usuario({
     required this.id,
     required this.name,
     required this.password,
@@ -15,7 +16,7 @@ class User {
     required this.cpf,
   });
 
-  //Converte objeto User em Map (dicionário)
+  //Converte objeto Usuario em Map (dicionário)
   //Para que: Enviar dados para API, salvar no banco
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -25,10 +26,10 @@ class User {
     'type': type.name, // Converte enum em string
   };
   /*factory = Construtor especial que pode retornar instância existente
-  Converte Map em objeto User
+  Converte Map em objeto Usuario
   Para que: Receber dados da API, carregar do banco
   UserType.values.byName() = Converte string em enum*/
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(
     id: json['id'],
     name: json['name'],
     password: json['password'],
@@ -36,13 +37,13 @@ class User {
     type: UserType.values.byName(json['type']),
   );
 
-  User copyWith({
-    int? id,
+  Usuario copyWith({
+    String? id,
     String? name,
     String? password,
     String? cpf,
     UserType? type,
-  }) => User(
+  }) => Usuario(
     id: id ?? this.id,
     name: name ?? this.name,
     password: password ?? this.password,
@@ -52,7 +53,7 @@ class User {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is User && runtimeType == other.runtimeType && id == other.id;
+      other is Usuario && runtimeType == other.runtimeType && id == other.id;
   /*Define código hash do objeto
 Para que: Usar em Set, Map, comparações eficientes
 Por que id: ID é único, então serve como hash */
@@ -61,12 +62,15 @@ Por que id: ID é único, então serve como hash */
 
   get toJasonSafe => null;
 
-Map<String, dynamic> toJsonSafe() {
-  return {
-    'id': id,
-    'name': name,
-    'cpf': cpf,
-    'type': type.name,
-    // senha não incluída por segurança
-  };
-}}
+  Map<String, dynamic> toJsonSafe() {
+    return {
+      'id': id,
+      'name': name,
+      'cpf': cpf,
+      'type': type.name,
+      // senha não incluída por segurança
+    };
+  }
+
+  
+}

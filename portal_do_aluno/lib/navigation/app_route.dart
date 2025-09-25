@@ -7,7 +7,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_usuarios.dart
 import 'package:portal_do_aluno/admin/presentation/pages/relatorios_e_idicadores.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/pages/login_page.dart';
+import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/attendace_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';

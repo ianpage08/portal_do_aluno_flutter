@@ -9,17 +9,17 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class NavigatorService {
   //tipo de usuario logado
-  static User? _currentUser;
+  static Usuario? _currentUser;
 
   static BuildContext? get context => navigatorKey.currentContext;
 
   //pegar o usuario atual
-  static void setCurrentUser(User user) {
+  static void setCurrentUser(Usuario user) {
     _currentUser = user;
   }
 
   //Get usuario atual
-  static User? get currentUser => _currentUser;
+  static Usuario? get currentUser => _currentUser;
 
   //limpar usuario atual
   static void clearUser() {
@@ -73,7 +73,7 @@ class NavigatorService {
 
   // NAVEGAÇÃO ESPECÍFICA POR TIPO DE USUÁRIO
 
-  static Future<void> navigateToDashboard([User? user]) {
+  static Future<void> navigateToDashboard([Usuario? user]) {
     final userToUse = user ?? _currentUser;
     if (userToUse == null) {
       return navigateAndRemoveUntil(RouteNames.login);
