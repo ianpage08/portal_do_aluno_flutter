@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:434519431859:android:d71b4d1242c384834baec6",
+        "mobilesdk_app_id": "1:434519431859:android:7e916de4094fd0bf4baec6",
         "android_client_info": {
-          "package_name": "com.android.application"
+          "package_name": "com.example.portal_do_aluno"
         }
       },
       "oauth_client": [],

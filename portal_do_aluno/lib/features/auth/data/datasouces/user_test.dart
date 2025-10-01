@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 
-
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 Future<void> criarUsuariosTeste() async {
@@ -31,14 +30,16 @@ Future<void> criarUsuariosTeste() async {
   ];
 
   for (var usuario in usuarios) {
-    final senhaHash = BCrypt.hashpw(usuario.password, BCrypt.gensalt());
+    final senhaHash = BCrypt.hashpw(
+      usuario.password,
+      BCrypt.hashpw(usuario.password, BCrypt.gensalt() ),
+    );
     await _firestore.collection('usuarios').doc(usuario.id).set({
       'id': usuario.id,
-      'nome': usuario.name,
+      'name': usuario.name,
       'cpf': usuario.cpf,
-      'senha': senhaHash,
-      'tipo': usuario.type.name,
+      'password': senhaHash,
+      'type': usuario.type.name,
     });
-    
   }
 }

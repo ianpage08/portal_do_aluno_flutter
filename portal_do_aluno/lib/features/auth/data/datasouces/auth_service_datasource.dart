@@ -1,60 +1,41 @@
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:bcrypt/bcrypt.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class AuthServico {
-  /// Stream para monitorar se o usuário está logado ou não
-  Stream<Usuario?> get usuario {
-    return _auth.authStateChanges().asyncMap(_userFromFirebaseUsuario);
-  }
+  /// Login usando CPF + senha (validação com BCrypt)
+  Future<Usuario> loginCpfsenha(String cpf, String senha) async {
+    final cpfLimpo = cpf.replaceAll(RegExp(r'\D'), '');
 
-  /// Converte User do FirebaseAuth em Usuario do Firestore
-  Future<Usuario?> _userFromFirebaseUsuario(User? firebaseUser) async {
-    if (firebaseUser == null) return null;
-    try {
-      final doc =
-          await _firestore.collection('usuarios').doc(firebaseUser.uid).get();
-      if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Usuario.fromJson(data);
-      }
-    } catch (e) {
-      return null;
+    final consulta = await _firestore
+        .collection('usuarios')
+        .where('cpf', isEqualTo: cpfLimpo)
+        .limit(1)
+        .get();
+
+    if (consulta.docs.isEmpty) {
+      throw Exception('CPF não encontrado');
     }
-    return null;
+
+    final data = consulta.docs.first.data();
+    final senhaHash = data['password'] as String;
+
+    if (!BCrypt.checkpw(senha, senhaHash)) {
+      throw Exception('Senha incorreta');
+    }
+
+    return Usuario.fromJson(data);
   }
 
-  /// Login usando CPF + Senha (com BCrypt no Firestore)
-  Future<Usuario?> loginCpfsenha(String cpf, String senha) async {
-    try {
-      final consulta = await _firestore
-          .collection('usuarios')
-          .where('cpf', isEqualTo: cpf)
-          .limit(1)
-          .get();
-
-      if (consulta.docs.isEmpty) {
-        throw Exception('CPF não encontrado');
-      }
-
-      final data = consulta.docs.first.data();
-      final senhaHash = data['senha'] as String;
-
-      // Valida senha com BCrypt
-      if (!BCrypt.checkpw(senha, senhaHash)) {
-        throw Exception('Senha incorreta');
-      }
-
-      // Retorna usuário válido
+  /// Stream para escutar mudanças de usuário logado (opcional)
+  Stream<Usuario?> usuarioLogado() {
+    // Apenas Firestore, sem FirebaseAuth
+    return _firestore.collection('usuarios').snapshots().map((snapshot) {
+      if (snapshot.docs.isEmpty) return null;
+      final data = snapshot.docs.first.data();
       return Usuario.fromJson(data);
-    } catch (e) {
-      
-      return null;
-    }
+    });
   }
 }

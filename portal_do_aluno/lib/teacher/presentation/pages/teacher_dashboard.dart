@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class TeacherDashboard extends StatelessWidget {
   const TeacherDashboard({super.key});
@@ -9,15 +10,9 @@ class TeacherDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColors.teacher,
-        title: const Text('Dashboard do Professor'),
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.logout)),
-        ],
+      appBar: const CustomAppBar(
+        title: 'Area do Professor',
+        backGround: AppColors.teacher,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -72,14 +67,9 @@ class TeacherDashboard extends StatelessWidget {
                   _buildMenuCard(context, Icons.assignment, 'Lançar Notas', () {
                     NavigatorService.navigateTo(RouteNames.teacherAssignments);
                   }),
-                  _buildMenuCard(
-                    context,
-                    Icons.event,
-                    'Agenda de Aulas',
-                    () {
-                      NavigatorService.navigateTo(RouteNames.teacherCalendar);
-                    },
-                  ),
+                  _buildMenuCard(context, Icons.event, 'Agenda de Aulas', () {
+                    NavigatorService.navigateTo(RouteNames.teacherCalendar);
+                  }),
                   _buildMenuCard(context, Icons.message, 'Mensagens', () {
                     NavigatorService.navigateTo(RouteNames.teacherCalendar);
                   }),

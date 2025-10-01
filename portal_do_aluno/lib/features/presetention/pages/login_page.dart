@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
@@ -85,25 +86,30 @@ class _LoginPageState extends State<LoginPage> {
                       // Campo CPF
                       TextFormField(
                         controller: _cpfController,
-                        keyboardType: TextInputType.number, // ✅ Melhor para CPF
+                        keyboardType: TextInputType.number, //  Melhor para CPF
                         inputFormatters: [
-                          FilteringTextInputFormatter
-                              .digitsOnly, // ✅ Só números
+                          FilteringTextInputFormatter.digitsOnly, //  Só números
                           LengthLimitingTextInputFormatter(
                             11,
-                          ), // ✅ Máximo 11 dígitos
+                          ), //  Máximo 11 dígitos
+                          CpfInputFormatter(), //  Formatação CPF
                         ],
                         decoration: const InputDecoration(
                           labelText: 'CPF',
+
                           prefixIcon: Icon(Icons.person),
-                          hintText: 'Digite seu CPF (apenas números)',
-                          border: OutlineInputBorder(), // ✅ Borda
+                          hintText: '000.000.000-00',
+                          border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, insira seu CPF';
                           }
-                          if (value.length != 11) {
+                          final cpfLimpo = _cpfController.text.replaceAll(
+                            RegExp(r'\D'),
+                            '',
+                          );
+                          if (cpfLimpo.length != 11) {
                             return 'CPF deve ter 11 dígitos';
                           }
                           return null;
@@ -162,17 +168,51 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: isLoading
                               ? null
                               : () async {
-                                  final cpf = _cpfController.text.trim();
-                                  final senha = _passwordController.text.trim();
-                                  final usuario = await AuthServico()
-                                      .loginCpfsenha(cpf, senha);
-                                  if (usuario != null) {
+                                  if (!_formKey.currentState!.validate())
+                                    return;
+
+                                  setState(() => isLoading = true);
+
+                                  try {
+                                    final cpf = _cpfController.text.trim();
+                                    final senha = _passwordController.text
+                                        .trim();
+
+                                    final usuario = await AuthServico()
+                                        .loginCpfsenha(cpf, senha);
+
+                                    // Se chegou aqui, login ok
                                     NavigatorService.setCurrentUser(usuario);
                                     await NavigatorService.navigateToDashboard();
-                                  } else {
-                                    _erroLogin();
+                                    if (!mounted) return;
+                                  } catch (e) {
+                                    // Aqui você mostra a mensagem de erro
+                                    if (!mounted) return;
+                                    final mensagem = ScaffoldMessenger.of(
+                                      context,
+                                    );
+
+                                    mensagem.showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Erro ao fazer login: CPF ou senha incorretos',
+                                        ), // Exibe CPF ou senha incorretos
+                                        backgroundColor: Color.fromARGB(
+                                          255,
+                                          243,
+                                          6,
+                                          6,
+                                        ),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  } finally {
+                                    if(!mounted){
+                                      setState(() => isLoading = false);
+                                    }
+                                    
                                   }
-                                }, // ✅ Função adicionada
+                                },
                           child:
                               isLoading // ✅ Loading melhorado
                               ? const Row(
@@ -229,7 +269,7 @@ class _LoginPageState extends State<LoginPage> {
                               'senha123',
                             ),
                             _buildTestUser(
-                              'Responsável',
+                              'admin',
                               '55566677788',
                               'senha123',
                             ), // ✅ Corrigido
@@ -326,11 +366,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 */
-  void _erroLogin() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Cpf ou senha incorretos')));
-  }
+  
 
   void _handleForgotPassword() {
     ScaffoldMessenger.of(context).showSnackBar(

@@ -30,12 +30,14 @@ class Usuario {
   Para que: Receber dados da API, carregar do banco
   UserType.values.byName() = Converte string em enum*/
   factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(
-    id: json['id'],
-    name: json['name'],
-    password: json['password'],
-    cpf: json['cpf'],
-    type: UserType.values.byName(json['type']),
-  );
+  id: json['id'] as String? ?? '',                       // valor padrão caso seja null
+  name: json['name'] as String? ?? 'Sem Nome',           // evita erro se name for null
+  password: json['password'] as String? ?? '',           // evita null na senha
+  cpf: json['cpf'] as String? ?? '',                     // evita null no cpf
+  type: json['type'] != null 
+      ? UserType.values.byName(json['type'] as String)  // converte string para enum
+      : UserType.student,                                // fallback se type for null
+);
 
   Usuario copyWith({
     String? id,

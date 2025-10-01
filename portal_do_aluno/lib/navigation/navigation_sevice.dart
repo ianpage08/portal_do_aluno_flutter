@@ -97,11 +97,6 @@ class NavigatorService {
     return navigateAndRemoveUntil(
       route,
       arguments: {'user': userToUse.toJsonSafe()},
-
-
-
-
-      
     );
   }
 
@@ -154,9 +149,10 @@ class NavigatorService {
 
   static Future<void> navigateToTeacherClasses() {
     _validateUserType(UserType.teacher);
-    return navigateTo(RouteNames.teacherClasses, arguments: {
-      'teacherId': _currentUser!.id.toString(),
-    });
+    return navigateTo(
+      RouteNames.teacherClasses,
+      arguments: {'teacherId': _currentUser!.id.toString()},
+    );
   }
 
   static Future<void> navigateToTeacherAssignments() {
@@ -187,9 +183,10 @@ class NavigatorService {
 
   static Future<void> navigateToParentChildren() {
     _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.parentChildren, arguments: {
-      'parentId': _currentUser!.id.toString(),
-    });
+    return navigateTo(
+      RouteNames.parentChildren,
+      arguments: {'parentId': _currentUser!.id.toString()},
+    );
   }
 
   static Future<void> navigateToParentGrades() {
@@ -218,11 +215,14 @@ class NavigatorService {
     required String childName,
   }) {
     _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.studentGrades, arguments: {
-      'studentId': childId,
-      'studentName': childName,
-      'isParentView': true,
-    });
+    return navigateTo(
+      RouteNames.studentGrades,
+      arguments: {
+        'studentId': childId,
+        'studentName': childName,
+        'isParentView': true,
+      },
+    );
   }
 
   // === NAVEGAÇÃO PARA FUNCIONALIDADES DO ADMIN ===
@@ -275,15 +275,14 @@ class NavigatorService {
 
   // === NAVEGAÇÃO PARA PÁGINAS DE DETALHES (COM ARGUMENTOS) ===
   static Future<void> navigateToTaskDetails(String taskId) {
-    return navigateTo(RouteNames.taskDetails, arguments: {
-      'taskId': taskId,
-    });
+    return navigateTo(RouteNames.taskDetails, arguments: {'taskId': taskId});
   }
 
   static Future<void> navigateToMessageDetails(String messageId) {
-    return navigateTo(RouteNames.messageDetails, arguments: {
-      'messageId': messageId,
-    });
+    return navigateTo(
+      RouteNames.messageDetails,
+      arguments: {'messageId': messageId},
+    );
   }
 
   static Future<void> navigateToGradeDetails({
@@ -297,16 +296,16 @@ class NavigatorService {
     }
 
     // Aluno só pode ver suas próprias notas
-    if (_currentUser!.type == UserType.student && 
+    if (_currentUser!.type == UserType.student &&
         _currentUser!.id.toString() != studentId) {
       showErrorDialog('Você não tem permissão para ver essas notas');
       return Future.value();
     }
 
-    return navigateTo(RouteNames.gradeDetails, arguments: {
-      'gradeId': gradeId,
-      'studentId': studentId,
-    });
+    return navigateTo(
+      RouteNames.gradeDetails,
+      arguments: {'gradeId': gradeId, 'studentId': studentId},
+    );
   }
 
   // === NAVEGAÇÃO PARA PÁGINAS DE FORMULÁRIO ===
@@ -336,26 +335,29 @@ class NavigatorService {
   }
 
   static Future<void> navigateToError(String errorMessage) {
-    return navigateTo(RouteNames.error, arguments: {
-      'errorMessage': errorMessage,
-    });
+    return navigateTo(
+      RouteNames.error,
+      arguments: {'errorMessage': errorMessage},
+    );
   }
 
   // === MÉTODOS AUXILIARES ===
-  
+
   // Validar se o usuário atual tem o tipo correto
   static void _validateUserType(UserType requiredUserType) {
-    /*if (_currentUser == null) {
+    if (_currentUser == null) {
       showErrorDialog('Usuário não autenticado');
       logout();
       return;
     }
 
     if (_currentUser!.type != requiredUserType) {
-      showErrorDialog('Você não tem permissão para acessar esta funcionalidade');
+      showErrorDialog(
+        'Você não tem permissão para acessar esta funcionalidade',
+      );
       navigateToDashboard();
       return;
-    }*/
+    }
   }
 
   // Verificar se o usuário tem permissão para uma funcionalidade

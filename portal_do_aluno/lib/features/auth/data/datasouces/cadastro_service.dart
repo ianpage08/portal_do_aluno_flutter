@@ -4,15 +4,35 @@ import 'package:portal_do_aluno/core/user/user.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-Future<void> CadastroUsuario(Usuario usuario) async {
-  final senhaHash = BCrypt.hashpw(usuario.password, BCrypt.gensalt());
-  
+class CadastroService {
+  /// Cadastra um usuário no Firestore
+  Future<String> cadastroUsuario(Usuario usuario) async {
+    // Hash da senha
+    final senhaHash = BCrypt.hashpw(usuario.password, BCrypt.gensalt());
 
-  await _firestore.collection('usuarios').doc(usuario.id).set(
-    {'id': usuario.id,
-    'cpf': usuario.cpf,
-    'nome': usuario.name,
-    'senha': senhaHash,
-    'tipo': usuario.type.name}
-  );
+    // Verifica CPF duplicado
+    final consulta = await _firestore
+        .collection('usuarios')
+        .where('cpf', isEqualTo: usuario.cpf.replaceAll(RegExp(r'\D'), ''))
+        .limit(1)
+        .get();
+
+    if (consulta.docs.isNotEmpty) {
+      throw Exception('CPF já cadastrado');
+    }
+
+    // Cria documento no Firestore com ID gerado
+    final usuarioRef = _firestore.collection('usuarios').doc();
+
+    await usuarioRef.set({
+      'id': usuarioRef.id,
+      'name': usuario.name,
+      'cpf': usuario.cpf.replaceAll(RegExp(r'\D'), ''),
+      'password': senhaHash,
+      'type': usuario.type.name,
+      
+    });
+
+    return usuarioRef.id;
+  }
 }

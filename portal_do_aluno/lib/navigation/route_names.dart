@@ -36,6 +36,7 @@ class RouteNames {
   static const String adminGestao = '/admin_gestao';
   static const String adminGestaoEscolar = '/admin_gestao_escolar';
   static const String adminGeracaoDocumentos = '/admin_geracao_documentos';
+  static const String adminListaDeUsuarios = '/admin_lista_de_usuarios';
   static const String adminRelatoriosGerenciais =
       '/admin_relatorios_gerenciais';
   static const String adminSegurancaEPermissoes =

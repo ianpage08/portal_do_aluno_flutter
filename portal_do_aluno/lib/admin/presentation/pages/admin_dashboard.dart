@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -9,15 +10,9 @@ class AdminDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColors.admin,
-        title: const Text('Dashboard do Administrador'),
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.logout)),
-        ],
+      appBar: const CustomAppBar(
+        title: 'Administrador',
+        backGround: AppColors.admin,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -113,6 +108,11 @@ class AdminDashboard extends StatelessWidget {
                       );
                     },
                   ),
+                  _buildMenuCard(context, Icons.group, 'Lista de Usuarios', () {
+                    NavigatorService.navigateTo(
+                      RouteNames.adminListaDeUsuarios,
+                    );
+                  }),
                   _buildMenuCard(
                     context,
                     Icons.manage_accounts_rounded,
