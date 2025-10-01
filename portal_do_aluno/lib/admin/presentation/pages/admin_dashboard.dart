@@ -70,6 +70,16 @@ class AdminDashboard extends StatelessWidget {
                   }),
                   _buildMenuCard(
                     context,
+                    Icons.add_reaction_rounded,
+                    'Matriculas',
+                    () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminMatriculaCadastro,
+                      );
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
                     Icons.graphic_eq_rounded,
                     'Relatorio gerencias',
                     () {

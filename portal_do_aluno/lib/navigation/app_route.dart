@@ -6,6 +6,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/gesta_academica.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_usuarios.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/lista_de_usuarios_page.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/matricula_cadastro.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/relatorios_e_idicadores.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
@@ -21,6 +22,7 @@ import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dar
 
 Map<String, WidgetBuilder> get routes => {
   RouteNames.login: (context) => const LoginPage(),
+  RouteNames.adminMatriculaCadastro: (context) => const MatriculaCadastro(),
   RouteNames.adminDashboard: (context) => const AdminDashboard(),
   RouteNames.adminReports: (context) => const LoginPage(),
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
