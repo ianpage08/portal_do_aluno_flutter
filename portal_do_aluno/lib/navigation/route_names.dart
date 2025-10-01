@@ -49,6 +49,7 @@ class RouteNames {
   static const String adminConfiguracoesDoSistema =
       '/admin_configuracoes_do_sistema';
   static const String adminAjuda = '/admin_ajuda';
+  static const String adminDetalhesAlunos = '/admin_detalhes_alunos';
 
   // paginas de detalhes
   static const String taskDetails = '/task_details';
