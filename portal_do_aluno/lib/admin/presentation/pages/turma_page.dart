@@ -36,13 +36,13 @@ class _TurmaPageState extends State<TurmaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Turmas'),
+        title: const Text('Turmas'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: const Text('Todo: Aluno adicionado')),
+                const SnackBar(content:  Text('Todo: Aluno adicionado')),
               );
             },
             icon: const Icon(Icons.add),
@@ -50,7 +50,7 @@ class _TurmaPageState extends State<TurmaPage> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: ListView.builder(
           itemCount: turmas.length,
           itemBuilder: (context, index) {

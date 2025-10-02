@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DadosAluno {
-  final String id;
+  final String? id;
   final String nome;
   final String cpf;
   final String sexo;
@@ -9,7 +9,7 @@ class DadosAluno {
   final String naturalidade;
 
   DadosAluno({
-    required this.id,
+    this.id,
     required this.nome,
     required this.cpf,
     required this.sexo,

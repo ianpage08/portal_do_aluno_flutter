@@ -39,10 +39,12 @@ class RouteNames {
   static const String adminListaDeUsuarios = '/admin_lista_de_usuarios';
   static const String adminRelatoriosGerenciais =
       '/admin_relatorios_gerenciais';
+  static const String adminCadastroTurmas = '/admin_cadastro_turmas';
   static const String adminSegurancaEPermissoes =
       '/admin_seguranca_e_permissoes';
   static const String adminComunicacaoInstiticional =
       '/admin_comunicacao_institicional';
+  static const String adminCadastrarDisciplina = '/admin_cadastrar_disciplina';
   static const String adminGerarDocumentos = '/admin_gerar_documentos';
   static const String adminManutecao = '/admin_manutecao';
   static const String adminSuporte = '/admin_suporte';

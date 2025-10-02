@@ -18,12 +18,12 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
     final minhaStream = FirebaseFirestore.instance
         .collection('usuarios')
         .snapshots();
-    final colecaoPortype = FirebaseFirestore.instance
-        .collection('usuarios')
-        .where('type', isEqualTo: tipoSelecionado)
-        .snapshots();
+    final colecaoPortype = FirebaseFirestore.instance.collection('usuarios');
+
     if (tipoSelecionado != null) {
-      return colecaoPortype;
+      return colecaoPortype
+          .where('type', isEqualTo: tipoSelecionado)
+          .snapshots();
     } else {
       return minhaStream;
     }

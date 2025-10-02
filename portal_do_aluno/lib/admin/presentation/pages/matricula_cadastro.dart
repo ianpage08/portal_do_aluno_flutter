@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/data/datasources/matricula_service.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class MatriculaCadastro extends StatefulWidget {
@@ -14,62 +16,13 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final MatriculaService _matriculaService = MatriculaService();
 
-  void _cadastrarAluno() async {
-    if (_formKey.currentState!.validate() ||
-        _dataNascimentoController == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos corretamente')),
-      );
-      return;
-    }
-    final DadosAluno dadosAluno = DadosAluno(
-      id: '',
-      nome: _nomeController.text,
-      cpf: _cpfController.text,
-      sexo: _sexoController.text,
-      naturalidade: _naturalidadeController.text,
-      dataNascimento: _dataNascimentoController!,
-    );
-    final EnderecoAluno enderecoAluno = EnderecoAluno(
-      cep: _cepController.text,
-      rua: _ruaController.text,
-      numero: _numeroController.text,
-      bairro: _bairroController.text,
-      cidade: _cidadeController.text,
-      estado: _estadoController.text,
-    );
-    final ResponsaveisAluno responsaveisAluno = ResponsaveisAluno(
-      nomeMae: _nomeMaeController.text,
-      cpfMae: _cpfMaeController.text,
-      telefoneMae: _telefoneMaeController.text,
-      nomePai: _nomePaiController.text,
-      cpfPai: _cpfPaiController.text,
-      telefonePai: _telefonePaiController.text,
-    );
-    final DadosAcademicos dadosAcademicos = DadosAcademicos(
-      numeroMatricula: _numeroMatriculaController.text,
-      turma: _tumarControler.text,
-      anoLetivo: _anoLetivoController.text,
-      turno: _turnoController.text,
-      situacao: _situacaoController.text,
-      dataMatricula: DateTime.now(),
-    );
-    final InformacoesMedicasAluno informacoesMedicasAluno =
-        InformacoesMedicasAluno(
-          alergia: _alergiasController.text,
-          medicacao: _medicamentosController.text,
-          observacoes: _observacoesController.text,
-        );
-  }
-
-  // Controller para aluno
+  // Controllers
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _naturalidadeController = TextEditingController();
   final TextEditingController _sexoController = TextEditingController();
   DateTime? _dataNascimentoController;
 
-  // Controller para endereço
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _ruaController = TextEditingController();
   final TextEditingController _numeroController = TextEditingController();
@@ -77,7 +30,6 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final TextEditingController _cidadeController = TextEditingController();
   final TextEditingController _estadoController = TextEditingController();
 
-  // Controller para responsáveis
   final TextEditingController _nomeMaeController = TextEditingController();
   final TextEditingController _cpfMaeController = TextEditingController();
   final TextEditingController _telefoneMaeController = TextEditingController();
@@ -85,7 +37,6 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final TextEditingController _cpfPaiController = TextEditingController();
   final TextEditingController _telefonePaiController = TextEditingController();
 
-  // Controller para dados acadêmicos
   final TextEditingController _numeroMatriculaController =
       TextEditingController();
   final TextEditingController _tumarControler = TextEditingController();
@@ -93,149 +44,202 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final TextEditingController _turnoController = TextEditingController();
   final TextEditingController _situacaoController = TextEditingController();
 
-  // Controller para informações médicas
   final TextEditingController _alergiasController = TextEditingController();
   final TextEditingController _medicamentosController = TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
+
+  @override
+  void dispose() {
+    final List<TextEditingController> controlles = [
+      _nomeController,
+      _cpfController,
+      _naturalidadeController,
+      _sexoController,
+      _cepController,
+      _ruaController,
+      _numeroController,
+      _bairroController,
+      _cidadeController,
+      _estadoController,
+      _nomeMaeController,
+      _cpfMaeController,
+      _telefoneMaeController,
+      _nomePaiController,
+      _cpfPaiController,
+      _telefonePaiController,
+      _numeroMatriculaController,
+      _tumarControler,
+      _anoLetivoController,
+      _turnoController,
+      _situacaoController,
+      _alergiasController,
+      _medicamentosController,
+      _observacoesController,
+    ];
+    for (var controller in controlles) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _cadastrarAluno() async {
+    if (!_formKey.currentState!.validate() ||
+        _dataNascimentoController == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Preencha todos os campos obrigatórios corretamente'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final dadosAluno = DadosAluno(
+      nome: _nomeController.text,
+      cpf: _cpfController.text,
+      sexo: _sexoController.text,
+      naturalidade: _naturalidadeController.text,
+      dataNascimento: _dataNascimentoController!,
+    );
+
+    final enderecoAluno = EnderecoAluno(
+      cep: _cepController.text,
+      rua: _ruaController.text,
+      numero: _numeroController.text,
+      bairro: _bairroController.text,
+      cidade: _cidadeController.text,
+      estado: _estadoController.text,
+    );
+
+    final responsaveisAluno = ResponsaveisAluno(
+      nomeMae: _nomeMaeController.text,
+      cpfMae: _cpfMaeController.text,
+      telefoneMae: _telefoneMaeController.text,
+      nomePai: _nomePaiController.text,
+      cpfPai: _cpfPaiController.text,
+      telefonePai: _telefonePaiController.text,
+    );
+
+    final dadosAcademicos = DadosAcademicos(
+      numeroMatricula: _numeroMatriculaController.text,
+      turma: _tumarControler.text,
+      anoLetivo: _anoLetivoController.text,
+      turno: _turnoController.text,
+      situacao: _situacaoController.text,
+      dataMatricula: DateTime.now(),
+    );
+
+    final informacoesMedicasAluno = InformacoesMedicasAluno(
+      alergia: _alergiasController.text,
+      medicacao: _medicamentosController.text,
+      observacoes: _observacoesController.text,
+    );
+
+    try {
+      await _matriculaService.cadastrarAlunoCompleto(
+        dadosAluno: dadosAluno,
+        enderecoAluno: enderecoAluno,
+        responsaveisAluno: responsaveisAluno,
+        dadosAcademicos: dadosAcademicos,
+        informacoesMedicasAluno: informacoesMedicasAluno,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Aluno cadastrado com sucesso'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _limparCampos();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+      );
+      print(e);
+    }
+  }
+
+  void _limparCampos() {
+    final List<TextEditingController> controlles = [
+      _nomeController,
+      _cpfController,
+      _naturalidadeController,
+      _sexoController,
+      _cepController,
+      _ruaController,
+      _numeroController,
+      _bairroController,
+      _cidadeController,
+      _estadoController,
+      _nomeMaeController,
+      _cpfMaeController,
+      _telefoneMaeController,
+      _nomePaiController,
+      _cpfPaiController,
+      _telefonePaiController,
+      _numeroMatriculaController,
+      _tumarControler,
+      _anoLetivoController,
+      _turnoController,
+      _alergiasController,
+      _medicamentosController,
+      _observacoesController,
+      _situacaoController,
+    ];
+
+    for (var controller in controlles) {
+      controller.clear();
+    }
+
+    setState(() {
+      _dataNascimentoController = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Cadastro de Matrícula'),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
-              const Text('Formulário de Cadastro de Matrícula'),
+              const Text(
+                'Formulário de Cadastro de Matrícula',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 12),
-              Form(
-                key: _formKey,
-                child: Column(
+              _buildCardAluno(),
+              const SizedBox(height: 16),
+              _buildCardEndereco(),
+              const SizedBox(height: 16),
+              _buildCardResponsaveis(),
+              const SizedBox(height: 16),
+              _buildCardAcademicos(),
+              const SizedBox(height: 16),
+              _buildCardMedicas(),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 28, 1, 104),
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size.fromHeight(50),
+                ),
+                onPressed: _cadastrarAluno,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Dados do Aluno',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Nome Completo Aluno',
-                              controller: _nomeController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'CPF',
-                              controller: _cpfController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Sexo',
-                              controller: _sexoController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Naturalidade',
-                              controller: _naturalidadeController,
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  'Data de Nascimento: ',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    final DateTime? data = await showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now().subtract(
-                                        const Duration(days: 365 * 10),
-                                      ),
-                                      firstDate: DateTime(1950),
-                                      lastDate: DateTime.now(),
-                                    );
-                                    if (data != null) {
-                                      setState(() {
-                                        _dataNascimentoController = data;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                    _dataNascimentoController == null
-                                        ? 'Selecionar Data'
-                                        : '${_dataNascimentoController!.day}/${_dataNascimentoController!.month}/${_dataNascimentoController!.year}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Endereço',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            _buildCardForm(
-                              title: 'Cep',
-                              controller: _cepController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Rua',
-                              controller: _ruaController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Número',
-                              controller: _numeroController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Bairro',
-                              controller: _bairroController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Cidade',
-                              controller: _cidadeController,
-                            ),
-                            const SizedBox(height: 8),
-                            _buildCardForm(
-                              title: 'Estado',
-                              controller: _estadoController,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    Icon(Icons.save),
+                    SizedBox(width: 8),
+                    Text('Cadastrar Aluno', style: TextStyle(fontSize: 20)),
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -243,18 +247,286 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
     );
   }
 
-  Widget _buildCardForm({
+  // ==================== Widgets por seção ====================
+  Widget _buildCardAluno() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text(
+              'Dados do Aluno',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Nome Completo Aluno',
+              controller: _nomeController,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'CPF',
+              controller: _cpfController,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(11),
+                CpfInputFormatter(),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Naturalidade',
+              controller: _naturalidadeController,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Sexo', controller: _sexoController),
+            const SizedBox(height: 12),
+            _buildDataNascimento(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardEndereco() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text(
+              'Endereço',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'CEP',
+              controller: _cepController,
+              maxLength: 8,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Rua', controller: _ruaController),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Número', controller: _numeroController),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Bairro', controller: _bairroController),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Cidade', controller: _cidadeController),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Estado', controller: _estadoController),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardResponsaveis() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text(
+              'Responsáveis',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Nome da Mãe',
+              controller: _nomeMaeController,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'CPF da Mãe',
+              controller: _cpfMaeController,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(11),
+                CpfInputFormatter(),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Telefone da Mãe',
+              controller: _telefoneMaeController,
+              maxLength: 11,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Nome do Pai',
+              controller: _nomePaiController,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'CPF do Pai',
+              controller: _cpfPaiController,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(11),
+                CpfInputFormatter(),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Telefone do Pai',
+              controller: _telefonePaiController,
+              maxLength: 11,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardAcademicos() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text(
+              'Dados Acadêmicos',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Número da Matrícula',
+              controller: _numeroMatriculaController,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Turma', controller: _tumarControler),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Ano Letivo',
+              controller: _anoLetivoController,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Turno', controller: _turnoController),
+            const SizedBox(height: 12),
+            _buildTextForm(title: 'Situação', controller: _situacaoController),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardMedicas() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text(
+              'Informações Médicas',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Alergias',
+              controller: _alergiasController,
+              obrigatorio: false,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Medicações',
+              controller: _medicamentosController,
+              obrigatorio: false,
+            ),
+            const SizedBox(height: 12),
+            _buildTextForm(
+              title: 'Observações',
+              controller: _observacoesController,
+              obrigatorio: false,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ==================== Campos auxiliares ====================
+  Widget _buildTextForm({
     required String title,
     required TextEditingController controller,
+    List<TextInputFormatter>? inputFormatters,
+    bool obrigatorio = true,
+    int? maxLength,
   }) {
     return TextFormField(
       controller: controller,
+      maxLength: maxLength,
+      inputFormatters: [if (inputFormatters != null) ...inputFormatters],
+      validator: obrigatorio
+          ? (value) =>
+                (value == null || value.isEmpty) ? 'Campo obrigatório' : null
+          : null,
       decoration: InputDecoration(
         labelText: title,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+        filled: true,
+        fillColor: const Color.fromARGB(48, 218, 194, 250),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: Color.fromARGB(255, 28, 1, 104),
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
+    );
+  }
+
+  Widget _buildDataNascimento() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Data de Nascimento:',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 29, 0, 107),
+            foregroundColor: Colors.white,
+          ),
+          onPressed: () async {
+            final DateTime? data = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now().subtract(
+                const Duration(days: 365 * 10),
+              ),
+              firstDate: DateTime(1950),
+              lastDate: DateTime.now(),
+            );
+            if (data != null) {
+              setState(() {
+                _dataNascimentoController = data;
+              });
+            }
+          },
+          child: Text(
+            _dataNascimentoController == null
+                ? 'Selecionar Data'
+                : '${_dataNascimentoController!.day}/${_dataNascimentoController!.month}/${_dataNascimentoController!.year}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     );
   }
 }

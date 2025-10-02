@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MatriculasPage extends StatefulWidget {
@@ -8,6 +9,10 @@ class MatriculasPage extends StatefulWidget {
 }
 
 class _MatriculasPageState extends State<MatriculasPage> {
+  final minhaStream = FirebaseFirestore.instance
+      .collection('matriculas')
+      .orderBy('name')
+      .snapshots();
   final List<Map<String, dynamic>> matriculas = [
     {
       'aluno': 'João Silva',
@@ -80,97 +85,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
             ),
             const SizedBox(height: 12),
             // Lista de matrículas
-            Expanded(
-              child: ListView.builder(
-                itemCount: matriculas.length,
-                itemBuilder: (context, index) {
-                  final matricula = matriculas[index];
-                  final isAtivo = matricula['status'] == 'Ativo';
-                  return Card(
-                    elevation: 2,
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: isAtivo ? Colors.green : Colors.orange,
-                        child: Icon(
-                          isAtivo ? Icons.check : Icons.hourglass_bottom,
-                          color: Colors.white,
-                        ),
-                      ),
-                      title: Text(matricula['aluno']),
-                      subtitle: Text(
-                        '${matricula['matricula']} • ${matricula['turma']} • ${matricula['data']}',
-                      ),
-                      trailing: PopupMenuButton<String>(
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'Editar':
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'TODO: Editar matrícula ${matricula['matricula']}',
-                                  ),
-                                ),
-                              );
-                              break;
-                            case 'Transferir':
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'TODO: Transferir ${matricula['aluno']}',
-                                  ),
-                                ),
-                              );
-                              break;
-                            case 'Cancelar':
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'TODO: Cancelar matrícula ${matricula['matricula']}',
-                                  ),
-                                ),
-                              );
-                              break;
-                          }
-                        },
-                        itemBuilder: (context) => const [
-                          PopupMenuItem(
-                            value: 'Editar',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 18),
-                                SizedBox(width: 8),
-                                Text('Editar'),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'Transferir',
-                            child: Row(
-                              children: [
-                                Icon(Icons.swap_horiz, size: 18),
-                                SizedBox(width: 8),
-                                Text('Transferir'),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'Cancelar',
-                            child: Row(
-                              children: [
-                                Icon(Icons.cancel, size: 18),
-                                SizedBox(width: 8),
-                                Text('Cancelar'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            Expanded(child: _buildStreamMatriculas()),
           ],
         ),
       ),
@@ -184,7 +99,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
     required IconData icone,
   }) {
     return Card(
-      color: cor.withOpacity(0.1),
+      color: cor.withValues(alpha: 0.1),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
@@ -205,6 +120,43 @@ class _MatriculasPageState extends State<MatriculasPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStreamMatriculas() {
+    return StreamBuilder(
+      stream: minhaStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text('Erro ao carregar os dados'));
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('Nenhum dado encontrado'));
+        }
+        final docMatriculas = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: docMatriculas.length,
+          itemBuilder: (context, index) {
+            final data = docMatriculas[index].data();
+
+            return Card(
+              child: ListTile(
+                leading: const CircleAvatar(child: Icon(Icons.person)),
+                title: Text('Aluno: ${data['name']}'),
+                subtitle: Column(
+                  children: [
+                    Text('Matricula: ${data['matricula']}'),
+                    Text('Turma: ${data['turma']}'),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

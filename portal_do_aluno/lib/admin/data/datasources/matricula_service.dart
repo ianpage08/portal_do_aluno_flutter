@@ -26,7 +26,7 @@ class MatriculaService {
       'dadosAcademicos': dadosAcademicos.toJson(),
       'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
     };
-    await matriculasColletion.doc(dadosAluno.id).set(alunoJson);
+    await matriculasColletion.add(alunoJson);
   }
 
   Future<DocumentSnapshot> buscarAlunoPorCpf(String cpf) async {

@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class DiciplinasPage extends StatefulWidget {
   const DiciplinasPage({super.key});
@@ -8,11 +11,12 @@ class DiciplinasPage extends StatefulWidget {
 }
 
 class _DiciplinasPageState extends State<DiciplinasPage> {
-  final List<Map<String, dynamic>> materias = [
-    {'materia': 'Português', 'professor': 'Paulo José', 'total': 240},
-    {'materia': 'Ingles', 'professor': 'Messi', 'total': 70},
-    {'materia': 'Matemática', 'professor': 'Lanvadovisk', 'total': 189},
-  ];
+  final minhaStream = FirebaseFirestore.instance
+      .collection('disciplinas')
+      .orderBy('nome')
+      .snapshots();
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,36 +26,52 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
         actions: [
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Adicionar Materias')));
+              NavigatorService.navigateTo(RouteNames.adminCadastrarDisciplina);
             },
             icon: const Icon(Icons.add),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: materias.length,
+      body: Padding(padding: const EdgeInsets.all(8), child: __buildStream()),
+    );
+  }
+
+  Widget __buildStream() {
+    return StreamBuilder(
+      stream: minhaStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text('Erro ao carregar os dados'));
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('Nenhum dado encontrado'));
+        }
+        final docMaterias = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: docMaterias.length,
           itemBuilder: (context, index) {
-            final materia = materias[index];
+            final data = docMaterias[index].data();
+
             return Card(
               child: ListTile(
-                leading:const CircleAvatar(child:  Icon(Icons.book)),
-                title: Text('Materia: ${materia['materia']}'),
+                leading: const CircleAvatar(child: Icon(Icons.book)),
+                title: Text('Materia: ${data['nome']}'),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Professor: ${materia['professor']}'),
-                    Text('Aulas Previstas: ${materia['total']}'),
+                    Text('Professor: ${data['professor'] ?? '---'}'),
+                    Text('Aulas Previstas: ${data['aulasPrevistas']?? '---'}'),
+                    Text('Carga Horaria: ${data['cargaHoraria']?? '---'}'),
                   ],
                 ),
               ),
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }
