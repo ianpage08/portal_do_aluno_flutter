@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/detalhes_do_aluno_test.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gesta_academica.dart';
@@ -34,6 +35,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminDetalhesAlunos: (context) => const DetalhesAluno(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
+  RouteNames.adminCadastroTurmas: (context) => const CadastroTurma(),
   RouteNames.adminCadastrarDisciplina: (context) => const CadastrarDisciplina(),
   RouteNames.adminSegurancaEPermissoes: (context) =>
       const SegurancaEPermissoes(),

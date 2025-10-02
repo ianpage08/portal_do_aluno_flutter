@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class TurmaPage extends StatefulWidget {
   const TurmaPage({super.key});
@@ -41,9 +42,7 @@ class _TurmaPageState extends State<TurmaPage> {
         actions: [
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content:  Text('Todo: Aluno adicionado')),
-              );
+              NavigatorService.navigateTo(RouteNames.adminCadastroTurmas);
             },
             icon: const Icon(Icons.add),
           ),

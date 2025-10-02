@@ -1,11 +1,11 @@
-class Turma {
+class ClasseDeAula {
   final String id;
   final String serie;
   final String turno;
   final int qtdAlunos;
   final String professorTitular;
 
-  Turma({
+  ClasseDeAula({
     required this.id,
     required this.serie,
     required this.turno,
@@ -21,7 +21,7 @@ class Turma {
     'professorTitular': professorTitular,
   };
 
-  factory Turma.fromJson(Map<String, dynamic> json) => Turma(
+  factory ClasseDeAula.fromJson(Map<String, dynamic> json) => ClasseDeAula(
     id: json['id'] as String? ?? '',
     serie: json['serie'] as String? ?? '',
     turno: json['turno'] as String? ?? '',
@@ -29,14 +29,14 @@ class Turma {
     professorTitular: json['professorTitular'] as String? ?? '',
   );
 
-  Turma copyWith({
+  ClasseDeAula copyWith({
     String? id,
     String? serie,
     String? turno,
     int? qtdAlunos,
     String? professorTitular,
   }) {
-    return Turma(
+    return ClasseDeAula(
       id: id ?? this.id ,
       serie: serie ?? this.serie,
       turno: turno ?? this.turno,

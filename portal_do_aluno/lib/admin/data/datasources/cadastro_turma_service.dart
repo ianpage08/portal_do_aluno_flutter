@@ -8,7 +8,7 @@ class CadastroTurmaService {
     return _firestore.collection('turmas').snapshots();
   }
 
-  Future<void> cadatrarNovaTurma(Turma turma) {
+  Future<void> cadatrarNovaTurma(ClasseDeAula turma) {
     final turmaJson = turma.toJson();
     return _firestore.collection('turmas').doc().set(turmaJson);
   }
