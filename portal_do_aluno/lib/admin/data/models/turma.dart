@@ -25,7 +25,7 @@ class ClasseDeAula {
     id: json['id'] as String? ?? '',
     serie: json['serie'] as String? ?? '',
     turno: json['turno'] as String? ?? '',
-    qtdAlunos: json['qtdAlunos'] as int? ?? 0,
+    qtdAlunos: (json['qtdAlunos'] as num?)?.toInt() ?? 0,
     professorTitular: json['professorTitular'] as String? ?? '',
   );
 
@@ -37,10 +37,10 @@ class ClasseDeAula {
     String? professorTitular,
   }) {
     return ClasseDeAula(
-      id: id ?? this.id ,
+      id: id ?? this.id,
       serie: serie ?? this.serie,
       turno: turno ?? this.turno,
-      qtdAlunos: qtdAlunos ?? this.qtdAlunos  ,
+      qtdAlunos: qtdAlunos ?? this.qtdAlunos,
       professorTitular: professorTitular ?? this.professorTitular,
     );
   }

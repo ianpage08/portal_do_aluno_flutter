@@ -19,21 +19,26 @@ class MatriculaService {
     required DadosAcademicos dadosAcademicos,
     required InformacoesMedicasAluno informacoesMedicasAluno,
   }) async {
+    final novoAluno = dadosAluno.copyWith(id: matriculasColletion.doc().id);
     final alunoJson = {
-      'dadosAluno': dadosAluno.toJson(),
+      'dadosAluno': novoAluno.toJson(), // usar novoAluno com ID
       'enderecoAluno': enderecoAluno.toJson(),
       'responsaveisAluno': responsaveisAluno.toJson(),
       'dadosAcademicos': dadosAcademicos.toJson(),
       'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
     };
-    await matriculasColletion.add(alunoJson);
+    await matriculasColletion
+        .doc(novoAluno.id)
+        .set(alunoJson); // melhor usar .doc(id).set() para manter o mesmo ID
   }
 
   Future<DocumentSnapshot> buscarAlunoPorCpf(String cpf) async {
-    final query = await matriculasColletion.where('dadosAluno.cpf', isEqualTo: cpf).get();
-    if(query.docs.isEmpty){
+    final query = await matriculasColletion
+        .where('dadosAluno.cpf', isEqualTo: cpf)
+        .get();
+    if (query.docs.isEmpty) {
       throw Exception('Aluno não encontrado');
-    }else{
+    } else {
       return query.docs.first;
     }
   }

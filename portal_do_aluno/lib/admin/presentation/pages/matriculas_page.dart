@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class MatriculasPage extends StatefulWidget {
   const MatriculasPage({super.key});
@@ -11,37 +15,10 @@ class MatriculasPage extends StatefulWidget {
 class _MatriculasPageState extends State<MatriculasPage> {
   final minhaStream = FirebaseFirestore.instance
       .collection('matriculas')
-      .orderBy('name')
       .snapshots();
-  final List<Map<String, dynamic>> matriculas = [
-    {
-      'aluno': 'João Silva',
-      'matricula': '2024001',
-      'turma': '9º Ano A',
-      'status': 'Ativo',
-      'data': '01/02/2024',
-    },
-    {
-      'aluno': 'Maria Santos',
-      'matricula': '2024002',
-      'turma': '9º Ano B',
-      'status': 'Ativo',
-      'data': '01/02/2024',
-    },
-    {
-      'aluno': 'Pedro Costa',
-      'matricula': '2024003',
-      'turma': '8º Ano A',
-      'status': 'Pendente',
-      'data': '15/02/2024',
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
-    final ativos = matriculas.where((m) => m['status'] == 'Ativo').length;
-    final pendentes = matriculas.where((m) => m['status'] == 'Pendente').length;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Matrículas'),
@@ -49,9 +26,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
         actions: [
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('TODO: Nova matrícula')),
-              );
+              NavigatorService.navigateTo(RouteNames.adminMatriculaCadastro);
             },
             icon: const Icon(Icons.add),
           ),
@@ -67,7 +42,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                 Expanded(
                   child: _buildResumoCard(
                     titulo: 'Ativos',
-                    quantidade: ativos,
+                    quantidade: 5,
                     cor: Colors.green,
                     icone: Icons.check_circle,
                   ),
@@ -76,7 +51,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                 Expanded(
                   child: _buildResumoCard(
                     titulo: 'Pendentes',
-                    quantidade: pendentes,
+                    quantidade: 6,
                     cor: Colors.orange,
                     icone: Icons.pending_actions,
                   ),
@@ -137,19 +112,33 @@ class _MatriculasPageState extends State<MatriculasPage> {
           return const Center(child: Text('Nenhum dado encontrado'));
         }
         final docMatriculas = snapshot.data!.docs;
+
         return ListView.builder(
           itemCount: docMatriculas.length,
           itemBuilder: (context, index) {
             final data = docMatriculas[index].data();
+            final dadosAluno = data['dadosAluno'] ?? {};
+            final alunoId = dadosAluno['id'];
+            final dadosAcademicos = data['dadosAcademicos'] ?? {};
 
             return Card(
               child: ListTile(
                 leading: const CircleAvatar(child: Icon(Icons.person)),
-                title: Text('Aluno: ${data['name']}'),
-                subtitle: Column(
+                title: Text('Aluno: ${dadosAluno['nome'] ?? '---'}'),
+                subtitle: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Matricula: ${data['matricula']}'),
-                    Text('Turma: ${data['turma']}'),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Matricula: ${dadosAcademicos['numeroMatricula'] ?? '---'}',
+                        ),
+                        Text('Turma: ${dadosAcademicos['turma'] ?? '---'}'),
+                      ],
+                    ),
+                    const SizedBox(width: 12),
+                    MenuPontinho(alunoId: alunoId),
                   ],
                 ),
               ),

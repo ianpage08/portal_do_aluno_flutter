@@ -11,7 +11,9 @@ class DisciplinaService {
 
   // Cadastrar uma nova disciplina
   Future<void> cadastrarNovaDisciplina(Disciplina disciplina) async {
-    final disciplinaJson = disciplina.toJson();
-    await _firestore.collection('disciplinas').doc().set(disciplinaJson);
+    final docRef = _firestore.collection('disciplinas').doc();
+
+    final novaDisciplina = disciplina.copyWith(id: docRef.id);
+    await docRef.set(novaDisciplina.toJson());
   }
 }

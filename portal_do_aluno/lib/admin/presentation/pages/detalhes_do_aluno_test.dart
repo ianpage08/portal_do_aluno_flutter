@@ -1,151 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
-class DetalhesAluno extends StatelessWidget {
-  const DetalhesAluno({super.key});
+class DetalhesAluno extends StatefulWidget {
+  final String alunoId;
+
+  const DetalhesAluno({super.key, required this.alunoId});
+
+  @override
+  State<DetalhesAluno> createState() => _DetalhesAlunoState();
+}
+
+class _DetalhesAlunoState extends State<DetalhesAluno> {
+  final minhaStream = FirebaseFirestore.instance.collection('matriculas');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Detalhes do Aluno'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Foto e informações básicas
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.blue.shade100,
-                      child: const Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Colors.blue,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'João Silva Santos',
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Matrícula: 2024001234',
-                            style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '9º Ano - Turma A',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Dados Pessoais
-            _buildSection(context, 'Dados Pessoais', Icons.person_outline, [
-              _buildInfoRow('Nome Completo', 'João Silva Santos'),
-              _buildInfoRow('Data de Nascimento', '15/03/2010'),
-              _buildInfoRow('Idade', '14 anos'),
-              _buildInfoRow('Sexo', 'Masculino'),
-              _buildInfoRow('Naturalidade', 'São Paulo - SP'),
-            ]),
-
-            // Documentos
-            _buildSection(context, 'Documentos', Icons.description_outlined, [
-              _buildInfoRow('CPF', '123.456.789-00'),
-              _buildInfoRow('RG', '12.345.678-9 SSP/SP'),
-              _buildInfoRow(
-                'Certidão de Nascimento',
-                '123456 01 55 2010 1 00001 123 1234567 12',
-              ),
-              _buildInfoRow('Cartão SUS', '123 4567 8901 2345'),
-            ]),
-
-            // Dados dos Pais/Responsáveis
-            _buildSection(context, 'Pais/Responsáveis', Icons.family_restroom, [
-              _buildInfoRow('Nome da Mãe', 'Maria Silva Santos'),
-              _buildInfoRow('CPF da Mãe', '987.654.321-00'),
-              _buildInfoRow('Telefone da Mãe', '(11) 99999-1234'),
-              const Divider(),
-              _buildInfoRow('Nome do Pai', 'José Santos Silva'),
-              _buildInfoRow('CPF do Pai', '456.789.123-00'),
-              _buildInfoRow('Telefone do Pai', '(11) 99999-5678'),
-            ]),
-
-            // Endereço
-            _buildSection(context, 'Endereço', Icons.location_on_outlined, [
-              _buildInfoRow('CEP', '01234-567'),
-              _buildInfoRow('Logradouro', 'Rua das Flores, 123'),
-              _buildInfoRow('Bairro', 'Centro'),
-              _buildInfoRow('Cidade', 'São Paulo'),
-              _buildInfoRow('Estado', 'São Paulo'),
-            ]),
-
-            // Informações Acadêmicas
-            _buildSection(
-              context,
-              'Informações Acadêmicas',
-              Icons.school_outlined,
-              [
-                _buildInfoRow('Número da Matrícula', '2024001234'),
-                _buildInfoRow('Data da Matrícula', '01/02/2024'),
-                _buildInfoRow('Série/Ano', '9º Ano'),
-                _buildInfoRow('Turma', 'Turma A'),
-                _buildInfoRow('Turno', 'Matutino'),
-                _buildInfoRow('Status', 'Ativo', valueColor: Colors.green),
-              ],
-            ),
-
-            // Informações Médicas
-            _buildSection(
-              context,
-              'Informações Médicas',
-              Icons.medical_services_outlined,
-              [
-                _buildInfoRow('Tipo Sanguíneo', 'O+'),
-                _buildInfoRow('Alergias', 'Nenhuma alergia conhecida'),
-                _buildInfoRow('Medicamentos', 'Nenhum medicamento contínuo'),
-                _buildInfoRow('Observações', 'Usa óculos para leitura'),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pdf Gerado com Todos os dados do aluno '),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              label: const Text('Gerar PDF'),
-              icon: const Icon(Icons.picture_as_pdf),
-            ),
-          ],
-        ),
-      ),
+      body: _buildStream(),
     );
   }
 
@@ -213,6 +87,159 @@ class DetalhesAluno extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStream() {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: minhaStream.doc(widget.alunoId).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError || !snapshot.hasData) {
+          return const Center(child: Text('Aluno Não Encontrado'));
+        }
+
+        final docMatricula = snapshot.data!.data() as Map<String, dynamic>;
+        final dadosAluno = DadosAluno.fromJson(
+          docMatricula['dadosAluno'] ?? {},
+        );
+        final dadosAcademicos = DadosAcademicos.fromJson(
+          docMatricula['dadosAcademicos'],
+        );
+        final dadosPais = ResponsaveisAluno.fromJson(
+          docMatricula['responsaveisAluno'] ?? {},
+        );
+        final dadosEndereco = EnderecoAluno.fromJson(
+          docMatricula['enderecoAluno'] ?? {},
+        );
+        final dadosMedicos = InformacoesMedicasAluno.fromJson(
+          docMatricula['informacoesMedicasAluno'] ?? {},
+        );
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.blue.shade100,
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              dadosAluno.nome,
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              dadosAcademicos.numeroMatricula,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${dadosAcademicos.turma}º Ano - ${dadosAcademicos.turno}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildSection(context, 'Dados Pessoais', Icons.person, [
+                _buildInfoRow('Nome', dadosAluno.nome),
+                _buildInfoRow('CPF', dadosAluno.cpf),
+                _buildInfoRow(
+                  'Data de Nascimento',
+                  dadosAluno.formatarDataNascimento,
+                ),
+                _buildInfoRow('Sexo', dadosAluno.sexo),
+                _buildInfoRow('Naturalidade', dadosAluno.naturalidade),
+              ]),
+              _buildSection(context, 'Acadêmico', Icons.school, [
+                _buildInfoRow('Matrícula', dadosAcademicos.numeroMatricula),
+                _buildInfoRow('Série', dadosAcademicos.turma),
+                _buildInfoRow('Turno', dadosAcademicos.turno),
+                _buildInfoRow('Situação', dadosAcademicos.situacao),
+              ]),
+              _buildSection(
+                context,
+                'Pais/Responsáveis',
+                Icons.family_restroom,
+                [
+                  _buildInfoRow('Mãe', dadosPais.nomeMae ?? '---'),
+                  _buildInfoRow('Cpf', dadosPais.cpfMae ?? '---'),
+                  _buildInfoRow('Telefone', dadosPais.telefoneMae ?? '---'),
+                  _buildInfoRow('Pai', dadosPais.nomePai ?? '---'),
+                  _buildInfoRow('Cpf', dadosPais.cpfPai ?? '---'),
+                  _buildInfoRow('Telefone', dadosPais.telefonePai ?? '---'),
+                  
+                ],
+              ),
+              _buildSection(context, 'Endereço', Icons.location_on, [
+                _buildInfoRow('Cep', dadosEndereco.cep),
+                _buildInfoRow('Cidade', dadosEndereco.cidade),
+                _buildInfoRow('Estado', dadosEndereco.estado),
+                _buildInfoRow('Rua', dadosEndereco.rua),
+                _buildInfoRow('Numero', dadosEndereco.numero),
+              ]),
+              _buildSection(
+                context,
+                'Informações Médicas',
+                Icons.medical_information,
+                [
+                  _buildInfoRow(
+                    'Tipo(s) Alergia',
+                    dadosMedicos.alergia ?? '---',
+                  ),
+                  _buildInfoRow('Medicação', dadosMedicos.medicacao ?? '---'),
+                  _buildInfoRow(
+                    'Obeservações',
+                    dadosMedicos.observacoes ?? '---',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Pdf Gerado com Todos os dados do aluno '),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+                label: const Text('Gerar PDF'),
+                icon: const Icon(Icons.picture_as_pdf),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

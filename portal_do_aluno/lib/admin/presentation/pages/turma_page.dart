@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
@@ -10,29 +11,10 @@ class TurmaPage extends StatefulWidget {
 }
 
 class _TurmaPageState extends State<TurmaPage> {
-  final List<Map<String, dynamic>> turmas = [
-    {
-      'nome': '9º Ano A',
-      'serie': '9º Ano',
-      'turno': 'Matutino',
-      'alunos': 25,
-      'professor': 'Maria Silva',
-    },
-    {
-      'nome': '9º Ano B',
-      'serie': '9º Ano',
-      'turno': 'Vespertino',
-      'alunos': 28,
-      'professor': 'João Santos',
-    },
-    {
-      'nome': '8º Ano A',
-      'serie': '8º Ano',
-      'turno': 'Matutino',
-      'alunos': 30,
-      'professor': 'Ana Costa',
-    },
-  ];
+  final minhaStream = FirebaseFirestore.instance
+      .collection('turmas')
+      .snapshots();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,37 +30,68 @@ class _TurmaPageState extends State<TurmaPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: turmas.length,
+      body: Padding(padding: const EdgeInsets.all(8), child: _buildStream()),
+    );
+  }
+
+  Widget _buildStream() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: minhaStream,
+      builder: (context, snapshot) {
+        // Enquanto carrega
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Se houver erro
+        if (snapshot.hasError) {
+          return const Center(child: Text('Erro ao carregar os dados'));
+        }
+
+        // Se não houver documentos
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('Nenhum dado encontrado'));
+        }
+
+        // Pegando os documentos
+        final docTurmas = snapshot.data!.docs;
+
+        return ListView.builder(
+          itemCount: docTurmas.length,
           itemBuilder: (context, index) {
-            final turma = turmas[index];
+            // Converte cada doc para Map<String, dynamic>
+            final data = docTurmas[index].data() as Map<String, dynamic>;
+
+            // Pega os valores com fallback caso algum campo esteja ausente
+            final serie = data['serie'] ?? '---';
+            final turno = data['turno'] ?? '---';
+            final qtdAlunos = data['qtdAlunos'] ?? 0;
+            final professor = data['professorTitular'] ?? '---';
 
             return Card(
               elevation: 2,
+              margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
-                leading: CircleAvatar(child: Text(turma['nome'][0])),
-                title: Text(turma['nome']),
+                leading: CircleAvatar(child: Text(serie[0])),
+                title: Text(serie),
                 subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Turno: ${turma['turno']}'),
-                        Text('Alunos: ${turma['alunos']}'),
+                        Text('Turno: $turno'),
+                        Text('Alunos: $qtdAlunos'),
                       ],
                     ),
-                    Row(
-                      children: [Text('Professor(es): ${turma['professor']}')],
-                    ),
+                    Text('Professor(es): $professor'),
                   ],
                 ),
               ),
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
@@ -31,8 +32,12 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
   RouteNames.adminGeracaoDocumentos: (context) => const GerarDocumentosPage(),
   RouteNames.adminListaDeUsuarios: (context) => const ListaDeUsuariosPage(),
-  RouteNames.adminComunicacaoInstiticional: (context) => const  ComunicacaoInstitucionalPage(),
-  RouteNames.adminDetalhesAlunos: (context) => const DetalhesAluno(),
+  RouteNames.adminComunicacaoInstiticional: (context) =>
+      const ComunicacaoInstitucionalPage(),
+  RouteNames.adminDetalhesAlunos: (context) {
+    final argumentos = ModalRoute.of(context)!.settings.arguments as String;
+    return DetalhesAluno(alunoId: argumentos);
+  },
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
   RouteNames.adminCadastroTurmas: (context) => const CadastroTurma(),

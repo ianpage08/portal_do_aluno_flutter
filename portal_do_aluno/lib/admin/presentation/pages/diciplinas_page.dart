@@ -16,7 +16,6 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
       .orderBy('nome')
       .snapshots();
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +62,8 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Professor: ${data['professor'] ?? '---'}'),
-                    Text('Aulas Previstas: ${data['aulasPrevistas']?? '---'}'),
-                    Text('Carga Horaria: ${data['cargaHoraria']?? '---'}'),
+                    Text('Aulas Previstas: ${data['aulaPrevistas'] ?? '---'}'),
+                    Text('Carga Horaria: ${data['cargaHoraria'] ?? '---'}'),
                   ],
                 ),
               ),

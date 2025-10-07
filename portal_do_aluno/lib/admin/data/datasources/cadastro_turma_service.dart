@@ -9,7 +9,9 @@ class CadastroTurmaService {
   }
 
   Future<void> cadatrarNovaTurma(ClasseDeAula turma) {
-    final turmaJson = turma.toJson();
-    return _firestore.collection('turmas').doc().set(turmaJson);
+    final docRef = _firestore.collection('turmas').doc();
+    final novaTurma = turma.copyWith(id: docRef.id);
+
+    return docRef.set(novaTurma.toJson());
   }
 }

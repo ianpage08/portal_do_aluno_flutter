@@ -32,6 +32,11 @@ class RelatoriosPage extends StatelessWidget {
         'icone': Icons.school,
         'descricao': 'Dados dos professores e disciplinas',
       },
+      {
+        'titulo': 'Contrato de Matricula',
+        'icone': Icons.note,
+        'descricao': 'Gerar contrato de matricula de aluno',
+      },
     ];
 
     return Scaffold(
