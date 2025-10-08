@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/stream_referencia_id.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
+import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
@@ -9,6 +11,17 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final argumentos =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (argumentos == null || argumentos['user'] == null) {
+      return const Scaffold(
+        body: Center(child: Text('Dados do usuário não encontrados')),
+      );
+    }
+
+    final Map<String, dynamic> usuarioMap = argumentos['user'];
+    final usuario = Usuario.fromJson(usuarioMap);
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Administrador',
@@ -18,31 +31,49 @@ class AdminDashboard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Card(
+            Card(
               child: Padding(
-                padding: EdgeInsets.all(6),
+                padding: const EdgeInsets.all(6),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: AppColors.admin,
-                      child: Icon(Icons.person, size: 30, color: Colors.white),
-                    ),
-                    SizedBox(width: 16),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Professor: Ian page  Maciel',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text('Escola: Associação Educacional'),
-                          Text('Disciplina: Matemática'),
-                        ],
+                      child: MeuStreamBuilder(
+                        collectionPath: 'usuarios',
+                        documentId: usuario.id,
+                        builder: (context, snapshot) {
+                          final data = snapshot.data!.data()!;
+
+                          final dadosUsuario = Usuario.fromJson(data);
+                          return Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 30,
+                                backgroundColor: AppColors.admin,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Admin: ${dadosUsuario.name}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Text('Escola: AEEC'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],

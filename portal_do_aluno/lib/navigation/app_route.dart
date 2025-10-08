@@ -26,7 +26,8 @@ import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dar
 Map<String, WidgetBuilder> get routes => {
   RouteNames.login: (context) => const LoginPage(),
   RouteNames.adminMatriculaCadastro: (context) => const MatriculaCadastro(),
-  RouteNames.adminDashboard: (context) => const AdminDashboard(),
+  RouteNames.adminDashboard: (context) => const AdminDashboard(
+  ),
   RouteNames.adminReports: (context) => const LoginPage(),
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),

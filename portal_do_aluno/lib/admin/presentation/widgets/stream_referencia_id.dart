@@ -1,14 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+/// Um StreamBuilder genérico e reutilizável para escutar
+/// um documento específico no Firestore em tempo real.
+///
+/// Exemplo de uso:
+/// ```dart
+/// MeuStreamBuilder(
+///   collectionPath: 'usuarios',
+///   documentId: 'uid_do_usuario',
+///   builder: (context, snapshot) {
+///     final dados = snapshot.data!.data();
+///     return Text('Olá, ${dados?['nome']}');
+///   },
+/// )
+/// ```
 class MeuStreamBuilder extends StatefulWidget {
   final String collectionPath;
   final String documentId;
   final Widget Function(
     BuildContext context,
     AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  )
-  builder;
+  ) builder;
 
   const MeuStreamBuilder({
     super.key,
@@ -24,21 +37,41 @@ class MeuStreamBuilder extends StatefulWidget {
 class _MeuStreamBuilderState extends State<MeuStreamBuilder> {
   @override
   Widget build(BuildContext context) {
+    final stream = FirebaseFirestore.instance
+        .collection(widget.collectionPath)
+        .doc(widget.documentId)
+        .snapshots();
+
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance
-          .collection(widget.collectionPath)
-          .doc(widget.documentId)
-          .snapshots(),
+      stream: stream,
       builder: (context, snapshot) {
+        // ⏳ Enquanto carrega
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+
+        // ❌ Erro ao carregar
         if (snapshot.hasError) {
-          return const Center(child: Text('Erro ao carregar os dados'));
+          debugPrint('Erro no MeuStreamBuilder: ${snapshot.error}');
+          return const Center(
+            child: Text(
+              'Erro ao carregar os dados',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          );
         }
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const Center(child: Text('Documento não encontrado'));
+
+        // 📄 Documento inexistente
+        if (!snapshot.hasData || !(snapshot.data?.exists ?? false)) {
+          return const Center(
+            child: Text(
+              'Documento não encontrado',
+              style: TextStyle(color: Colors.grey),
+            ),
+          );
         }
+
+        // ✅ Dados disponíveis → renderiza o widget passado
         return widget.builder(context, snapshot);
       },
     );

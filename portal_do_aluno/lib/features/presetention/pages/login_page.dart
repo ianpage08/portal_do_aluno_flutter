@@ -184,7 +184,6 @@ class _LoginPageState extends State<LoginPage> {
                                     // Se chegou aqui, login ok
                                     NavigatorService.setCurrentUser(usuario);
                                     await NavigatorService.navigateToDashboard();
-                                    if (!mounted) return;
                                   } catch (e) {
                                     // Aqui você mostra a mensagem de erro
                                     if (!mounted) return;
@@ -207,10 +206,10 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     );
                                   } finally {
-                                    if(!mounted){
+                                    if (!mounted) return;
+                                    {
                                       setState(() => isLoading = false);
                                     }
-                                    
                                   }
                                 },
                           child:
@@ -270,8 +269,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             _buildTestUser(
                               'admin',
-                              '55566677788',
-                              'senha123',
+                              '85352349500',
+                              '@Maciel2003',
                             ), // ✅ Corrigido
                           ],
                         ),
@@ -366,7 +365,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 */
-  
 
   void _handleForgotPassword() {
     ScaffoldMessenger.of(context).showSnackBar(
