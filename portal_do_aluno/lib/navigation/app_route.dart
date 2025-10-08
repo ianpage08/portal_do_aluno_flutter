@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';

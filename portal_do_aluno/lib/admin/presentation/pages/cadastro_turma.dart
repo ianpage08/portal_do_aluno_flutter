@@ -3,7 +3,7 @@ import 'package:portal_do_aluno/admin/data/datasources/cadastro_turma_service.da
 import 'package:portal_do_aluno/admin/data/models/turma.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_fild_cadastro.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/class_page.dart';
+
 
 class CadastroTurma extends StatefulWidget {
   const CadastroTurma({super.key});

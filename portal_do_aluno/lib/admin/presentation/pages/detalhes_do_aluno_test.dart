@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/datasources/contrato_pdf_service.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:printing/printing.dart';
 
 class DetalhesAluno extends StatefulWidget {
   final String alunoId;
@@ -197,7 +199,6 @@ class _DetalhesAlunoState extends State<DetalhesAluno> {
                   _buildInfoRow('Pai', dadosPais.nomePai ?? '---'),
                   _buildInfoRow('Cpf', dadosPais.cpfPai ?? '---'),
                   _buildInfoRow('Telefone', dadosPais.telefonePai ?? '---'),
-                  
                 ],
               ),
               _buildSection(context, 'Endereço', Icons.location_on, [
@@ -225,13 +226,15 @@ class _DetalhesAlunoState extends State<DetalhesAluno> {
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pdf Gerado com Todos os dados do aluno '),
-                      backgroundColor: Colors.green,
-                    ),
+                onPressed: () async {
+                  final pdfService = ContratoPdfService();
+                  final pdfPronto = await pdfService.gerarContratoPdf(
+                    dadosPdfAluno: dadosAluno,
+                    dadosPdfAcademicos: dadosAcademicos,
+                    dadosPdfResponsavel: dadosPais,
+                    dadosPdfEndereco: dadosEndereco,
                   );
+                  await Printing.layoutPdf(onLayout: (format) => pdfPronto);
                 },
                 label: const Text('Gerar PDF'),
                 icon: const Icon(Icons.picture_as_pdf),
