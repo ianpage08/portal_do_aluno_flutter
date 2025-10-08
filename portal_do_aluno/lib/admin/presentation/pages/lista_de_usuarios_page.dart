@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
@@ -12,6 +13,7 @@ class ListaDeUsuariosPage extends StatefulWidget {
 }
 
 class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
+  final CadastroService _cadastroService = CadastroService();
   String? tipoSelecionado;
 
   Stream<QuerySnapshot> get minhaListaFiltrada {
@@ -119,7 +121,9 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
                               Text('Tipo: ${data['type'] ?? '---'}'),
                             ],
                           ),
-                          trailing: _menuPontinho(),
+                          trailing: _menuPontinho(
+                            data['id'] != null ? data['id'].toString() : '',
+                          ),
                         ),
                       );
                     },
@@ -133,13 +137,13 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
     );
   }
 
-  Widget _menuPontinho() {
+  Widget _menuPontinho(String usuarioId) {
     return PopupMenuButton(
       onSelected: (String valorSelecionado) {
         if (valorSelecionado == 'detalhes') {
           NavigatorService.navigateTo(RouteNames.adminDetalhesAlunos);
         } else if (valorSelecionado == 'excluir') {
-          // Ação para excluir
+          _cadastroService.deletarUsuario(usuarioId);
         }
       },
       itemBuilder: (BuildContext context) {

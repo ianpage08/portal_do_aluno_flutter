@@ -30,9 +30,12 @@ class CadastroService {
       'cpf': usuario.cpf.replaceAll(RegExp(r'\D'), ''),
       'password': senhaHash,
       'type': usuario.type.name,
-      
     });
 
     return usuarioRef.id;
+  }
+
+  Future<void> deletarUsuario(String usuarioId) {
+    return _firestore.collection('usuarios').doc(usuarioId).delete();
   }
 }
