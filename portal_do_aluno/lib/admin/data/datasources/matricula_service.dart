@@ -42,4 +42,8 @@ class MatriculaService {
       return query.docs.first;
     }
   }
+
+  Future excluirMatricula(String matriculaId) async {
+    await matriculasColletion.doc(matriculaId).delete();
+  }
 }

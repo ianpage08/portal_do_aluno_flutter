@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/datasources/matricula_service.dart';
 
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
@@ -16,6 +17,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
   final minhaStream = FirebaseFirestore.instance
       .collection('matriculas')
       .snapshots();
+  final MatriculaService _matriculaService = MatriculaService();
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +140,59 @@ class _MatriculasPageState extends State<MatriculasPage> {
                       ],
                     ),
                     const SizedBox(width: 12),
-                    MenuPontinho(alunoId: alunoId),
+                    MenuPontinhoGenerico(
+                      id: alunoId,
+                      items: [
+                        MenuItemConfig(
+                          value: 'detalhes',
+                          label: 'Detalhes',
+                          onSelected: (id, context, extra) {
+                            NavigatorService.navigateTo(
+                              RouteNames.adminDetalhesAlunos,
+                              arguments: id,
+                            );
+                          },
+                        ),
+                        MenuItemConfig(
+                          value: 'excluir',
+                          label: 'Excluir',
+                          onSelected: (id, context, extra) {
+                            AlertDialog(
+                              title: const Text('Excluir Matrícula'),
+                              content: const Text(
+                                'Tem certeza que deseja excluir esta matrícula?',
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Sim'),
+                                ),
+
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Não'),
+                                ),
+                              ],
+                            );
+                            if (id != null) {
+                              try {
+                                _matriculaService.excluirMatricula(id);
+                              } catch (e) {
+                                if (e is Exception) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(e.toString())),
+                                  );
+                                }
+                              }
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

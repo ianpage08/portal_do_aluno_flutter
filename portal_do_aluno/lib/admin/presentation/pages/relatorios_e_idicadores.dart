@@ -11,9 +11,10 @@ Média de notas por matéria
 
 Ranking de alunos
 
-Exportar PDF/Excel*/ 
+Exportar PDF/Excel*/
 
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/stream_tamanho_where.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class RelatoriosGerenciais extends StatefulWidget {
@@ -50,10 +51,22 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                         value: _periodoSelecionado,
                         isExpanded: true,
                         items: const [
-                          DropdownMenuItem(value: 'Semanal', child: Text('Semanal')),
-                          DropdownMenuItem(value: 'Mensal', child: Text('Mensal')),
-                          DropdownMenuItem(value: 'Bimestral', child: Text('Bimestral')),
-                          DropdownMenuItem(value: 'Anual', child: Text('Anual')),
+                          DropdownMenuItem(
+                            value: 'Semanal',
+                            child: Text('Semanal'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Mensal',
+                            child: Text('Mensal'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Bimestral',
+                            child: Text('Bimestral'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Anual',
+                            child: Text('Anual'),
+                          ),
                         ],
                         onChanged: (value) {
                           setState(() {
@@ -70,7 +83,10 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
             const SizedBox(height: 20),
 
             // Cards de Métricas
-            const Text('📊 Visão Geral', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              '📊 Visão Geral',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             GridView.count(
               shrinkWrap: true,
@@ -80,16 +96,42 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
               mainAxisSpacing: 12,
               childAspectRatio: 1.4,
               children: [
-                _buildCardMetrica('👨‍🎓 Alunos Ativos', '1.247', Colors.blue),
-                _buildCardMetrica('👨‍🏫 Professores', '45', Colors.green),
-                _buildCardMetrica('🏫 Turmas Ativas', '28', Colors.orange),
-                _buildCardMetrica('📈 Taxa Presença', '87.5%', Colors.purple),
+                StreamContagem(
+                  collectionPath: 'usuarios',
+                  fieldName: 'type',
+                  fieldValue: 'student',
+                  builder: (context, snapshot, total) {
+                    return _buildCardMetrica('👥 Alunos', total, Colors.blue);
+                  },
+                ),
+                StreamContagem(
+                  collectionPath: 'usuarios',
+                  fieldName: 'type',
+                  fieldValue: 'teacher',
+                  builder: (context, snapshot, total) {
+                    return _buildCardMetrica(
+                      '👨‍🏫 Professores',
+                      total,
+                      Colors.green,
+                    );
+                  },
+                ),
+                StreamContagem(
+                  collectionPath: 'turmas',
+                  builder: (context, snapshot, total) {
+                    return _buildCardMetrica('🏫 Turmas', total, Colors.orange);
+                  },
+                ),
+                _buildCardMetrica('📈 Taxa Presença', 87, Colors.purple),
               ],
             ),
             const SizedBox(height: 20),
 
             // Gráficos
-            const Text('📈 Análises', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              '📈 Análises',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             Card(
               child: ListTile(
@@ -121,7 +163,10 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
             const SizedBox(height: 20),
 
             // Relatórios Específicos
-            const Text('📋 Relatórios Específicos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              '📋 Relatórios Específicos',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             Card(
               child: ListTile(
@@ -130,7 +175,8 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 subtitle: const Text('Controle de faltas e presenças'),
                 trailing: IconButton(
                   icon: const Icon(Icons.download),
-                  onPressed: () => _toast('TODO: Baixar relatório de frequência'),
+                  onPressed: () =>
+                      _toast('TODO: Baixar relatório de frequência'),
                 ),
               ),
             ),
@@ -159,13 +205,17 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
             const SizedBox(height: 20),
 
             // Ações Rápidas
-            const Text('⚡ Ações Rápidas', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              '⚡ Ações Rápidas',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => _toast('TODO: Exportar todos os relatórios'),
+                    onPressed: () =>
+                        _toast('TODO: Exportar todos os relatórios'),
                     icon: const Icon(Icons.file_download),
                     label: const Text('Exportar Tudo'),
                   ),
@@ -186,7 +236,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
     );
   }
 
-  Widget _buildCardMetrica(String titulo, String valor, Color cor) {
+  Widget _buildCardMetrica(String titulo, int valor, Color cor) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -195,7 +245,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              valor,
+              valor.toString(),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -215,8 +265,6 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
   }
 
   void _toast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }

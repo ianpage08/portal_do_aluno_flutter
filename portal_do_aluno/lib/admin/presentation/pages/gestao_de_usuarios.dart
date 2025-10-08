@@ -134,7 +134,9 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
 
           _limparCampos();
         } catch (e) {
-          print('Erro ao cadastrar usuario: $e');
+          if (e is Exception) {
+            debugPrint(e.toString());
+          }
         }
       }
     }
