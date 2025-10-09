@@ -157,27 +157,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                           value: 'excluir',
                           label: 'Excluir',
                           onSelected: (id, context, extra) {
-                            AlertDialog(
-                              title: const Text('Excluir Matrícula'),
-                              content: const Text(
-                                'Tem certeza que deseja excluir esta matrícula?',
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Sim'),
-                                ),
-
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Não'),
-                                ),
-                              ],
-                            );
+                          
                             if (id != null) {
                               try {
                                 _matriculaService.excluirMatricula(id);

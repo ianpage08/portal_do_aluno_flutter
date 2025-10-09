@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/datasources/cadastrar_diciplina_service.dart';
-import 'package:portal_do_aluno/admin/data/models/diciplinas.dart';
+import 'package:portal_do_aluno/admin/data/models/disciplinas/diciplinas.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class CadastrarDisciplina extends StatefulWidget {

@@ -99,6 +99,9 @@ class AdminDashboard extends StatelessWidget {
                   _buildMenuCard(context, Icons.home, 'Gestão Escolar', () {
                     NavigatorService.navigateTo(RouteNames.adminGestaoEscolar);
                   }),
+                  _buildMenuCard(context, Icons.numbers, 'Boletins', () {
+                    NavigatorService.navigateTo(RouteNames.boletim,);
+                  }),
                   _buildMenuCard(
                     context,
                     Icons.add_reaction_rounded,

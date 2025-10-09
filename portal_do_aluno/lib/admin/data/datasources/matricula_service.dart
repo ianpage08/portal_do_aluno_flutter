@@ -43,7 +43,7 @@ class MatriculaService {
     }
   }
 
-  Future excluirMatricula(String matriculaId) async {
+  Future<void> excluirMatricula(String matriculaId) async {
     await matriculasColletion.doc(matriculaId).delete();
   }
 }

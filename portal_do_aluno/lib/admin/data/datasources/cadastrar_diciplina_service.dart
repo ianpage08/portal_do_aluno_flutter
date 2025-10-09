@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portal_do_aluno/admin/data/models/diciplinas.dart';
+import 'package:portal_do_aluno/admin/data/models/disciplinas/diciplinas.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -15,5 +15,9 @@ class DisciplinaService {
 
     final novaDisciplina = disciplina.copyWith(id: docRef.id);
     await docRef.set(novaDisciplina.toJson());
+  }
+
+  Future<void> excluirDisciplina(String disciplinaId) async {
+    await _firestore.collection('disciplinas').doc(disciplinaId).delete();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/detalhes_do_aluno_test.dart';
@@ -26,8 +27,7 @@ import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dar
 Map<String, WidgetBuilder> get routes => {
   RouteNames.login: (context) => const LoginPage(),
   RouteNames.adminMatriculaCadastro: (context) => const MatriculaCadastro(),
-  RouteNames.adminDashboard: (context) => const AdminDashboard(
-  ),
+  RouteNames.adminDashboard: (context) => const AdminDashboard(),
   RouteNames.adminReports: (context) => const LoginPage(),
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
@@ -39,6 +39,7 @@ Map<String, WidgetBuilder> get routes => {
     final argumentos = ModalRoute.of(context)!.settings.arguments as String;
     return DetalhesAluno(alunoId: argumentos);
   },
+  RouteNames.boletim: (context) => const BoletimTestePage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
   RouteNames.adminCadastroTurmas: (context) => const CadastroTurma(),

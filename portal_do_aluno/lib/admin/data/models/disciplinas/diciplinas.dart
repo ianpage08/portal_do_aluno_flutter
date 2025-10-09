@@ -13,7 +13,8 @@ class Disciplina {
     required this.aulaPrevistas,
   });
 
-  Map<String, dynamic> toJson()  =>  {
+  Map<String, dynamic> toJson() => {
+    'id': id,
     'nome': nome,
     'professor': professor,
     'cargaHoraria': cargaHoraria,
