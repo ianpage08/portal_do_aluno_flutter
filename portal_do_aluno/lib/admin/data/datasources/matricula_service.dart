@@ -12,36 +12,32 @@ class MatriculaService {
     'matriculas',
   );
 
-  Future<void> cadastrarAlunoCompleto({
-    required DadosAluno dadosAluno,
-    required EnderecoAluno enderecoAluno,
-    required ResponsaveisAluno responsaveisAluno,
-    required DadosAcademicos dadosAcademicos,
-    required InformacoesMedicasAluno informacoesMedicasAluno,
-  }) async {
-    final novoAluno = dadosAluno.copyWith(id: matriculasColletion.doc().id);
-    final alunoJson = {
-      'dadosAluno': novoAluno.toJson(), // usar novoAluno com ID
-      'enderecoAluno': enderecoAluno.toJson(),
-      'responsaveisAluno': responsaveisAluno.toJson(),
-      'dadosAcademicos': dadosAcademicos.toJson(),
-      'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
-    };
-    await matriculasColletion
-        .doc(novoAluno.id)
-        .set(alunoJson); // melhor usar .doc(id).set() para manter o mesmo ID
-  }
+ Future<void> cadastrarAlunoCompleto({
+  required DadosAluno dadosAluno,
+  required EnderecoAluno enderecoAluno,
+  required ResponsaveisAluno responsaveisAluno,
+  required DadosAcademicos dadosAcademicos,
+  required InformacoesMedicasAluno informacoesMedicasAluno,
+  required String turmaId, // 👈 Novo parâmetro
+}) async {
+  // Usamos o ID da turma passada
+  final dadoAcademico = dadosAcademicos.copyWith(classId: turmaId);
 
-  Future<DocumentSnapshot> buscarAlunoPorCpf(String cpf) async {
-    final query = await matriculasColletion
-        .where('dadosAluno.cpf', isEqualTo: cpf)
-        .get();
-    if (query.docs.isEmpty) {
-      throw Exception('Aluno não encontrado');
-    } else {
-      return query.docs.first;
-    }
-  }
+  // Gerar ID do aluno
+  final alunoId = matriculasColletion.doc().id;
+  final novoAluno = dadosAluno.copyWith(id: alunoId);
+
+  final alunoJson = {
+    'dadosAluno': novoAluno.toJson(),
+    'enderecoAluno': enderecoAluno.toJson(),
+    'responsaveisAluno': responsaveisAluno.toJson(),
+    'dadosAcademicos': dadoAcademico.toJson(),
+    'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
+  };
+
+  await matriculasColletion.doc(alunoId).set(alunoJson);
+}
+
 
   Future<void> excluirMatricula(String matriculaId) async {
     await matriculasColletion.doc(matriculaId).delete();

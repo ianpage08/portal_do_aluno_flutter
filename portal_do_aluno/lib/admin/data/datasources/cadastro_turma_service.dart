@@ -14,4 +14,8 @@ class CadastroTurmaService {
 
     return docRef.set(novaTurma.toJson());
   }
+
+  Future<void> excluirTurma(String turmaId) {
+    return _firestore.collection('turmas').doc(turmaId).delete();
+  }
 }

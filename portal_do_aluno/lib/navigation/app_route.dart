@@ -17,7 +17,7 @@ import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/attendace_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
-import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
+
 import 'package:portal_do_aluno/student/presentation/pages/notices_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/add_grade_page.dart';
@@ -39,7 +39,7 @@ Map<String, WidgetBuilder> get routes => {
     final argumentos = ModalRoute.of(context)!.settings.arguments as String;
     return DetalhesAluno(alunoId: argumentos);
   },
-  RouteNames.boletim: (context) => const BoletimTestePage(),
+  RouteNames.boletim: (context) => const BoletimAddNotaPage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
   RouteNames.adminCadastroTurmas: (context) => const CadastroTurma(),
@@ -55,7 +55,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.error: (context) => const LoginPage(),
   // rotas do Aluno
   RouteNames.studentDashboard: (context) => const StudentDashboard(),
-  RouteNames.studentGrades: (context) => const BoletimPage(),
+  RouteNames.studentGrades: (context) => const LoginPage(),
   RouteNames.studentHelp: (context) => const NoticesPage(),
   RouteNames.studentSettings: (context) => const LoginPage(),
   RouteNames.studentTasks: (context) => const LoginPage(),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/data/datasources/matricula_service.dart';
@@ -48,6 +49,9 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final TextEditingController _medicamentosController = TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
 
+  // 👇 Armazenar o ID real da turma
+  String? _turmaIdSelecionada;
+
   @override
   void dispose() {
     final List<TextEditingController> controlles = [
@@ -84,7 +88,8 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
 
   void _cadastrarAluno() async {
     if (!_formKey.currentState!.validate() ||
-        _dataNascimentoController == null) {
+        _dataNascimentoController == null ||
+        _turmaIdSelecionada == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Preencha todos os campos obrigatórios corretamente'),
@@ -121,6 +126,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
     );
 
     final dadosAcademicos = DadosAcademicos(
+      classId: _turmaIdSelecionada!, // 👈 ID real da turma
       numeroMatricula: _numeroMatriculaController.text,
       turma: _tumarControler.text,
       anoLetivo: _anoLetivoController.text,
@@ -137,6 +143,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
 
     try {
       await _matriculaService.cadastrarAlunoCompleto(
+        turmaId: _turmaIdSelecionada!, // 👈 ID real da turma
         dadosAluno: dadosAluno,
         enderecoAluno: enderecoAluno,
         responsaveisAluno: responsaveisAluno,
@@ -195,6 +202,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
 
     setState(() {
       _dataNascimentoController = null;
+      _turmaIdSelecionada = null; // 👈 resetar ID da turma
     });
   }
 
@@ -248,6 +256,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   }
 
   // ==================== Widgets por seção ====================
+
   Widget _buildCardAluno() {
     return Card(
       child: Padding(
@@ -394,8 +403,6 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
               controller: _numeroMatriculaController,
             ),
             const SizedBox(height: 12),
-            _buildTextForm(title: 'Turma', controller: _tumarControler),
-            const SizedBox(height: 12),
             _buildTextForm(
               title: 'Ano Letivo',
               controller: _anoLetivoController,
@@ -404,6 +411,8 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
             _buildTextForm(title: 'Turno', controller: _turnoController),
             const SizedBox(height: 12),
             _buildTextForm(title: 'Situação', controller: _situacaoController),
+            const SizedBox(height: 12),
+            _buildEscolherNomeTurma(), // 👈 seleção da turma
           ],
         ),
       ),
@@ -527,6 +536,68 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildEscolherNomeTurma() {
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton.icon(
+        icon: const Icon(Icons.school),
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        label: Text(
+          _tumarControler.text.isEmpty
+              ? 'Selecione uma Turma'
+              : _tumarControler.text,
+          style: const TextStyle(fontSize: 18),
+        ),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: FirebaseFirestore.instance
+                    .collection('turmas')
+                    .orderBy('serie')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final docs = snapshot.data!.docs;
+
+                  return ListView(
+                    children: docs.map((item) {
+                      final nome = item['serie'] != null
+                          ? '${item['serie']} - ${item['turno'] ?? ''}'
+                          : 'Turma sem nome';
+                      return ListTile(
+                        title: Text(nome),
+                        onTap: () {
+                          setState(() {
+                            _turmaIdSelecionada =
+                                item.id; // 👈 salva ID real da turma
+                            _tumarControler.text = nome; // mostra o nome
+                            Navigator.pop(context);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

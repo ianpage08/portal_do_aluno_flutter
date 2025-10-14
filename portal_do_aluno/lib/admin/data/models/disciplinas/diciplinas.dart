@@ -25,8 +25,8 @@ class Disciplina {
     id: json['id'] as String? ?? '',
     nome: json['nome'] as String? ?? '',
     professor: json['professor'] as String? ?? '',
-    cargaHoraria: json['cargaHoraria'] as int,
-    aulaPrevistas: json['aulaPrevistas'] as int,
+    cargaHoraria: (json['cargaHoraria'] as num?)?.toInt() ?? 0,
+    aulaPrevistas: (json['aulaPrevistas'] as num?)?.toInt() ?? 0,
   );
 
   Disciplina copyWith({

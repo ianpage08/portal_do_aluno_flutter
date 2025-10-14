@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/datasources/cadastro_turma_service.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
@@ -11,6 +13,8 @@ class TurmaPage extends StatefulWidget {
 }
 
 class _TurmaPageState extends State<TurmaPage> {
+  final CadastroTurmaService _cadastroTurmaService = CadastroTurmaService();
+
   final minhaStream = FirebaseFirestore.instance
       .collection('turmas')
       .snapshots();
@@ -80,8 +84,27 @@ class _TurmaPageState extends State<TurmaPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Turno: $turno'),
-                        Text('Alunos: $qtdAlunos'),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Turno: $turno'),
+                            Text('Alunos: $qtdAlunos'),
+                          ],
+                        ),
+                        MenuPontinhoGenerico(
+                          id: data['id'],
+                          items: [
+                            MenuItemConfig(
+                              value: 'Excluir',
+                              label: 'Excluir',
+                              onSelected: (id, context, extra) {
+                                if (id != null) {
+                                  _cadastroTurmaService.excluirTurma(id);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     Text('Professor(es): $professor'),

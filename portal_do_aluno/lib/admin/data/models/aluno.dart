@@ -7,6 +7,7 @@ class DadosAluno {
   final String sexo;
   final DateTime dataNascimento;
   final String naturalidade;
+  
 
   DadosAluno({
     this.id,
@@ -15,16 +16,18 @@ class DadosAluno {
     required this.sexo,
     required this.naturalidade,
     required this.dataNascimento,
+    
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'nome': nome,
-        'cpf': cpf,
-        'sexo': sexo,
-        'naturalidade': naturalidade,
-        'dataNascimento': Timestamp.fromDate(dataNascimento),
-      };
+    'id': id,
+    'nome': nome,
+    'cpf': cpf,
+    'sexo': sexo,
+    'naturalidade': naturalidade,
+    'dataNascimento': Timestamp.fromDate(dataNascimento),
+    
+  };
 
   factory DadosAluno.fromJson(Map<String, dynamic> json) {
     return DadosAluno(
@@ -34,6 +37,7 @@ class DadosAluno {
       sexo: json['sexo'] as String,
       naturalidade: json['naturalidade'] as String,
       dataNascimento: (json['dataNascimento'] as Timestamp).toDate(),
+      
     );
   }
 
@@ -52,6 +56,7 @@ class DadosAluno {
       sexo: sexo ?? this.sexo,
       naturalidade: naturalidade ?? this.naturalidade,
       dataNascimento: dataNascimento ?? this.dataNascimento,
+      
     );
   }
 
@@ -90,22 +95,22 @@ class EnderecoAluno {
   });
 
   Map<String, dynamic> toJson() => {
-        'cep': cep,
-        'rua': rua,
-        'cidade': cidade,
-        'estado': estado,
-        'bairro': bairro,
-        'numero': numero,
-      };
+    'cep': cep,
+    'rua': rua,
+    'cidade': cidade,
+    'estado': estado,
+    'bairro': bairro,
+    'numero': numero,
+  };
 
   factory EnderecoAluno.fromJson(Map<String, dynamic> json) => EnderecoAluno(
-        cep: json['cep'] as String? ?? '',
-        rua: json['rua'] as String? ?? '',
-        cidade: json['cidade'] as String? ?? '',
-        estado: json['estado'] as String? ?? '',
-        bairro: json['bairro'] as String? ?? '',
-        numero: json['numero'] as String? ?? '',
-      );
+    cep: json['cep'] as String? ?? '',
+    rua: json['rua'] as String? ?? '',
+    cidade: json['cidade'] as String? ?? '',
+    estado: json['estado'] as String? ?? '',
+    bairro: json['bairro'] as String? ?? '',
+    numero: json['numero'] as String? ?? '',
+  );
 
   EnderecoAluno copyWith({
     String? cep,
@@ -144,13 +149,13 @@ class ResponsaveisAluno {
   });
 
   Map<String, dynamic> toJson() => {
-        'nomeMae': nomeMae,
-        'cpfMae': cpfMae,
-        'telefoneMae': telefoneMae,
-        'nomePai': nomePai,
-        'cpfPai': cpfPai,
-        'telefonePai': telefonePai,
-      };
+    'nomeMae': nomeMae,
+    'cpfMae': cpfMae,
+    'telefoneMae': telefoneMae,
+    'nomePai': nomePai,
+    'cpfPai': cpfPai,
+    'telefonePai': telefonePai,
+  };
 
   factory ResponsaveisAluno.fromJson(Map<String, dynamic> json) =>
       ResponsaveisAluno(
@@ -188,6 +193,7 @@ class DadosAcademicos {
   final String turno;
   final String situacao;
   final DateTime dataMatricula;
+  final String? classId;
 
   DadosAcademicos({
     required this.numeroMatricula,
@@ -196,16 +202,18 @@ class DadosAcademicos {
     required this.turno,
     required this.situacao,
     required this.dataMatricula,
+    this.classId,
   });
 
   Map<String, dynamic> toJson() => {
-        'numeroMatricula': numeroMatricula,
-        'turma': turma,
-        'anoLetivo': anoLetivo,
-        'turno': turno,
-        'situacao': situacao,
-        'dataMatricula': Timestamp.fromDate(dataMatricula),
-      };
+    'numeroMatricula': numeroMatricula,
+    'turma': turma,
+    'anoLetivo': anoLetivo,
+    'turno': turno,
+    'situacao': situacao,
+    'dataMatricula': Timestamp.fromDate(dataMatricula),
+    'classId': classId,
+  };
 
   factory DadosAcademicos.fromJson(Map<String, dynamic> json) =>
       DadosAcademicos(
@@ -215,6 +223,7 @@ class DadosAcademicos {
         turno: json['turno'] as String,
         situacao: json['situacao'] as String,
         dataMatricula: (json['dataMatricula'] as Timestamp).toDate(),
+        classId: json['classId'] as String,
       );
 
   DadosAcademicos copyWith({
@@ -224,6 +233,7 @@ class DadosAcademicos {
     String? turno,
     String? situacao,
     DateTime? dataMatricula,
+    String? classId,
   }) {
     return DadosAcademicos(
       numeroMatricula: numeroMatricula ?? this.numeroMatricula,
@@ -232,6 +242,7 @@ class DadosAcademicos {
       turno: turno ?? this.turno,
       situacao: situacao ?? this.situacao,
       dataMatricula: dataMatricula ?? this.dataMatricula,
+      classId: classId ?? this.classId,
     );
   }
 }
@@ -241,17 +252,13 @@ class InformacoesMedicasAluno {
   final String? medicacao;
   final String? observacoes;
 
-  InformacoesMedicasAluno({
-    this.alergia,
-    this.medicacao,
-    this.observacoes,
-  });
+  InformacoesMedicasAluno({this.alergia, this.medicacao, this.observacoes});
 
   Map<String, dynamic> toJson() => {
-        'alergia': alergia,
-        'medicacao': medicacao,
-        'observacoes': observacoes,
-      };
+    'alergia': alergia,
+    'medicacao': medicacao,
+    'observacoes': observacoes,
+  };
 
   factory InformacoesMedicasAluno.fromJson(Map<String, dynamic> json) =>
       InformacoesMedicasAluno(
