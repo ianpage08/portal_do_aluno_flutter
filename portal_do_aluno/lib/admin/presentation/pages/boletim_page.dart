@@ -56,10 +56,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
 
   // -------- Salvar Nota --------
   Future<void> salvarBoletim() async {
-    
-
     if (!_formKey.currentState!.validate()) {
-      
       return;
     }
 
@@ -68,7 +65,6 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
         disciplinaId == null ||
         unidadeSelecionada == null ||
         tipoDeNota == null) {
-      
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Preencha todos os campos!')),
       );
@@ -84,18 +80,16 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
           .collection('disciplinas')
           .doc(disciplinaId)
           .set({
-        'notas': {
-          unidadeSelecionada!: {tipoDeNota!: nota},
-        },
-      }, SetOptions(merge: true));
+            'notas': {
+              unidadeSelecionada!: {tipoDeNota!: nota},
+            },
+          }, SetOptions(merge: true));
 
-      
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Nota salva com sucesso!')));
       _notaController.clear();
     } catch (e) {
-      
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Erro ao salvar nota: $e')));
@@ -116,7 +110,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
       stream: stream,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: const CircularProgressIndicator());
 
         final docs = snapshot.data!.docs;
         if (docs.isEmpty) return Text('Nenhum $tipo encontrado');
@@ -163,7 +157,9 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                         break;
                       case 'disciplina':
                         nome =
-                            data['nome'] ?? data['titulo'] ?? 'Disciplina sem nome';
+                            data['nome'] ??
+                            data['titulo'] ??
+                            'Disciplina sem nome';
                         break;
                       default:
                         nome = 'Sem nome';
@@ -172,7 +168,6 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                     return ListTile(
                       title: Text(nome),
                       onTap: () {
-                        
                         onSelected(id, nome);
                         Navigator.pop(context);
                       },
@@ -237,7 +232,6 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                 return ListTile(
                   title: Text(e),
                   onTap: () {
-                    
                     onSelected(e);
                     Navigator.pop(context);
                   },

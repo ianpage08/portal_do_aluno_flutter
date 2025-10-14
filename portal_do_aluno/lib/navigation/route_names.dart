@@ -30,6 +30,7 @@ class RouteNames {
   static const String parentSettings = '/parent_settings';
 
   // Funcionalidades do Administrador
+  static const String adminFrequencia = '/admin_frequencia';
   static const String adminUsers = '/admin_users';
   static const String adminReports = '/admin_reports';
   static const String adminSettings = '/admin_settings';

@@ -5,6 +5,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/detalhes_do_aluno_test.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/frequencia_admin.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gesta_academica.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
@@ -33,6 +34,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
   RouteNames.adminGeracaoDocumentos: (context) => const GerarDocumentosPage(),
   RouteNames.adminListaDeUsuarios: (context) => const ListaDeUsuariosPage(),
+  RouteNames.adminFrequencia: (context) => const FrequenciaAdmin(),
   RouteNames.adminComunicacaoInstiticional: (context) =>
       const ComunicacaoInstitucionalPage(),
   RouteNames.adminDetalhesAlunos: (context) {

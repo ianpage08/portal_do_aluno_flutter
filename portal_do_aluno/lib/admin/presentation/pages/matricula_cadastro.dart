@@ -164,7 +164,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
       );
-      print(e);
+      
     }
   }
 

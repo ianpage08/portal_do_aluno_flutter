@@ -49,7 +49,7 @@ dependencies:
   connectivity_plus: 5.0.2
   mask_text_input_formatter: 2.5.0
   firebase_core: ^4.1.0
-  table_calendar: ^3.0.9
+  table_calendar: ^3.2.0
 
 dev_dependencies:
   flutter_test:

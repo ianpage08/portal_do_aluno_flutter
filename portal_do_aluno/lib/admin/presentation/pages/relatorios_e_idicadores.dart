@@ -13,7 +13,9 @@ Ranking de alunos
 
 Exportar PDF/Excel*/
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/datasources/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_tamanho_where.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -26,6 +28,7 @@ class RelatoriosGerenciais extends StatefulWidget {
 
 class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
   String _periodoSelecionado = 'Mensal';
+  final FrequenciaService _frequenciaService = FrequenciaService();
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +125,23 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                     return _buildCardMetrica('🏫 Turmas', total, Colors.orange);
                   },
                 ),
-                _buildCardMetrica('📈 Taxa Presença', 87, Colors.purple),
+                FutureBuilder<int>(
+                  future: _frequenciaService
+                      .calcularQuantidadeDeFrequenciaPorpresenca(
+                        tipoPresenca: 'presente',
+                      ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final quantidadePresenca = snapshot.data ?? 0;
+                    return _buildCardMetrica(
+                      '📈 Presenças',
+                      quantidadePresenca,
+                      Colors.purple,
+                    );
+                  },
+                ),
               ],
             ),
             const SizedBox(height: 20),
