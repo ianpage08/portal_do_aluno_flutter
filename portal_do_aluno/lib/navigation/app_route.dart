@@ -4,6 +4,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/conteudo_dado.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/detalhes_do_aluno_test.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/frequencia_admin.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
@@ -52,6 +53,8 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.contactSupport: (context) => const LoginPage(),
   RouteNames.editProfile: (context) => const LoginPage(),
   RouteNames.internalServerError: (context) => const LoginPage(),
+  RouteNames.addOqueFoiDado: (context) => const OqueFoiDado(),
+
   //rotas de erro
   RouteNames.notFound: (context) => const LoginPage(),
   RouteNames.error: (context) => const LoginPage(),

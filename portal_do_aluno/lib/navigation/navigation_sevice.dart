@@ -35,7 +35,19 @@ class NavigatorService {
       arguments: arguments,
     );
   }
+  
+  static void showSnackBar(String message) {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
   //remover todas as rotas anteriores e ir para a nova rota
   static Future<T?> navigateReplaceWith<T, TO>(
     String routeName, {
@@ -385,16 +397,7 @@ class NavigatorService {
     }
   }
 
-  static void showSnackBar(String message, {Color? backgroundColor}) {
-    if (context != null) {
-      ScaffoldMessenger.of(context!).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: backgroundColor ?? Colors.red,
-        ),
-      );
-    }
-  }
+  
 
   // Mostrar diálogo de confirmação
   static Future<bool> showConfirmDialog({

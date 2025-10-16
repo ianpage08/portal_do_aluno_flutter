@@ -30,12 +30,18 @@ class AuthServico {
   }
 
   /// Stream para escutar mudanças de usuário logado (opcional)
-  Stream<Usuario?> usuarioLogado() {
-    // Apenas Firestore, sem FirebaseAuth
-    return _firestore.collection('usuarios').snapshots().map((snapshot) {
-      if (snapshot.docs.isEmpty) return null;
-      final data = snapshot.docs.first.data();
-      return Usuario.fromJson(data);
-    });
+  Stream<Usuario?> usuarioLogado(String cpf) {
+    final cpfLimpo = cpf.replaceAll(RegExp(r'\D'), '');
+
+    return _firestore
+        .collection('usuarios')
+        .where('cpf', isEqualTo: cpfLimpo)
+        .limit(1)
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.docs.isEmpty) return null;
+          final data = snapshot.docs.first.data();
+          return Usuario.fromJson(data);
+        });
   }
 }

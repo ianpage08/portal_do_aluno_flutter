@@ -60,7 +60,7 @@ class RouteNames {
   static const String taskDetails = '/task_details';
   static const String messageDetails = '/message_details';
   static const String gradeDetails = '/grade_details';
-
+  static const String addOqueFoiDado = '/add_oque_foi_dado';
   // paginas de formulario
   static const String editProfile = '/edit_profile';
   static const String changePassword = '/change_password';

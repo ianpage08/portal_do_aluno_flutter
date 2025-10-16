@@ -114,34 +114,33 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
-                        enabled: !isLoading, // ✅ Corrigido
+                        enabled: !isLoading,
                       ),
                       const SizedBox(height: 16),
 
                       // Campo Senha
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: _obscurePassword, // ✅ Corrigido
+                        obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: 'Senha',
-                          hintText: 'Digite sua senha', // ✅ Corrigido
+                          hintText: 'Digite sua senha',
                           prefixIcon: const Icon(Icons.lock),
-                          border: const OutlineInputBorder(), // ✅ Borda
+                          border: const OutlineInputBorder(),
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
-                                _obscurePassword =
-                                    !_obscurePassword; // ✅ Corrigido
+                                _obscurePassword = !_obscurePassword;
                               });
                             },
                             icon: Icon(
-                              _obscurePassword // ✅ Corrigido
+                              _obscurePassword
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                             ),
                           ),
                         ),
-                        // ✅ VALIDAÇÃO ADICIONADA
+
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, insira sua senha';
@@ -151,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
-                        enabled: !isLoading, // ✅ Adicionar
+                        enabled: !isLoading,
                       ),
                       const SizedBox(height: 24),
 
@@ -168,8 +167,9 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: isLoading
                               ? null
                               : () async {
-                                  if (!_formKey.currentState!.validate())
+                                  if (!_formKey.currentState!.validate()) {
                                     return;
+                                  }
 
                                   setState(() => isLoading = true);
 
@@ -180,6 +180,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                     final usuario = await AuthServico()
                                         .loginCpfsenha(cpf, senha);
+                                    if (!mounted) return;
 
                                     // Se chegou aqui, login ok
                                     NavigatorService.setCurrentUser(usuario);
@@ -196,18 +197,12 @@ class _LoginPageState extends State<LoginPage> {
                                         content: Text(
                                           'Erro ao fazer login: CPF ou senha incorretos',
                                         ), // Exibe CPF ou senha incorretos
-                                        backgroundColor: Color.fromARGB(
-                                          255,
-                                          243,
-                                          6,
-                                          6,
-                                        ),
+                                        backgroundColor: Colors.redAccent,
                                         duration: Duration(seconds: 2),
                                       ),
                                     );
                                   } finally {
-                                    if (!mounted) return;
-                                    {
+                                    if (mounted) {
                                       setState(() => isLoading = false);
                                     }
                                   }
