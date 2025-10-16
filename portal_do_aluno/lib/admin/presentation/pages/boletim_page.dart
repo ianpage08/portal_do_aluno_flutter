@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/datasources/boletim_service.dart';
+import 'package:portal_do_aluno/admin/data/models/disciplinas/nota_disciplina.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class BoletimAddNotaPage extends StatefulWidget {
@@ -56,9 +58,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
 
   // -------- Salvar Nota --------
   Future<void> salvarBoletim() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     if (turmaId == null ||
         alunoId == null ||
@@ -72,24 +72,40 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     }
 
     final double nota = double.tryParse(_notaController.text) ?? 0.0;
+    final int unidade = int.parse(
+      unidadeSelecionada!.split(' ')[1],
+    ); // "Unidade 1" → 1
+    final String tipo = tipoDeNota!.toLowerCase().replaceAll(
+      ' ',
+      '',
+    ); // "Nota Extra" → "notaextra"
+
+    final boletimService = BoletimService();
 
     try {
-      await _firestore
-          .collection('boletins')
-          .doc(alunoId)
-          .collection('disciplinas')
-          .doc(disciplinaId)
-          .set({
-            'notas': {
-              unidadeSelecionada!: {tipoDeNota!: nota},
-            },
-          }, SetOptions(merge: true));
+      // 🔹 Salva ou atualiza a nota centralizando a lógica no service
+      await boletimService.salvarOuAtualizarNota(
+        alunoId: alunoId!,
+        matriculaId: turmaId!,
+        disciplinaId: disciplinaId!,
+        nomeDisciplina: disciplinaNome!,
+        unidade: unidade,
+        tipo: tipo,
+        nota: nota,
+      );
 
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Nota salva com sucesso!')));
+
+      // Limpa campos
       _notaController.clear();
+      setState(() {
+        unidadeSelecionada = null;
+        tipoDeNota = null;
+      });
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Erro ao salvar nota: $e')));

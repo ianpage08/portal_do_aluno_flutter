@@ -5,24 +5,24 @@ import 'package:portal_do_aluno/admin/data/models/disciplinas/nota_disciplina.da
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class BoletimService {
-  CollectionReference get _collectionBoletim =>
+  CollectionReference get collectionBoletim =>
       _firestore.collection('boletim');
 
   /// 🔹 Retorna todos os boletins (painéis administrativos)
   Stream<QuerySnapshot> getBoletins() {
-    return _collectionBoletim.snapshots();
+    return collectionBoletim.snapshots();
   }
 
   /// 🔹 Retorna boletins de um aluno específico em tempo real
   Stream<QuerySnapshot> getNotas(String alunoId) {
-    return _collectionBoletim
+    return collectionBoletim
         .where('alunoid', isEqualTo: alunoId) // corrigido filtro
         .snapshots();
   }
 
   /// 🔹 Retorna boletins por matrícula
   Stream<QuerySnapshot> getBoletinsPorMatricula(String matriculaId) {
-    return _collectionBoletim
+    return collectionBoletim
         .where('matriculaId', isEqualTo: matriculaId)
         .snapshots();
   }
@@ -34,55 +34,83 @@ class BoletimService {
     required List<NotaDisciplina> disciplinas,
   }) async {
     final novoBoletim = Boletim(
-      id: _collectionBoletim.doc().id,
+      id: collectionBoletim.doc().id,
       alunoId: alunoId, // corrigido atributo
       disciplinas: disciplinas,
       mediageral: 0.0,
       situacao: 'Em andamento',
     );
 
-    await _collectionBoletim.doc(novoBoletim.id).set({
+    await collectionBoletim.doc(novoBoletim.id).set({
       ...novoBoletim.toJson(),
       'matriculaId': matriculaId, // corrigido typo
     });
   }
 
   /// 🔹 Atualiza uma nota específica e recalcula médias
-  Future<void> atualizarNota({
-    required String boletimId,
-    required String disciplinaId,
-    required int unidade,
-    required String tipo, // 'teste' ou 'prova'
-    required double nota,
-  }) async {
-    final boletimDoc = await _collectionBoletim.doc(boletimId).get();
-    if (!boletimDoc.exists) return;
+  Future<void> salvarOuAtualizarNota({
+  required String alunoId,
+  required String matriculaId,
+  required String disciplinaId,
+  required String nomeDisciplina,
+  required int unidade,
+  required String tipo, // 'teste', 'prova', 'trabalho', 'extra'
+  required double nota,
+}) async {
+  // 🔹 Busca boletim
+  Boletim? boletim = await buscarBoletimPorAluno(alunoId);
 
-    final boletim =
-        Boletim.fromJson(boletimDoc.data() as Map<String, dynamic>);
+  if (boletim == null) {
+    // Cria boletim novo
+    final novaDisciplina = NotaDisciplina(
+      id: disciplinaId,
+      disciplinaId: disciplinaId,
+      nomeDisciplina: nomeDisciplina,
+      notas: {unidade: {tipo: nota}},
+    );
 
-    // Atualiza a disciplina correta
-    final novasDisciplinas = boletim.disciplinas.map((disciplina) {
-      if (disciplina.disciplinaId == disciplinaId) {
-        return disciplina.atualizarNota(unidade, tipo, nota);
-      }
-      return disciplina;
-    }).toList();
-
-    // Recalcula a média geral e situação
-    final novaMediaGeral = _calcularMediaGeral(novasDisciplinas);
-    final novaSituacao = novaMediaGeral >= 6.0 ? 'Aprovado' : 'Reprovado';
-
-    // Atualiza no Firestore
-    await _collectionBoletim.doc(boletimId).update({
-      'disciplinas': novasDisciplinas.map((e) => e.toJson()).toList(),
-      'mediageral': novaMediaGeral,
-      'situacao': novaSituacao,
-    });
+    await criarBoletim(
+      alunoId: alunoId,
+      matriculaId: matriculaId,
+      disciplinas: [novaDisciplina],
+    );
+    return;
   }
 
+  // 🔹 Boletim existe, atualiza disciplina
+  NotaDisciplina disciplina = boletim.disciplinas.firstWhere(
+    (d) => d.disciplinaId == disciplinaId,
+    orElse: () => NotaDisciplina(
+      id: disciplinaId,
+      disciplinaId: disciplinaId,
+      nomeDisciplina: nomeDisciplina,
+    ),
+  );
+
+  // Atualiza nota
+  disciplina = disciplina.atualizarNota(unidade, tipo, nota);
+
+  // Atualiza lista de disciplinas no boletim
+  List<NotaDisciplina> disciplinasAtualizadas = boletim.disciplinas
+      .where((d) => d.disciplinaId != disciplinaId)
+      .toList()
+    ..add(disciplina);
+
+  // Recalcula média e situação
+  double mediaGeral = calcularMediaGeral(disciplinasAtualizadas);
+  String situacao = mediaGeral >= 6 ? 'Aprovado' : 'Reprovado';
+
+  // Salva tudo no mesmo documento
+  await collectionBoletim.doc(boletim.id).update({
+    'disciplinas': disciplinasAtualizadas.map((d) => d.toJson()).toList(),
+    'mediageral': mediaGeral,
+    'situacao': situacao,
+  });
+}
+
+
   /// 🔹 Cálculo interno da média geral
-  double _calcularMediaGeral(List<NotaDisciplina> disciplinas) {
+  double calcularMediaGeral(List<NotaDisciplina> disciplinas) {
     final medias = disciplinas
         .map((disc) => disc.calcularMediaFinal())
         .where((m) => m != null)
@@ -96,7 +124,7 @@ class BoletimService {
 
   /// 🔹 Busca um boletim de um aluno (único)
   Future<Boletim?> buscarBoletimPorAluno(String alunoId) async {
-    final query = await _collectionBoletim
+    final query = await collectionBoletim
         .where('alunoid', isEqualTo: alunoId)
         .limit(1)
         .get();
