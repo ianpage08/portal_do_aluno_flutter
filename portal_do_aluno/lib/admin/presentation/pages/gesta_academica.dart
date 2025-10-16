@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/cadastro_professor.dart';
+
 import 'package:portal_do_aluno/admin/presentation/pages/diciplinas_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/matriculas_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/relatorios_page.dart';
@@ -18,7 +18,7 @@ class _GestaAcademicaState extends State<GestaAcademica> {
     const TurmaPage(),
     const DiciplinasPage(),
     const MatriculasPage(),
-    const CadastroProfessor(),
+    
     const RelatoriosPage(),
     
   ];
@@ -50,10 +50,6 @@ class _GestaAcademicaState extends State<GestaAcademica> {
               NavigationRailDestination(
                 icon: Icon(Icons.how_to_reg),
                 label: Text('Matriculas'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.person_add),
-                label: Text('Professores'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.assessment),

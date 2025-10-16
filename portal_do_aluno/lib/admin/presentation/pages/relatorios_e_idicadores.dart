@@ -13,7 +13,7 @@ Ranking de alunos
 
 Exportar PDF/Excel*/
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/datasources/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_tamanho_where.dart';
