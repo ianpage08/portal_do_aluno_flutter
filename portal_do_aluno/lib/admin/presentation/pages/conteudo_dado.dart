@@ -69,10 +69,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
       // Limpar campos
       _conteudoMinistradoController.clear();
       _observacoesController.clear();
-      setState(() {
-        disciplinaSelecionada = null;
-        disciplinaId = null;
-      });
+      
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
