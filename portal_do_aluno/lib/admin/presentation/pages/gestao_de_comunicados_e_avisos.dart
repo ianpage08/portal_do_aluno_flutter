@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:portal_do_aluno/admin/data/datasources/comunicado_service.dart';
+import 'package:portal_do_aluno/admin/data/models/comunicado.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class ComunicacaoInstitucionalPage extends StatefulWidget {
@@ -11,15 +16,27 @@ class ComunicacaoInstitucionalPage extends StatefulWidget {
 
 class _ComunicacaoInstitucionalPageState
     extends State<ComunicacaoInstitucionalPage> {
+  final ComunicadoService _comunicadoService = ComunicadoService();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _mensagemController = TextEditingController();
-  final List<Map<String, dynamic>> destinatarios = [
-    {'nome': 'Todos', 'icon': Icons.people, 'cor': Colors.purple},
-    {'nome': 'Alunos', 'icon': Icons.groups, 'cor': Colors.blue},
-    {'nome': 'Professores', 'icon': Icons.school, 'cor': Colors.green},
-    {'nome': 'Responsáveis', 'icon': Icons.person, 'cor': Colors.red},
-  ];
+
+  destinatarioSelected() {
+    switch (_isSelectedDestinatario) {
+      case 'Todos':
+        return Destinatario.todos;
+      case 'Alunos':
+        return Destinatario.alunos;
+      case 'Professores':
+        return Destinatario.professores;
+      case 'Responsáveis':
+        return Destinatario.responsaveis;
+      default:
+        return Destinatario.todos;
+    }
+  }
+
   final List<Map<String, dynamic>> historico = [
     {
       "titulo": "Reunião de Pais - 3º Bimestre",
@@ -38,22 +55,38 @@ class _ComunicacaoInstitucionalPageState
   ];
   bool anexoAdicionado = false;
   String? _isSelectedDestinatario;
-  void _enviarMenssagem() {
+  Future<void> _enviarMenssagem() async {
     if (_formKey.currentState!.validate() && _isSelectedDestinatario != null) {
-      setState(() {
-        historico.insert(0, {
-          'titulo': _tituloController.text,
-          'destinatario': _isSelectedDestinatario,
-          'mensagem': _mensagemController.text,
-          'data':
-              "${DateTime.now().day}/${DateTime.now().month} ${DateTime.now().hour}:${DateTime.now().minute}",
-          'vizualizacao': 0,
+      final novoComunicado = Comunicado(
+        id: '',
+        titulo: _tituloController.text,
+        mensagem: _mensagemController.text,
+        dataPublicacao: DateTime.now(),
+        destinatario: Destinatario.values.byName(
+          _isSelectedDestinatario!.toLowerCase(),
+        ),
+      );
+
+      try {
+        await _comunicadoService.enviarComunidado(novoComunicado);
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Comunicado enviado com sucesso!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        setState(() {
+          _tituloController.clear();
+          _mensagemController.clear();
+          _isSelectedDestinatario = null;
+          anexoAdicionado = false;
         });
-        _tituloController.clear();
-        _isSelectedDestinatario = null;
-        _mensagemController.clear();
-        anexoAdicionado = false;
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -101,45 +134,85 @@ class _ComunicacaoInstitucionalPageState
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.title),
                       labelText: 'Título',
+                      hintText: 'Reunião de Pais - 3º Bimestre',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    initialValue: _isSelectedDestinatario,
-                    decoration: InputDecoration(
-                      label: const Text('Destinatário'),
-                      prefixIcon: const Icon(Icons.person),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    items: destinatarios.map((tipo) {
-                      return DropdownMenuItem(
-                        value: tipo['nome'] as String,
-                        child: Row(
-                          children: [
-                            Icon(tipo['icon'], color: tipo['cor']),
-                            const SizedBox(width: 16),
+                  SizedBox(
+                    height: 60,
 
-                            Text(tipo['nome']),
-                          ],
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _isSelectedDestinatario = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Selecione Uma Opção Por favor';
-                      }
-                      return null;
-                    },
+                      ),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return ListView(
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.people),
+                                  title: const Text('Todos'),
+                                  onTap: () {
+                                    setState(() {
+                                      _isSelectedDestinatario = 'Todos';
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(Icons.groups),
+                                  title: const Text('Alunos'),
+                                  onTap: () {
+                                    setState(() {
+                                      _isSelectedDestinatario = 'Alunos';
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(Icons.school),
+                                  title: const Text('Professores'),
+                                  onTap: () {
+                                    setState(() {
+                                      _isSelectedDestinatario = 'Professores';
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(Icons.person),
+                                  title: const Text('Responsáveis'),
+                                  onTap: () {
+                                    setState(() {
+                                      _isSelectedDestinatario = 'Responsáveis';
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      label: Text(
+                        _isSelectedDestinatario ?? 'Selecione o Destinatário',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      icon: const Icon(Icons.person),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
@@ -235,15 +308,30 @@ class _ComunicacaoInstitucionalPageState
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _itemEstatisticas(
-          Icons.send,
-          'Enviados',
-          historico.length.toString(),
-          Colors.blue,
-          Colors.blue.shade50,
-          Colors.blue.shade900,
-        ),
         const SizedBox(width: 16),
+        StreamBuilder<int>(
+          stream: _comunicadoService
+              .calcularQuantidadeDeCominicados()
+              .asStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar os dados'));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final total = snapshot.data ?? 0;
+            return _itemEstatisticas(
+              Icons.send,
+              'Enviados',
+              total.toString(),
+              Colors.blue,
+              Colors.blue.shade50,
+              Colors.blue.shade900,
+            );
+          },
+        ),
         _itemEstatisticas(
           Icons.visibility,
           'Vizualizações',
@@ -310,45 +398,61 @@ class _ComunicacaoInstitucionalPageState
           ],
         ),
         const SizedBox(height: 12),
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: historico.length,
-          itemBuilder: (context, index) {
-            final item = historico[index];
-            final destinatario = destinatarios.firstWhere(
-              (i) => i['nome'] == item['destinatario'],
-              orElse: () => {'icon': Icons.person, 'cor': Colors.grey},
-            );
+        StreamBuilder<QuerySnapshot>(
+          stream: _comunicadoService.getComunicados(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar os dados'));
+            }
+            final historicoData = snapshot.data!.docs;
 
-            return Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.grey[200],
-                  child: Icon(destinatario['icon'], color: destinatario['cor']),
-                ),
-                title: Text(item['titulo']),
-                subtitle: Text(item['mensagem']),
-                trailing: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(item['data'], style: const TextStyle(fontSize: 12)),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: historicoData.length,
+              itemBuilder: (context, index) {
+                final item = historicoData[index];
+                final dataPublicacao = (item['dataPublicacao'] as Timestamp)
+                    .toDate();
+                final dataFormatada = DateFormat(
+                  'dd/MM/yyyy HH:mm',
+                ).format(dataPublicacao);
+
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.grey[200],
+                      child: const Icon(Icons.person),
+                    ),
+                    title: Text(item['titulo']),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.visibility,
-                          size: 14,
-                          color: Colors.grey,
+                        Text(item['mensagem']),
+                        const SizedBox(height: 8),
+                        Text(
+                          dataFormatada,
+                          style: const TextStyle(fontSize: 12),
                         ),
-                        const SizedBox(width: 4),
-                        Text(item['vizualizacao'].toString()),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                    trailing: MenuPontinhoGenerico(
+                      id: item['id'],
+                      items: [
+                        MenuItemConfig(
+                          value: 'Excluir',
+                          label: 'Excluir',
+                          onSelected: (id, context, extra) {
+                            _comunicadoService.excluirComunicado(id!);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
           },
         ),

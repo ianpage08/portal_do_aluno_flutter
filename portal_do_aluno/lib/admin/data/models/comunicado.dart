@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum Destinatario { todos, alunos, professores, responsaveis }
 
 class Comunicado {
@@ -19,7 +21,7 @@ class Comunicado {
     'id': id,
     'titulo': titulo,
     'mensagem': mensagem,
-    'dataPublicacao': dataPublicacao.toIso8601String(),
+    'dataPublicacao': Timestamp.fromDate(dataPublicacao),
     'destinatario': destinatario.toString().split('.').last,
   };
 

@@ -19,7 +19,7 @@ class ComunicadoService {
         .snapshots();
   }
 
-  Future<void> cadastrarComunidado(Comunicado comunidado) async {
+  Future<void> enviarComunidado(Comunicado comunidado) async {
     final docRef = comunicadosCollection.doc();
     final novaComunicado = comunidado.copyWith(id: docRef.id);
 
@@ -28,5 +28,10 @@ class ComunicadoService {
 
   Future<void> excluirComunicado(String comunicadoId) async {
     await comunicadosCollection.doc(comunicadoId).delete();
+  }
+
+  Future<int> calcularQuantidadeDeCominicados() async {
+    final qtd = await comunicadosCollection.get();
+    return qtd.docs.length;
   }
 }
