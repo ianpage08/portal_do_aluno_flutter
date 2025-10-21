@@ -63,7 +63,14 @@ class NotaDisciplina {
 
   NotaDisciplina atualizarNota(int unidade, String tipo, double nota) {
     final novasNotas = Map<int, Map<String, double?>>.from(notas);
-    novasNotas[unidade] = {...novasNotas[unidade]!, tipo: nota};
+
+    // Garante que a unidade exista antes de adicionar
+    if (novasNotas.containsKey(unidade)) {
+      novasNotas[unidade] = {...novasNotas[unidade]!, tipo: nota};
+    } else {
+      novasNotas[unidade] = {tipo: nota};
+    }
+
     return copyWith(notas: novasNotas);
   }
 
