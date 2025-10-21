@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
+import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
@@ -9,6 +10,17 @@ class TeacherDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final argumentos =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (argumentos == null || argumentos['user'] == null) {
+      return const Scaffold(
+        body: Center(child: Text('Dados do ussuário não encontrados')),
+      );
+    }
+
+    final Map<String, dynamic> usuarioMap = argumentos['user'];
+    final usuario = Usuario.fromJson(usuarioMap);
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Area do Professor',
@@ -18,30 +30,29 @@ class TeacherDashboard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Card(
+            Card(
               child: Padding(
-                padding: EdgeInsets.all(6),
+                padding: const EdgeInsets.all(6),
                 child: Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30,
                       backgroundColor: AppColors.teacher,
                       child: Icon(Icons.person, size: 30, color: Colors.white),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Professor: Ian page  Maciel',
-                            style: TextStyle(
+                            'Professor: ${usuario.name} ',
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text('Escola: Associação Educacional'),
-                          Text('Disciplina: Matemática'),
+                          const Text('Escola: Associação Educacional'),
                         ],
                       ),
                     ),
@@ -57,15 +68,22 @@ class TeacherDashboard extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildMenuCard(context, Icons.class_, 'Minhas Turmas', () {
-                    NavigatorService.navigateTo(RouteNames.teacherClasses);
-                  }),
-
                   _buildMenuCard(context, Icons.school, 'Frequência', () {
-                    NavigatorService.navigateTo(RouteNames.teacherAttendance);
+                    NavigatorService.navigateTo(RouteNames.adminFrequencia);
                   }),
                   _buildMenuCard(context, Icons.assignment, 'Lançar Notas', () {
-                    NavigatorService.navigateTo(RouteNames.teacherAssignments);
+                    NavigatorService.navigateTo(RouteNames.boletim);
+                  }),
+                  _buildMenuCard(
+                    context,
+                    Icons.menu_book,
+                    'Conteúdo da Aula',
+                    () {
+                      NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
+                    },
+                  ),
+                  _buildMenuCard(context, Icons.class_, 'Minhas Turmas', () {
+                    NavigatorService.navigateTo(RouteNames.teacherClasses);
                   }),
                   _buildMenuCard(context, Icons.event, 'Agenda de Aulas', () {
                     NavigatorService.navigateTo(RouteNames.teacherCalendar);

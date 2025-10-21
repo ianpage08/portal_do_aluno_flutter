@@ -15,7 +15,7 @@ class AdminDashboard extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (argumentos == null || argumentos['user'] == null) {
       return const Scaffold(
-        body: Center(child: Text('Dados do usuário não encontrados')),
+        body: Center(child: Text('Dados do ussuário não encontrados')),
       );
     }
 
@@ -101,8 +101,8 @@ class AdminDashboard extends StatelessWidget {
                   }),
                   _buildMenuCard(
                     context,
-                    Icons.ad_units_outlined,
-                    'Conteudo etc',
+                    Icons.menu_book,
+                    'Conteúdo da Aula',
                     () {
                       NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
                     },

@@ -17,7 +17,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   final TextEditingController _notaController = TextEditingController();
 
   // IDs e nomes selecionados
-  String? turmaId; // aqui vai ser o classId
+  String? turmaId;
   String? turmaNome;
 
   String? alunoId;
@@ -83,7 +83,6 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     final boletimService = BoletimService();
 
     try {
-      // 🔹 Salva ou atualiza a nota centralizando a lógica no service
       await boletimService.salvarOuAtualizarNota(
         alunoId: alunoId!,
         matriculaId: turmaId!,
@@ -98,14 +97,12 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Nota salva com sucesso!')));
 
-      // Limpa campos
       _notaController.clear();
       setState(() {
         unidadeSelecionada = null;
         tipoDeNota = null;
       });
     } catch (e) {
-      print(e);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Erro ao salvar nota: $e')));
@@ -121,12 +118,14 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     required void Function(String id, String nome) onSelected,
     IconData? icon,
     Map<String, String>? camposNome,
+    bool habilitado = true,
   }) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: stream,
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
-          return Center(child: const CircularProgressIndicator());
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
         final docs = snapshot.data!.docs;
         if (docs.isEmpty) return Text('Nenhum $tipo encontrado');
@@ -134,64 +133,73 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
         return SizedBox(
           width: double.infinity,
           child: TextButton.icon(
-            icon: Icon(icon ?? Icons.arrow_drop_down),
+            icon: Icon(
+              icon ?? Icons.arrow_drop_down,
+              color: habilitado ? Colors.white : Colors.grey[600],
+            ),
             label: Text(
               selecionado ?? titulo,
-              style: const TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                color: habilitado ? Colors.white : Colors.grey[600],
+              ),
             ),
             style: TextButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              backgroundColor: habilitado ? Colors.blue : Colors.grey[300],
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => ListView(
-                  children: docs.map((doc) {
-                    final data = doc.data();
-                    String nome;
-                    String id = doc.id;
+            onPressed: habilitado
+                ? () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => ListView(
+                        children: docs.map((doc) {
+                          final data = doc.data();
+                          String nome;
+                          String id = doc.id;
 
-                    switch (tipo) {
-                      case 'turma':
-                        nome =
-                            '${data['serie'] ?? 'Turma sem série'} - ${data['turno'] ?? ''}';
-                        if (data.containsKey('classId')) id = data['classId'];
-                        break;
-                      case 'aluno':
-                        if (camposNome != null && camposNome.isNotEmpty) {
-                          final nivel1 = camposNome.keys.first;
-                          final nivel2 = camposNome.values.first;
-                          nome = data[nivel1]?[nivel2] ?? 'Aluno sem nome';
-                        } else {
-                          nome = 'Aluno sem nome';
-                        }
-                        break;
-                      case 'disciplina':
-                        nome =
-                            data['nome'] ??
-                            data['titulo'] ??
-                            'Disciplina sem nome';
-                        break;
-                      default:
-                        nome = 'Sem nome';
-                    }
+                          switch (tipo) {
+                            case 'turma':
+                              nome =
+                                  '${data['serie'] ?? 'Turma sem série'} - ${data['turno'] ?? ''}';
+                              if (data.containsKey('classId'))
+                                id = data['classId'];
+                              break;
+                            case 'aluno':
+                              if (camposNome != null && camposNome.isNotEmpty) {
+                                final nivel1 = camposNome.keys.first;
+                                final nivel2 = camposNome.values.first;
+                                nome =
+                                    data[nivel1]?[nivel2] ?? 'Aluno sem nome';
+                              } else {
+                                nome = 'Aluno sem nome';
+                              }
+                              break;
+                            case 'disciplina':
+                              nome =
+                                  data['nome'] ??
+                                  data['titulo'] ??
+                                  'Disciplina sem nome';
+                              break;
+                            default:
+                              nome = 'Sem nome';
+                          }
 
-                    return ListTile(
-                      title: Text(nome),
-                      onTap: () {
-                        onSelected(id, nome);
-                        Navigator.pop(context);
-                      },
+                          return ListTile(
+                            title: Text(nome),
+                            onTap: () {
+                              onSelected(id, nome);
+                              Navigator.pop(context);
+                            },
+                          );
+                        }).toList(),
+                      ),
                     );
-                  }).toList(),
-                ),
-              );
-            },
+                  }
+                : null,
           ),
         );
       },
@@ -199,7 +207,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   }
 
   // -------- Campo de Nota --------
-  Widget campoNota() {
+  Widget campoNota({bool habilitado = true}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
@@ -210,8 +218,11 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
           hintText: 'Ex: 8.5',
           prefixIcon: const Icon(Icons.grade),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: habilitado ? Colors.white : Colors.grey[200],
         ),
         keyboardType: TextInputType.number,
+        enabled: habilitado,
       ),
     );
   }
@@ -223,39 +234,44 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     required String titulo,
     required IconData icon,
     required void Function(String valor) onSelected,
+    bool habilitado = true,
   }) {
     return SizedBox(
       width: double.infinity,
       child: TextButton.icon(
-        icon: Icon(icon),
+        icon: Icon(icon, color: habilitado ? Colors.white : Colors.grey[600]),
         label: Text(
           selecionado ?? titulo,
-          style: const TextStyle(fontSize: 16),
+          style: TextStyle(
+            fontSize: 16,
+            color: habilitado ? Colors.white : Colors.grey[600],
+          ),
         ),
         style: TextButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+          backgroundColor: habilitado ? Colors.blue : Colors.grey[300],
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => ListView(
-              children: itens.map((e) {
-                return ListTile(
-                  title: Text(e),
-                  onTap: () {
-                    onSelected(e);
-                    Navigator.pop(context);
-                  },
+        onPressed: habilitado
+            ? () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => ListView(
+                    children: itens.map((e) {
+                      return ListTile(
+                        title: Text(e),
+                        onTap: () {
+                          onSelected(e);
+                          Navigator.pop(context);
+                        },
+                      );
+                    }).toList(),
+                  ),
                 );
-              }).toList(),
-            ),
-          );
-        },
+              }
+            : null,
       ),
     );
   }
@@ -297,84 +313,111 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                               tipoDeNota = null;
                             });
                           },
+                          habilitado: true,
                         ),
                         const SizedBox(height: 16),
 
                         // 🔹 Aluno
-                        if (turmaId != null)
-                          streamDropdown(
-                            tipo: 'aluno',
-                            titulo: 'Selecione um Aluno',
-                            stream: getAlunos(turmaId!),
-                            selecionado: alunoNome,
-                            icon: Icons.person,
-                            camposNome: {'dadosAluno': 'nome'},
-                            onSelected: (id, nome) {
-                              setState(() {
-                                alunoId = id;
-                                alunoNome = nome;
-                              });
-                            },
-                          )
-                        else
-                          const Text('Selecione uma turma primeiro'),
+                        turmaId != null
+                            ? streamDropdown(
+                                tipo: 'aluno',
+                                titulo: 'Selecione um Aluno',
+                                stream: getAlunos(turmaId!),
+                                selecionado: alunoNome,
+                                icon: Icons.person,
+                                camposNome: {'dadosAluno': 'nome'},
+                                onSelected: (id, nome) {
+                                  setState(() {
+                                    alunoId = id;
+                                    alunoNome = nome;
+                                  });
+                                },
+                              )
+                            : SizedBox(
+                                width: double.infinity,
+                                height: 50,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Colors.grey[300], // fundo desabilitado
+                                    borderRadius: BorderRadius.circular(12),
+                                    
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Selecione um Aluno',
+                                        style: TextStyle(
+                                          color: Colors
+                                              .grey[600], // texto desabilitado
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
                         const SizedBox(height: 16),
 
                         // 🔹 Disciplina
-                        if (alunoId != null)
-                          streamDropdown(
-                            tipo: 'disciplina',
-                            titulo: 'Selecione uma Disciplina',
-                            stream: getDisciplinas(),
-                            selecionado: disciplinaNome,
-                            icon: Icons.book,
-                            onSelected: (id, nome) {
-                              setState(() {
-                                disciplinaId = id;
-                                disciplinaNome = nome;
-                              });
-                            },
-                          )
-                        else
-                          const Text('Selecione um aluno primeiro'),
+                        streamDropdown(
+                          tipo: 'disciplina',
+                          titulo: 'Selecione uma Disciplina',
+                          stream: getDisciplinas(),
+                          selecionado: disciplinaNome,
+                          icon: Icons.book,
+                          onSelected: (id, nome) {
+                            setState(() {
+                              disciplinaId = id;
+                              disciplinaNome = nome;
+                            });
+                          },
+                          habilitado: alunoId != null,
+                        ),
                         const SizedBox(height: 16),
 
                         // 🔹 Unidade
-                        if (disciplinaId != null)
-                          fixedDropdown(
-                            itens: unidades,
-                            selecionado: unidadeSelecionada,
-                            titulo: 'Selecione uma Unidade',
-                            icon: Icons.note_alt,
-                            onSelected: (valor) {
-                              setState(() {
-                                unidadeSelecionada = valor;
-                              });
-                            },
-                          )
-                        else
-                          const Text('Selecione uma disciplina primeiro'),
+                        fixedDropdown(
+                          itens: unidades,
+                          selecionado: unidadeSelecionada,
+                          titulo: 'Selecione uma Unidade',
+                          icon: Icons.note_alt,
+                          onSelected: (valor) {
+                            setState(() {
+                              unidadeSelecionada = valor;
+                            });
+                          },
+                          habilitado: disciplinaId != null,
+                        ),
                         const SizedBox(height: 16),
 
                         // 🔹 Tipo de Avaliação
-                        if (unidadeSelecionada != null)
-                          fixedDropdown(
-                            itens: tiposDeAvaliacao,
-                            selecionado: tipoDeNota,
-                            titulo: 'Selecione um Tipo de Avaliação',
-                            icon: Icons.assignment,
-                            onSelected: (valor) {
-                              setState(() {
-                                tipoDeNota = valor;
-                              });
-                            },
-                          )
-                        else
-                          const Text('Selecione uma unidade primeiro'),
+                        fixedDropdown(
+                          itens: tiposDeAvaliacao,
+                          selecionado: tipoDeNota,
+                          titulo: 'Selecione um Tipo de Avaliação',
+                          icon: Icons.assignment,
+                          onSelected: (valor) {
+                            setState(() {
+                              tipoDeNota = valor;
+                            });
+                          },
+                          habilitado: unidadeSelecionada != null,
+                        ),
                         const SizedBox(height: 16),
 
                         // 🔹 Nota
-                        if (tipoDeNota != null) campoNota(),
+                        campoNota(habilitado: tipoDeNota != null),
                       ],
                     ),
                   ),
@@ -382,31 +425,46 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                 const SizedBox(height: 16),
 
                 // 🔹 Botão Salvar
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  label: const Text('Salvar'),
-                  onPressed: salvarBoletim,
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 149, 33, 243),
+                      foregroundColor: Colors.white,
+                    ),
+                    icon: const Icon(Icons.save),
+                    label: const Text('Salvar'),
+                    onPressed: salvarBoletim,
+                  ),
                 ),
                 const SizedBox(height: 8),
 
                 // 🔹 Botão Limpar
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.clear),
-                  label: const Text('Limpar'),
-                  onPressed: () {
-                    setState(() {
-                      turmaId = null;
-                      turmaNome = null;
-                      alunoId = null;
-                      alunoNome = null;
-                      disciplinaId = null;
-                      disciplinaNome = null;
-                      unidadeSelecionada = null;
-                      tipoDeNota = null;
-                      _notaController.clear();
-                    });
-                    print('Formulário limpo!');
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                    icon: const Icon(Icons.clear),
+                    label: const Text('Limpar'),
+                    onPressed: () {
+                      setState(() {
+                        turmaId = null;
+                        turmaNome = null;
+                        alunoId = null;
+                        alunoNome = null;
+                        disciplinaId = null;
+                        disciplinaNome = null;
+                        unidadeSelecionada = null;
+                        tipoDeNota = null;
+                        _notaController.clear();
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
