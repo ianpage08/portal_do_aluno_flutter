@@ -1,145 +1,79 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
-class EnviarComunicado extends StatefulWidget {
-  const EnviarComunicado({super.key});
+class ComunicadosProfessor extends StatefulWidget {
+  const ComunicadosProfessor({super.key});
 
   @override
-  State<EnviarComunicado> createState() => _EnviarComunicadoState();
+  State<ComunicadosProfessor> createState() => _ComunicadosProfessorState();
 }
 
-class _EnviarComunicadoState extends State<EnviarComunicado> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _conteudoController = TextEditingController();
-  List<String> comunicado = [];
-
-  void _enviarComunicado() {
-    if (_formKey.currentState!.validate()) {
-      final texto = _conteudoController.text.trim();
-      if (texto.isNotEmpty) {
-        setState(() {
-          comunicado.add(texto);
-          _conteudoController.clear();
-        });
-      }
-    }
-  }
-
-  void showModalLimpar() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Limpar Texto'),
-          content: const Text('Realmente deseja limpar o texto?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                _limparComunicado();
-                Navigator.pop(context);
-              },
-              child: const Text('Confirmar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _limparComunicado() {
-    setState(() {
-      _conteudoController.clear();
-    });
-  }
+class _ComunicadosProfessorState extends State<ComunicadosProfessor> {
+  Stream<QuerySnapshot<Map<String, dynamic>>> comunicadosStream =
+      FirebaseFirestore.instance
+          .collection('comunicados')
+          .where('destinatario', whereIn: ['professores', 'todos'])
+          .snapshots();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Comunicado'),
+      appBar: const CustomAppBar(title: 'Comunicados'),
       body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Form(
-              key: _formKey,
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Comunicado',
-                  hintText: 'Digite o comunicado',
-                ),
-                controller: _conteudoController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Informe um comunicado válido';
-                  }
-                  return null;
-                },
-                maxLines: 3,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 199, 139, 255),
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: _enviarComunicado,
-                    child: const Text('Enviar', style: TextStyle(fontSize: 20)),
+        padding: const EdgeInsets.all(12),
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: comunicadosStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Erro: ${snapshot.error}'));
+            }
+            final comunicado = snapshot.data!.docs;
+
+            return ListView.builder(
+              itemCount: comunicado.length,
+              itemBuilder: (context, index) {
+                final comunicadoDoc = comunicado[index];
+                final titulo = comunicadoDoc['titulo'] ?? 'Sem título';
+                final dataPublicacao =
+                    (comunicadoDoc['dataPublicacao'] as Timestamp).toDate();
+                final dataFormatada =
+                    '${dataPublicacao.day}/${dataPublicacao.month}/${dataPublicacao.year}';
+                final descricao = comunicadoDoc['mensagem'] ?? 'Sem descrição';
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 253, 179, 179),
-                      foregroundColor: Colors.white,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.message,
+                      color: Colors.deepPurpleAccent[200],
                     ),
-                    onPressed: showModalLimpar,
-                    child: const Text('Limpar', style: TextStyle(fontSize: 20)),
+                    title: Text(titulo, style: const TextStyle(fontSize: 20)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        Text(descricao),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [Text(dataFormatada)],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: comunicado.isEmpty
-                  ? const Center(child: Text('Nenhum comunicado encontrado'))
-                  : ListView.builder(
-                      itemCount: comunicado.length,
-                      itemBuilder: (context, index) {
-                        final conteudoComunicado = comunicado[index];
-                        return Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          margin: const EdgeInsets.all(8),
-                          child: ListTile(
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Professor: portal',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(conteudoComunicado),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
+                );
+              },
+            );
+          },
         ),
       ),
     );

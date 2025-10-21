@@ -93,8 +93,10 @@ class TeacherDashboard extends StatelessWidget {
                       NavigatorService.navigateTo(RouteNames.teacherCalendar);
                     },
                   ),
-                  _buildMenuCard(context, Icons.message, 'Mensagens', () {
-                    NavigatorService.navigateTo(RouteNames.teacherCalendar);
+                  _buildMenuCard(context, Icons.message, 'Comunicados', () {
+                    NavigatorService.navigateTo(
+                      RouteNames.comunicadosProfessor,
+                    );
                   }),
                   _buildMenuCard(
                     context,

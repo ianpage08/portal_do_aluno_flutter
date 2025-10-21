@@ -11,6 +11,7 @@ class RouteNames {
   static const String studentGrades = '/student_grades';
   static const String studentAttendance = '/student_attendance';
   static const String studentTasks = '/student_tasks';
+  static const String studentComunicados = '/student_comunicados';
   static const String studentCalendar = '/student_calendar';
   static const String studentSettings = '/student_settings';
   static const String studentHelp = '/student_help';
@@ -59,6 +60,7 @@ class RouteNames {
 
 
 
+  static const String comunicadosProfessor = '/comunicados_professor';
   // paginas de detalhes
   static const String taskDetails = '/task_details';
   static const String messageDetails = '/message_details';

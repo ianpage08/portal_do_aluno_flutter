@@ -95,10 +95,10 @@ class StudentDashboard extends StatelessWidget {
                       NavigatorService.navigateTo(RouteNames.studentCalendar);
                     },
                   ),
-                  _buildMenuCard(context, Icons.message, 'Mensagens', () {
+                  _buildMenuCard(context, Icons.message, 'Comunicado', () {
                     // Se tiver uma página de mensagens, navegue para ela
                     // Por enquanto, só um exemplo de snackbar
-                    NavigatorService.navigateTo(RouteNames.studentHelp);
+                    NavigatorService.navigateTo(RouteNames.studentComunicados);
                   }),
                   _buildMenuCard(context, Icons.settings, 'Configurações', () {
                     ScaffoldMessenger.of(context).showSnackBar(

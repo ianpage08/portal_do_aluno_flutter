@@ -25,6 +25,7 @@ import 'package:portal_do_aluno/student/presentation/pages/notices_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/add_grade_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/class_page.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/send_notice_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
 
 Map<String, WidgetBuilder> get routes => {
@@ -68,6 +69,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.studentTasks: (context) => const LoginPage(),
   RouteNames.studentCalendar: (context) => const CalendarPage(),
   RouteNames.studentAttendance: (context) => const AttendancePage(),
+  RouteNames.studentComunicados: (context) => const NoticesPage(),
   // rotas de detalhes
   RouteNames.taskDetails: (context) => const LoginPage(),
   RouteNames.addTask: (context) => const LoginPage(),
@@ -80,6 +82,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.teacherCalendar: (context) => const CalendarPage(),
   RouteNames.teacherSettings: (context) => const LoginPage(),
   RouteNames.teacherClasses: (context) => ClassPage(),
+  RouteNames.comunicadosProfessor: (context) => const ComunicadosProfessor(),
   // rotas do Responsável
   RouteNames.parentDashboard: (context) => const LoginPage(),
   RouteNames.parentChildren: (context) => const LoginPage(),
