@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/data/datasources/frequencia_service.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/data/models/frequencia.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 

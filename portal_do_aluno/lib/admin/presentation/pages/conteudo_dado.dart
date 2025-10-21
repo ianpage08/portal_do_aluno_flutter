@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/data/datasources/conteudo_service.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/conteudo_service.dart';
 import 'package:portal_do_aluno/admin/data/models/conteudo_presenca.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';

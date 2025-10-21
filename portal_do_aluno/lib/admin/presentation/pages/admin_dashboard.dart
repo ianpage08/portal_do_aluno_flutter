@@ -90,6 +90,14 @@ class AdminDashboard extends StatelessWidget {
                 children: [
                   _buildMenuCard(
                     context,
+                    Icons.event_available,
+                    'Gestão de ano Letivo',
+                    () {
+                      NavigatorService.navigateTo(RouteNames.adminCalendar);
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
                     Icons.person_add_alt_1_rounded,
                     'Gestão de Usuários',
                     () {

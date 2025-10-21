@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/data/datasources/matricula_service.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/matricula_service.dart';
 
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';

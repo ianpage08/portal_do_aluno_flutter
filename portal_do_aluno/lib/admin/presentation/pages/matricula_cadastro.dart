@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:portal_do_aluno/admin/data/datasources/matricula_service.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/matricula_service.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';

@@ -5,6 +5,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/conteudo_dado.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/controle_de_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/detalhes_do_aluno_test.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/frequencia_admin.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
@@ -42,6 +43,7 @@ Map<String, WidgetBuilder> get routes => {
     final argumentos = ModalRoute.of(context)!.settings.arguments as String;
     return DetalhesAluno(alunoId: argumentos);
   },
+  RouteNames.adminCalendar: (context) => const ControleDeCalendario(),
   RouteNames.boletim: (context) => const BoletimAddNotaPage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
