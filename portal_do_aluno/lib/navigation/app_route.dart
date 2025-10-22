@@ -20,6 +20,7 @@ import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/attendace_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
 
 import 'package:portal_do_aluno/student/presentation/pages/notices_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
@@ -70,6 +71,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.studentCalendar: (context) => const CalendarPage(),
   RouteNames.studentAttendance: (context) => const AttendancePage(),
   RouteNames.studentComunicados: (context) => const NoticesPage(),
+  RouteNames.studentBoletim: (context) => const BoletimPage(),
   // rotas de detalhes
   RouteNames.taskDetails: (context) => const LoginPage(),
   RouteNames.addTask: (context) => const LoginPage(),

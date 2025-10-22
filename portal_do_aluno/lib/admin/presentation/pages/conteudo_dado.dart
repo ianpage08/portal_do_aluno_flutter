@@ -25,13 +25,13 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
 
   final ConteudoPresencaService _conteudoPresencaService =
       ConteudoPresencaService();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getTurma() {
+    return FirebaseFirestore.instance.collection('turmas').snapshots();
+  }
 
-  final streamTurmas = FirebaseFirestore.instance
-      .collection('turmas')
-      .snapshots();
-  final streamDisciplinas = FirebaseFirestore.instance
-      .collection('disciplinas')
-      .snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() {
+    return FirebaseFirestore.instance.collection('disciplinas').snapshots();
+  }
 
   Future<void> salvarconteudo() async {
     if (turmaId == null ||
@@ -69,7 +69,6 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
       // Limpar campos
       _conteudoMinistradoController.clear();
       _observacoesController.clear();
-      
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -137,7 +136,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                   child: Column(
                     children: [
                       StreamDrop(
-                        minhaStream: streamTurmas,
+                        minhaStream: getTurma(),
                         mensagemError: 'Nenhuma Turma Encontrada',
                         textLabel: 'Selecione uma turma',
                         nomeItem: 'serie',
@@ -147,17 +146,12 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                           setState(() {
                             turmaSelecionada = nome;
                             turmaId = id;
-
-                            if (turmaSelecionada == null) {
-                              nome = 'Selecione uma turma';
-                            }
                           });
                         },
                       ),
                       const SizedBox(height: 20),
                       StreamDrop(
-                        onChange: () {},
-                        minhaStream: streamDisciplinas,
+                        minhaStream: getDisciplinas(),
                         mensagemError: 'Nenhuma Disciplina Encontrada',
                         textLabel: 'Selecione uma Disciplina',
                         nomeItem: 'nome',

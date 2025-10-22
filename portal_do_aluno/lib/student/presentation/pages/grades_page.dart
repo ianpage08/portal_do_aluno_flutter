@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/auth/data/datasouces/buscar_aluno_por_id_test.dart'; // ✅ Mantém se precisar de outras funções
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class BoletimPage extends StatefulWidget {
@@ -9,63 +11,118 @@ class BoletimPage extends StatefulWidget {
 }
 
 class _BoletimPageState extends State<BoletimPage> {
-  final List<Map<String, dynamic>> materias = [
-    {'nome': 'Matemática', 'notaTeste': 7.5, 'notaProva': 8.0},
-    {'nome': 'Português', 'notaTeste': 6.0, 'notaProva': 5.5},
-    {'nome': 'Ciências', 'notaTeste': 8.0, 'notaProva': 7.0},
-    {'nome': 'História', 'notaTeste': 9.0, 'notaProva': 8.5},
-    {'nome': 'Geografia', 'notaTeste': 7.0, 'notaProva': 7.5},
-    {'nome': 'Inglês', 'notaTeste': 6.5, 'notaProva': 6.0},
-  ];
-  final List<Map<String, dynamic>> materias2 = [
-    {'nome': 'Matemática', 'notaTeste': 7.5, 'notaProva': 8.0},
-    {'nome': 'Português', 'notaTeste': 6.0, 'notaProva': 5.5},
-    {'nome': 'Ciências', 'notaTeste': 8.0, 'notaProva': 7.0},
-    {'nome': 'História', 'notaTeste': 9.0, 'notaProva': 8.5},
-    {'nome': 'Geografia', 'notaTeste': 7.0, 'notaProva': 7.5},
-    {'nome': 'Inglês', 'notaTeste': 6.5, 'notaProva': 6.0},
-  ];
-  final List<Map<String, dynamic>> materias3 = [
-    {'nome': 'Matemática', 'notaTeste': 7.5, 'notaProva': 8.0},
-    {'nome': 'Português', 'notaTeste': 6.0, 'notaProva': 5.5},
-    {'nome': 'Ciências', 'notaTeste': 8.0, 'notaProva': 7.0},
-    {'nome': 'História', 'notaTeste': 9.0, 'notaProva': 8.5},
-    {'nome': 'Geografia', 'notaTeste': 7.0, 'notaProva': 7.5},
-    {'nome': 'Inglês', 'notaTeste': 6.5, 'notaProva': 6.0},
-  ];
-  final List<Map<String, dynamic>> materias4 = [
-    {'nome': 'Matemática', 'notaTeste': 7.5, 'notaProva': 8.0},
-    {'nome': 'Português', 'notaTeste': 6.0, 'notaProva': 5.5},
-    {'nome': 'Ciências', 'notaTeste': 8.0, 'notaProva': 7.0},
-    {'nome': 'História', 'notaTeste': 9.0, 'notaProva': 8.5},
-    {'nome': 'Geografia', 'notaTeste': 7.0, 'notaProva': 7.5},
-    {'nome': 'Inglês', 'notaTeste': 6.5, 'notaProva': 6.0},
-  ];
-  double calcularMedia() {
-    final todasAsMaterias = [
-      ...materias,
-      ...materias2,
-      ...materias3,
-      ...materias4,
-    ];
-    double soma = 0;
-    for (var materia in todasAsMaterias) {
-      double mediaMateria = (materia['notaTeste'] + materia['notaProva']) / 2;
-      soma += mediaMateria;
-    }
-    return soma / materias.length;
+  String? alunoId;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarAlunoId();
   }
 
-  String statusFinal() {
-    double media = calcularMedia();
-    return media >= 20 ? 'Aprovado' : 'Reprovado';
+  Future<void> _carregarAlunoId() async {
+    final id =
+        await getAlunoIdFromFirestore(); // ✅ Agora usa a função corrigida
+    if (id != null) {
+      setState(() => alunoId = id);
+    } else {
+      // ✅ Opcional: Mostrar mensagem se não encontrar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro: Aluno ID não encontrado. Faça login novamente.'),
+        ),
+      );
+    }
+  }
+
+  // ✅ Stream corrigido: Busca o boletim diretamente pelo alunoId (único documento)
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getBoletim(String alunoId) {
+    return FirebaseFirestore.instance
+        .collection('boletim')
+        .doc(alunoId) // ✅ Usa o alunoId como ID do documento
+        .snapshots();
+  }
+
+  Widget _buildStreamNotasView() {
+    if (alunoId == null) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Carregando boletim...'),
+          ],
+        ),
+      );
+    }
+
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: getBoletim(alunoId!), // ✅ Stream direto pelo ID
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Erro ao carregar boletim: ${snapshot.error}'),
+          );
+        }
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const Center(
+            child: Text('Nenhum boletim encontrado para este aluno'),
+          );
+        }
+
+        final data = snapshot.data!.data()!;
+        final disciplinas = data['disciplinas'] as List<dynamic>? ?? [];
+
+        if (disciplinas.isEmpty) {
+          return const Center(
+            child: Text('Nenhuma disciplina encontrada no boletim'),
+          );
+        }
+
+        return Column(
+          children: [
+            ExpansionPanelList.radio(
+              children: disciplinas.map((disc) {
+                final nomeDisc =
+                    disc['nomeDisciplina'] ?? 'Disciplina sem nome';
+                final notas = disc['notas'] as Map<String, dynamic>? ?? {};
+
+                return ExpansionPanelRadio(
+                  value: disc['id'] ?? disc['disciplinaId'],
+                  headerBuilder: (context, isExpanded) {
+                    return ListTile(title: Text(nomeDisc.toUpperCase()));
+                  },
+                  body: Column(
+                    children: notas.entries.map((entry) {
+                      final unidade = entry.key;
+                      final valores =
+                          entry.value as Map<String, dynamic>? ?? {};
+
+                      return ListTile(
+                        title: Text('Unidade $unidade'),
+                        subtitle: Text(
+                          'Teste: ${valores['teste'] ?? '-'} | '
+                          'Prova: ${valores['prova'] ?? '-'} | '
+                          'Trabalho: ${valores['trabalho'] ?? '-'} | '
+                          'Extra: ${valores['extra'] ?? '-'}',
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    double mediaGeral = calcularMedia();
-    String status = statusFinal();
-
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Boletim Escolar',
@@ -75,208 +132,56 @@ class _BoletimPageState extends State<BoletimPage> {
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ExpansionPanelList.radio(
-                children: [
-                  ExpansionPanelRadio(
-                    value: 'unidade1',
-                    headerBuilder: (context, isExpanded) {
-                      return const ListTile(
-                        title: Text(
-                          'Unidade 1',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text('Turma 10'),
-                      );
-                    },
-                    body: Column(
-                      children: materias.map((materia) {
-                        double media =
-                            ((materia['notaTeste'] + materia['notaProva']) / 2);
+              _buildStreamNotasView(),
 
-                        return ListTile(
-                          title: Text(materia['nome']),
-                          subtitle: Text(
-                            'Teste: ${materia['notaTeste']} / Prova: ${materia['notaProva']}',
-                          ),
-                          shape: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey[300]!,
-                              width: 1,
-                            ),
-                          ),
-                          trailing: Text(
-                            'Média ${media.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  ExpansionPanelRadio(
-                    value: 'unidade2',
-                    headerBuilder: (context, isExpanded) {
-                      return const ListTile(
-                        title: Text(
-                          'Unidade 2',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text('Turma 10'),
-                      );
-                    },
-                    body: Column(
-                      children: materias2.map((materia) {
-                        double media =
-                            ((materia['notaTeste'] + materia['notaProva']) / 2);
-
-                        return ListTile(
-                          title: Text(materia['nome']),
-                          subtitle: Text(
-                            'Teste: ${materia['notaTeste']} / Prova: ${materia['notaProva']}',
-                          ),
-                          shape: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey[300]!,
-                              width: 1,
-                            ),
-                          ),
-                          trailing: Text(
-                            'Média ${media.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  ExpansionPanelRadio(
-                    value: 'unidade3',
-                    headerBuilder: (context, isExpanded) {
-                      return const ListTile(
-                        title: Text(
-                          'Unidade 3',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text('Turma 10'),
-                      );
-                    },
-                    body: Column(
-                      children: materias3.map((materia) {
-                        double media =
-                            ((materia['notaTeste'] + materia['notaProva']) / 2);
-
-                        return ListTile(
-                          title: Text(materia['nome']),
-                          subtitle: Text(
-                            'Teste: ${materia['notaTeste']} / Prova: ${materia['notaProva']}',
-                          ),
-                          shape: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey[300]!,
-                              width: 1,
-                            ),
-                          ),
-                          trailing: Text(
-                            'Média ${media.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  ExpansionPanelRadio(
-                    value: 'unidade4',
-                    headerBuilder: (context, isExpanded) {
-                      return const ListTile(
-                        title: Text(
-                          'Unidade 4',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text('Turma 10'),
-                      );
-                    },
-                    body: Column(
-                      children: materias4.map((materia) {
-                        double media =
-                            ((materia['notaTeste'] + materia['notaProva']) / 2);
-
-                        return ListTile(
-                          title: Text(materia['nome']),
-                          subtitle: Text(
-                            'Teste: ${materia['notaTeste']} / Prova: ${materia['notaProva']}',
-                          ),
-                          shape: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey[300]!,
-                              width: 1,
-                            ),
-                          ),
-                          trailing: Text(
-                            'Média ${media.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 75,
-                child: Card(
-                  elevation: 6,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Média Geral: ${mediaGeral.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+              // ✅ Stream para média e status (usando o mesmo stream)
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                stream: alunoId != null ? getBoletim(alunoId!) : null,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const SizedBox();
+                  }
+
+                  final data = snapshot.data!.data()!;
+                  final mediaGeral = data['mediageral'] ?? 0.0;
+                  final status = data['situacao'] ?? 'Indefinido';
+
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 75,
+                    child: Card(
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      Text(
-                        'Status: $status',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: status == 'Aprovado'
-                              ? Colors.green
-                              : Colors.red,
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Média Geral: ${mediaGeral.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Status: $status',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: status == 'Aprovado'
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

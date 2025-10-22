@@ -81,7 +81,7 @@ class StudentDashboard extends StatelessWidget {
                     Icons.school,
                     'Notas e Frequência',
                     () {
-                      NavigatorService.navigateTo(RouteNames.studentGrades);
+                      NavigatorService.navigateTo(RouteNames.studentBoletim);
                     },
                   ),
                   _buildMenuCard(context, Icons.assignment, 'Tarefas', () {

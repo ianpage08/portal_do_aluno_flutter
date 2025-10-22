@@ -40,18 +40,6 @@ class _StreamDropState extends State<StreamDrop> {
         }
 
         final docs = snapshot.data!.docs;
-        if (isId != null && !docs.any((doc) => doc.id == isId)) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() {
-              isSelected = null;
-              isId = null;
-            });
-          });
-
-          if (widget.onChange == null) {
-            widget.onChange!();
-          }
-        }
 
         return SizedBox(
           width: double.infinity,

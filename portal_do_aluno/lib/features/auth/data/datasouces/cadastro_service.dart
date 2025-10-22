@@ -30,6 +30,8 @@ class CadastroService {
       'cpf': usuario.cpf.replaceAll(RegExp(r'\D'), ''),
       'password': senhaHash,
       'type': usuario.type.name,
+      'turmaId': usuario.turmaId,
+      'alunoId': usuario.alunoId,
     });
 
     return usuarioRef.id;
