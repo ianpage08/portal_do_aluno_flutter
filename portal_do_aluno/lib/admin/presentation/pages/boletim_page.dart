@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/boletim_service.dart';
-import 'package:portal_do_aluno/admin/data/models/disciplinas/nota_disciplina.dart';
+
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class BoletimAddNotaPage extends StatefulWidget {

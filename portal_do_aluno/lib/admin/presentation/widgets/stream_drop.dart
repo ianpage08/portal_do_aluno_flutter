@@ -64,11 +64,7 @@ class _StreamDropState extends State<StreamDrop> {
                   return ListView(
                     children: docs.map((item) {
                       return ListTile(
-                        title: Text(
-                          isSelected != null
-                              ? item[widget.nomeItem]
-                              : widget.textLabel,
-                        ),
+                        title: Text(item[widget.nomeItem]),
 
                         onTap: () {
                           setState(() {
@@ -77,9 +73,7 @@ class _StreamDropState extends State<StreamDrop> {
                           });
                           widget.onSelected(isId!, isSelected!);
 
-                          if (widget.onChange == null) {
-                            widget.onChange!();
-                          }
+                          
                           Navigator.pop(context);
                         },
                       );

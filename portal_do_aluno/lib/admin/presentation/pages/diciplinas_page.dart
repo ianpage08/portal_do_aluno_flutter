@@ -59,6 +59,7 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
 
             return Card(
               child: ListTile(
+                
                 leading: const CircleAvatar(child: Icon(Icons.book)),
                 title: Text('Materia: ${data['nome']}'),
                 subtitle: Row(

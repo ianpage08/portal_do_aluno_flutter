@@ -256,7 +256,11 @@ class _LoginPageState extends State<LoginPage> {
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 12),
-                            _buildTestUser('Aluno', '85300011122', 'senha123'),
+                            _buildTestUser(
+                              'Aluno',
+                              '888.888.888-88',
+                              '@Maciel2003',
+                            ),
                             _buildTestUser(
                               'Professor',
                               '11122233344',

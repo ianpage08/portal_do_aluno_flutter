@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
+import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
-class StudentDashboard extends StatelessWidget {
+class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
 
   @override
+  State<StudentDashboard> createState() => _StudentDashboardState();
+}
+
+class _StudentDashboardState extends State<StudentDashboard> {
+  @override
   Widget build(BuildContext context) {
+    final argumentos =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (argumentos == null || argumentos['user'] == null) {
+      return const Scaffold(
+        body: Center(child: Text('Erro ao carregar dados do usuário')),
+      );
+    }
+
+    final Map<String, dynamic> userMap = argumentos['user'];
+    final Usuario usuario = Usuario.fromJson(userMap);
+
+    //
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -38,30 +57,30 @@ class StudentDashboard extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
-            const Card(
+            Card(
               child: Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30,
                       backgroundColor: AppColors.primary,
                       child: Icon(Icons.person, size: 30, color: Colors.white),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Bem vindo, Ian page Maciel!',
-                            style: TextStyle(
+                            'Bem vindo, ${usuario.name}',
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text('Turma: 10º Ano - A'),
-                          Text('Escola: Associação Educacional'),
+                          const Text('Turma: 10º Ano - A'),
+                          const Text('Escola: Associação Educacional'),
                         ],
                       ),
                     ),
@@ -81,7 +100,11 @@ class StudentDashboard extends StatelessWidget {
                     Icons.school,
                     'Notas e Frequência',
                     () {
-                      NavigatorService.navigateTo(RouteNames.studentBoletim);
+                      Navigator.pushNamed(
+                        context,
+                        RouteNames.studentBoletim,
+                        arguments: {'user': usuario.toJsonSafe()},
+                      );
                     },
                   ),
                   _buildMenuCard(context, Icons.assignment, 'Tarefas', () {
@@ -122,37 +145,34 @@ class StudentDashboard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildMenuCard(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 4,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 38, color: AppColors.primary),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+Widget _buildMenuCard(
+  BuildContext context,
+  IconData icon,
+  String title,
+  VoidCallback onTap,
+) {
+  return Card(
+    elevation: 4,
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 38, color: AppColors.primary),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
+
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';

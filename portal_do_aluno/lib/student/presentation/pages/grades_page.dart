@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/auth/data/datasouces/buscar_aluno_por_id_test.dart'; // ✅ Mantém se precisar de outras funções
+import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class BoletimPage extends StatefulWidget {
@@ -11,34 +11,45 @@ class BoletimPage extends StatefulWidget {
 }
 
 class _BoletimPageState extends State<BoletimPage> {
+  Usuario? usuario;
   String? alunoId;
 
   @override
-  void initState() {
-    super.initState();
-    _carregarAlunoId();
-  }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  Future<void> _carregarAlunoId() async {
-    final id =
-        await getAlunoIdFromFirestore(); // ✅ Agora usa a função corrigida
-    if (id != null) {
-      setState(() => alunoId = id);
-    } else {
-      // ✅ Opcional: Mostrar mensagem se não encontrar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Erro: Aluno ID não encontrado. Faça login novamente.'),
-        ),
-      );
+    // 🔍 Pega os argumentos da rota (apenas uma vez)
+    if (usuario == null) {
+      final argumentos =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+      if (argumentos != null && argumentos['user'] != null) {
+        final userMap = argumentos['user'] as Map<String, dynamic>;
+        usuario = Usuario.fromJson(userMap);
+
+        // ✅ DEBUG: Verifique os valores
+        debugPrint('🔍 usuario.id: ${usuario!.id}');
+        debugPrint('🔍 usuario.alunoId: ${usuario!.alunoId}');
+        debugPrint('🔍 usuario.turmaId: ${usuario!.turmaId}');
+
+        // ✅ Priorize alunoId se existir, senão use id
+        alunoId = usuario!.alunoId?.isNotEmpty == true
+            ? usuario!.alunoId
+            : usuario!.id;
+
+        debugPrint('✅ Usuário carregado: ${usuario!.name}');
+        debugPrint('🎯 alunoId final: $alunoId');
+      } else {
+        debugPrint('⚠️ Nenhum argumento "user" encontrado.');
+      }
     }
   }
 
-  // ✅ Stream corrigido: Busca o boletim diretamente pelo alunoId (único documento)
+  // ✅ Stream para buscar o boletim do aluno
   Stream<DocumentSnapshot<Map<String, dynamic>>> getBoletim(String alunoId) {
     return FirebaseFirestore.instance
         .collection('boletim')
-        .doc(alunoId) // ✅ Usa o alunoId como ID do documento
+        .doc(alunoId)
         .snapshots();
   }
 
@@ -57,8 +68,19 @@ class _BoletimPageState extends State<BoletimPage> {
     }
 
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: getBoletim(alunoId!), // ✅ Stream direto pelo ID
+      stream: getBoletim(alunoId!),
       builder: (context, snapshot) {
+        // ✅ DEBUG: Adicione logs para ver o que está acontecendo
+        debugPrint(
+          '🔍 StreamBuilder - Connection: ${snapshot.connectionState}',
+        );
+        debugPrint('🔍 Has Data: ${snapshot.hasData}');
+        debugPrint('🔍 Exists: ${snapshot.data?.exists}');
+        if (snapshot.hasError) debugPrint('❌ Error: ${snapshot.error}');
+        if (snapshot.hasData && snapshot.data!.exists) {
+          debugPrint('📄 Data: ${snapshot.data!.data()}');
+        }
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -68,9 +90,8 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const Center(
-            child: Text('Nenhum boletim encontrado para este aluno'),
-          );
+          // ✅ Se não existe, crie automaticamente
+          return _buildCriarBoletimAutomaticamente();
         }
 
         final data = snapshot.data!.data()!;
@@ -82,40 +103,144 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
 
-        return Column(
-          children: [
-            ExpansionPanelList.radio(
-              children: disciplinas.map((disc) {
-                final nomeDisc =
-                    disc['nomeDisciplina'] ?? 'Disciplina sem nome';
-                final notas = disc['notas'] as Map<String, dynamic>? ?? {};
+        return ExpansionPanelList.radio(
+          children: disciplinas.map((disc) {
+            final nomeDisc = disc['nomeDisciplina'] ?? 'Disciplina sem nome';
+            final notas = disc['notas'] as Map<String, dynamic>? ?? {};
 
-                return ExpansionPanelRadio(
-                  value: disc['id'] ?? disc['disciplinaId'],
-                  headerBuilder: (context, isExpanded) {
-                    return ListTile(title: Text(nomeDisc.toUpperCase()));
-                  },
-                  body: Column(
-                    children: notas.entries.map((entry) {
-                      final unidade = entry.key;
-                      final valores =
-                          entry.value as Map<String, dynamic>? ?? {};
+            return ExpansionPanelRadio(
+              value: disc['id'] ?? disc['disciplinaId'],
+              headerBuilder: (context, isExpanded) {
+                return ListTile(title: Text(nomeDisc.toUpperCase()));
+              },
+              body: Column(
+                children: notas.entries.map((entry) {
+                  final unidade = entry.key;
+                  final valores = entry.value as Map<String, dynamic>? ?? {};
 
-                      return ListTile(
-                        title: Text('Unidade $unidade'),
-                        subtitle: Text(
-                          'Teste: ${valores['teste'] ?? '-'} | '
-                          'Prova: ${valores['prova'] ?? '-'} | '
-                          'Trabalho: ${valores['trabalho'] ?? '-'} | '
-                          'Extra: ${valores['extra'] ?? '-'}',
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                );
-              }).toList(),
+                  return ListTile(
+                    title: Text('Unidade $unidade'),
+                    subtitle: Text(
+                      'Teste: ${valores['teste'] ?? '-'} | '
+                      'Prova: ${valores['prova'] ?? '-'} | '
+                      'Trabalho: ${valores['trabalho'] ?? '-'} | '
+                      'Extra: ${valores['extra'] ?? '-'}',
+                    ),
+                  );
+                }).toList(),
+              ),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  // ✅ Widget para criar boletim automaticamente se não existir
+  Widget _buildCriarBoletimAutomaticamente() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Nenhum boletim encontrado. Criar automaticamente?'),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () async {
+              await _criarBoletimVazio();
+              setState(() {}); // Recarrega a tela
+            },
+            child: const Text('Criar Boletim'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+
+  // ✅ Função para criar boletim vazio
+  Future<void> _criarBoletimVazio() async {
+    if (alunoId == null) return;
+
+    await FirebaseFirestore.instance.collection('boletim').doc(alunoId).set({
+      'alunoId': alunoId,
+      'disciplinas': [], // Começa vazio
+      'mediaGeral': 0.0,
+      'situacao': 'Em andamento',
+      'dataCriacao': FieldValue.serverTimestamp(),
+    });
+
+    debugPrint('✅ Boletim vazio criado para alunoId: $alunoId');
+  }
+
+  Widget _buildViewGrade() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('disciplinas').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Erro ao carregar disciplinas: ${snapshot.error}'),
+          );
+        }
+        final docDisciplinas = snapshot.data!.docs;
+        return ListView(
+          children: docDisciplinas.map((disciplina) {
+            return SizedBox(
+              width: double.infinity,
+              height: 75,
+              child: Card(child: ListTile(title: Text(disciplina['nome']))),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildMediaEStatus() {
+    if (alunoId == null) return const SizedBox();
+
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: getBoletim(alunoId!),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const SizedBox();
+        }
+
+        final data = snapshot.data!.data()!;
+        final mediaGeral = data['mediageral'] ?? 0.0;
+        final status = data['situacao'] ?? 'Indefinido';
+
+        return SizedBox(
+          width: double.infinity,
+          height: 75,
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Média Geral: ${mediaGeral.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Status: $status',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: status == 'Aprovado' ? Colors.green : Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -134,55 +259,8 @@ class _BoletimPageState extends State<BoletimPage> {
           child: Column(
             children: [
               _buildStreamNotasView(),
-
               const SizedBox(height: 20),
-
-              // ✅ Stream para média e status (usando o mesmo stream)
-              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: alunoId != null ? getBoletim(alunoId!) : null,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const SizedBox();
-                  }
-
-                  final data = snapshot.data!.data()!;
-                  final mediaGeral = data['mediageral'] ?? 0.0;
-                  final status = data['situacao'] ?? 'Indefinido';
-
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 75,
-                    child: Card(
-                      elevation: 6,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Média Geral: ${mediaGeral.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Status: $status',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: status == 'Aprovado'
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+              _buildMediaEStatus(),
             ],
           ),
         ),
