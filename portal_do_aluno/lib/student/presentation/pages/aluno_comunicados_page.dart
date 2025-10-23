@@ -11,7 +11,11 @@ class NoticesPage extends StatefulWidget {
 }
 
 class _NoticesPageState extends State<NoticesPage> {
+  /* Stream que busca a  coleção de comunicados do Firestore
   
+   Filtra os documentos da coleção 'comunicados' onde o campo 'destinatario'
+   é igual a 'alunos' ou 'todos', garantindo que apenas comunicados relevantes
+   sejam exibidos para os alunos.*/
   final Stream<QuerySnapshot<Map<String, dynamic>>> comunicadosStream =
       FirebaseFirestore.instance
           .collection('comunicados')
@@ -24,6 +28,7 @@ class _NoticesPageState extends State<NoticesPage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: StreamVizualizacaoDeComunicados(
+          // Passa o stream de comunicados para o widget de visualização
           comunicadosStream: comunicadosStream,
         ),
       ),
