@@ -6,6 +6,7 @@ import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class OqueFoiDado extends StatefulWidget {
@@ -143,39 +144,21 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                       Form(
                         child: Column(
                           children: [
-                            TextFormField(
+                            TextFormFieldPersonalizado(
+                              maxLines: 5,
                               controller: _conteudoMinistradoController,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 1,
-                              maxLines: 20,
-                              decoration: InputDecoration(
-                                label: const Text(
-                                  'Conteúdo Ministrado em Aula',
-                                ),
-                                hintText:
-                                    'Ex: “Revisão de equações do 1º grau e introdução a inequações”',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                filled: true,
-                                fillColor: const Color.fromARGB(15, 72, 1, 204),
-                              ),
+                              label: 'Conteúdo Ministrado em Aula',
+                              hintText:
+                                  'Ex: “Revisão de equações do 1º grau e introdução a inequações”',
                             ),
+
                             const SizedBox(height: 20),
-                            TextFormField(
+                            TextFormFieldPersonalizado(
                               controller: _observacoesController,
-                              minLines: 1,
-                              maxLines: 20,
-                              decoration: InputDecoration(
-                                label: const Text('Observações'),
-                                hintText:
-                                    'Ex: 1- O que ficou pendente pra próxima aula. 2- Materiais que precisam ser preparados',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                filled: true,
-                                fillColor: const Color.fromARGB(15, 72, 1, 204),
-                              ),
+                              label: 'Observações',
+                              hintText:
+                                  'Ex: 1- O que ficou pendente pra próxima aula. 2- Materiais que precisam ser preparados',
+                              maxLines: 2,
                             ),
                             const SizedBox(height: 20),
                             BotaoSalvar(
