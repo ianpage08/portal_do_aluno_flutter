@@ -22,11 +22,11 @@ import 'package:portal_do_aluno/student/presentation/pages/attendace_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
 
-import 'package:portal_do_aluno/student/presentation/pages/notices_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/add_grade_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/class_page.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/send_notice_page.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/professor_comunicados_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
 
 Map<String, WidgetBuilder> get routes => {

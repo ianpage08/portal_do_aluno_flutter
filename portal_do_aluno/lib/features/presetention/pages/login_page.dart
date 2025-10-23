@@ -263,8 +263,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             _buildTestUser(
                               'Professor',
-                              '11122233344',
-                              'senha123',
+                              '666.666.666-66',
+                              '@Maciel2003',
                             ),
                             _buildTestUser(
                               'admin',
