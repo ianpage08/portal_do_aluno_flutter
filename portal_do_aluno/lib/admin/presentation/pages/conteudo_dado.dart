@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/conteudo_service.dart';
 import 'package:portal_do_aluno/admin/data/models/conteudo_presenca.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
@@ -82,8 +83,6 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
       }
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -179,41 +178,12 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                icon: isLoading
-                                    ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                    : const Icon(Icons.save),
-                                label: isLoading
-                                    ? const Text('Salvando...')
-                                    : const Text('Salvar'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF5921F3),
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                onPressed: isLoading
-                                    ? null
-                                    : () async {
-                                        setState(() => isLoading = true);
-                                        await salvarconteudo();
-                                        setState(() => isLoading = false);
-                                      },
-                              ),
+                            BotaoSalvar(
+                              salvarconteudo: () async {
+                                await salvarconteudo();
+                              },
                             ),
+
                             const SizedBox(height: 20),
 
                             // Lista de conteúdos já cadastrados
