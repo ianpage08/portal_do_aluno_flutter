@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/cadastro_turma_service.dart';
 import 'package:portal_do_aluno/admin/data/models/turma.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/text_form_fild_cadastro.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
-
 
 class CadastroTurma extends StatefulWidget {
   const CadastroTurma({super.key});
@@ -21,7 +21,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CadastroTurmaService cadastrarNovaTurma = CadastroTurmaService();
 
-  void _cadastroTurma() async {
+  Future<void> _cadastroTurma() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -72,6 +72,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
     _professorTitularController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,57 +94,42 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        CadastroTextFormField(
+                        TextFormFieldPersonalizado(
                           controller: _professorTitularController,
-                          ico: const Icon(Icons.person),
-                          labelText: 'Professor titular',
+                          prefixIcon: const Icon(Icons.person),
+                          label: 'Professor titular',
                           hintText: 'ex: Maria Silva',
                           keyboardType: TextInputType.name,
                         ),
                         const SizedBox(height: 16),
-                        CadastroTextFormField(
+                        TextFormFieldPersonalizado(
                           controller: _turnoController,
-                          ico: const Icon(Icons.timer),
-                          labelText: 'Turno',
+                          prefixIcon: const Icon(Icons.timer),
+                          label: 'Turno',
                           hintText: 'ex: Matutino',
                           keyboardType: TextInputType.text,
                         ),
                         const SizedBox(height: 16),
-                        CadastroTextFormField(
+                        TextFormFieldPersonalizado(
                           controller: _serieController,
-                          ico: const Icon(Icons.home_work_outlined),
-                          labelText: 'Serie',
+                          prefixIcon: const Icon(Icons.home_work_outlined),
+                          label: 'Serie',
                           hintText: '9º Ano',
                           keyboardType: TextInputType.text,
                         ),
                         const SizedBox(height: 16),
-                        CadastroTextFormField(
+                        TextFormFieldPersonalizado(
                           controller: _qtdAlunosController,
-                          ico: const Icon(Icons.group),
-                          labelText: 'Quantidade de alunos',
+                          prefixIcon: const Icon(Icons.group),
+                          label: 'Quantidade de alunos',
                           hintText: 'ex: 25',
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: _cadastroTurma,
-                                icon: const Icon(Icons.save),
-                                label: const Text('Salvar'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(
-                                    255,
-                                    28,
-                                    1,
-                                    104,
-                                  ),
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
+                        BotaoSalvar(
+                          salvarconteudo: () async {
+                            await _cadastroTurma();
+                          },
                         ),
                       ],
                     ),

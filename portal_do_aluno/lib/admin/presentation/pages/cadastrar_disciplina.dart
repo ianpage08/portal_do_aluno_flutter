@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/cadastrar_diciplina_service.dart';
 import 'package:portal_do_aluno/admin/data/models/disciplinas/diciplinas.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_limpar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class CadastrarDisciplina extends StatefulWidget {
@@ -21,7 +24,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
   final TextEditingController _cargaHorariaController = TextEditingController();
   final DisciplinaService cadastrarNovaDisciplina = DisciplinaService();
 
-  void _cadastrarMateria() async {
+  Future<void> _cadastrarMateria() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -97,36 +100,38 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          _buildTextFormFieldCadastro(
-                            _nomeDisciplinaController,
-                            const Icon(Icons.book),
-                            'Nome da Disciplina',
-                            'ex: Matemática',
-                            TextInputType.text,
+                          TextFormFieldPersonalizado(
+                            controller: _nomeDisciplinaController,
+                            prefixIcon: const Icon(Icons.book),
+                            label: 'Nome da Disciplina',
+                            hintText: 'ex: Matemática',
+                            keyboardType: TextInputType.text,
                           ),
                           const SizedBox(height: 16),
-                          _buildTextFormFieldCadastro(
-                            _aulasPrevistasController,
-                            const Icon(Icons.calendar_month_outlined),
-                            'Quantidade de Aulas Previstas',
-                            'ex: 20 ',
-                            TextInputType.number,
+                          TextFormFieldPersonalizado(
+                            controller: _aulasPrevistasController,
+                            prefixIcon: const Icon(
+                              Icons.calendar_month_outlined,
+                            ),
+                            label: 'Quantidade de Aulas Previstas',
+                            hintText: 'ex: 20 ',
+                            keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          _buildTextFormFieldCadastro(
-                            _cargaHorariaController,
-                            const Icon(Icons.lock_clock_outlined),
-                            'Carga Horaria',
-                            'ex: 180',
-                            TextInputType.number,
+                          TextFormFieldPersonalizado(
+                            controller: _cargaHorariaController,
+                            prefixIcon: const Icon(Icons.lock_clock_outlined),
+                            label: 'Carga Horaria',
+                            hintText: 'ex: 180',
+                            keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          _buildTextFormFieldCadastro(
-                            _nomeProfessorController,
-                            const Icon(Icons.person),
-                            'Nome do Professor',
-                            'ex: Paulo José',
-                            TextInputType.text,
+                          TextFormFieldPersonalizado(
+                            controller: _nomeProfessorController,
+                            prefixIcon: const Icon(Icons.person),
+                            label: 'Nome do Professor',
+                            hintText: 'ex: Paulo José',
+                            keyboardType: TextInputType.text,
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -134,75 +139,18 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Botão Cadastrar
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          _cadastrarMateria();
-                        },
-                        icon: const Icon(Icons.save, size: 24),
-                        label: const Text(
-                          'Cadastrar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            28,
-                            1,
-                            104,
-                          ),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 6,
-                          shadowColor: Colors.black.withValues(alpha: 0.3),
-                        ),
-                      ),
 
-                      // Botão Limpar
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          _limparCampos();
-                        },
-                        icon: const Icon(Icons.clear, size: 24),
-                        label: const Text(
-                          'Limpar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            255,
-                            114,
-                            114,
-                          ),
-                          foregroundColor: Colors.black87,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 3,
-                          shadowColor: Colors.black.withValues(alpha: 0.3),
-                        ),
-                      ),
-                    ],
+                  BotaoSalvar(
+                    salvarconteudo: () async {
+                      await _cadastrarMateria();
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  BotaoLimpar(
+                    limparconteudo: () async {
+                      _limparCampos();
+                    },
                   ),
                 ],
               ),
@@ -210,40 +158,6 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTextFormFieldCadastro(
-    TextEditingController controller,
-    Icon ico,
-    String labelText,
-    String hintText,
-    TextInputType? keyboardType,
-  ) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            width: 2,
-            color: Color.fromARGB(255, 74, 1, 92),
-          ),
-        ),
-        hintText: hintText,
-        labelText: labelText,
-        prefixIcon: ico,
-        filled: true,
-        fillColor: const Color.fromARGB(15, 72, 1, 204),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      validator: (value) {
-        if (value == null) {
-          return 'Campo obrigatório';
-        }
-        return null;
-      },
     );
   }
 }

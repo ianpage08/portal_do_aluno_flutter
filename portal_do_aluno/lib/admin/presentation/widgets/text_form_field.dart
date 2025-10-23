@@ -10,6 +10,8 @@ class TextFormFieldPersonalizado extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final String? Function(String? value)? validator;
+  final TextInputType? keyboardType;
+  
 
   const TextFormFieldPersonalizado({
     super.key,
@@ -22,6 +24,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
     this.minLines,
     this.maxLines,
     this.validator,
+    this.keyboardType,
   });
 
   @override
@@ -57,6 +60,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
         ),
       ),
       validator: validator,
+      keyboardType: keyboardType,
     );
   }
 }
