@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/conteudo_service.dart';
 import 'package:portal_do_aluno/admin/data/models/conteudo_presenca.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -38,11 +40,10 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
         disciplinaId == null ||
         dataSelecionada == null ||
         _conteudoMinistradoController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os campos!'),
-          backgroundColor: Colors.red,
-        ),
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Preencha todos os campos',
+        cor: Colors.redAccent,
       );
       return;
     }
@@ -60,66 +61,29 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
         conteudoPresenca: novoVinculo,
         turmaId: turmaId!,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Conteúdo salvo com sucesso!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Conteúdo ministrado salvo com sucesso!',
+          cor: Colors.green,
+        );
+      }
+
       // Limpar campos
       _conteudoMinistradoController.clear();
       _observacoesController.clear();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao salvar: $e'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Erro ao salvar o conteúdo: $e',
+          cor: Colors.redAccent,
+        );
+      }
     }
   }
 
-  Widget _buildCalendar() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF5921F3),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        onPressed: () async {
-          final DateTime? data = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2025),
-            lastDate: DateTime(2030),
-          );
-          if (data != null) {
-            setState(() {
-              dataSelecionada = data;
-            });
-          }
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.calendar_today),
-            const SizedBox(width: 10),
-            Text(
-              dataSelecionada != null
-                  ? '${dataSelecionada!.day}/${dataSelecionada!.month}/${dataSelecionada!.year}'
-                  : 'Selecionar Data',
-              style: const TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +132,14 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      _buildCalendar(),
+                      DataPickerCalendario(
+                        onDate: (data) {
+                          setState(() {
+                            dataSelecionada = data;
+                          });
+                        },
+                      ),
+
                       const SizedBox(height: 20),
                       Form(
                         child: Column(
