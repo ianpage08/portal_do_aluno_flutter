@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_referencia_id.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
@@ -88,152 +89,148 @@ class AdminDashboard extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildMenuCard(
-                    context,
-                    Icons.event_available,
-                    'Gestão de ano Letivo',
-                    () {
+                  // MenuNavigationCard: widget personalizado dos botões do menu.
+                  // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.event_available,
+                    title: 'Gestão de ano Letivo',
+                    onTap: () {
                       NavigatorService.navigateTo(RouteNames.adminCalendar);
                     },
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.person_add_alt_1_rounded,
-                    'Gestão de Usuários',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.person_add_alt_1_rounded,
+                    title: 'Gestão de Usuários',
+                    onTap: () {
                       NavigatorService.navigateTo(RouteNames.adminGestao);
                     },
                   ),
-                  _buildMenuCard(context, Icons.co_present, 'Frequencia', () {
-                    NavigatorService.navigateTo(RouteNames.adminFrequencia);
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.menu_book,
-                    'Conteúdo da Aula',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.co_present,
+                    title: 'Frequencia',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.adminFrequencia);
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.menu_book,
+                    title: 'Conteúdo da Aula',
+                    onTap: () {
                       NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
                     },
                   ),
-                  _buildMenuCard(context, Icons.home, 'Gestão Escolar', () {
-                    NavigatorService.navigateTo(RouteNames.adminGestaoEscolar);
-                  }),
-                  _buildMenuCard(context, Icons.numbers, 'Boletins', () {
-                    NavigatorService.navigateTo(RouteNames.boletim);
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.add_reaction_rounded,
-                    'Matriculas',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.home,
+                    title: 'Gestão Escolar',
+                    onTap: () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminGestaoEscolar,
+                      );
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.numbers,
+                    title: 'Boletins',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.boletim);
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.add_reaction_rounded,
+                    title: 'Matriculas',
+                    onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminMatriculaCadastro,
                       );
                     },
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.graphic_eq_rounded,
-                    'Relatorio gerencias',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.graphic_eq_rounded,
+                    title: 'Relatorio gerencias',
+                    onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminRelatoriosGerenciais,
                       );
                     },
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.security_outlined,
-                    'Segurança e Permissões',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.security_outlined,
+                    title: 'Segurança e Permissões',
+                    onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminSegurancaEPermissoes,
                       );
                     },
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.message,
-                    'Comunicação Institicional',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.message,
+                    title: 'Comunicação Institicional',
+                    onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminComunicacaoInstiticional,
                       );
                     },
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.dock_outlined,
-                    'Gerar Documentos',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.dock_outlined,
+                    title: 'Gerar Documentos',
+                    onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminGeracaoDocumentos,
                       );
                     },
                   ),
-                  _buildMenuCard(context, Icons.group, 'Lista de Usuarios', () {
-                    NavigatorService.navigateTo(
-                      RouteNames.adminListaDeUsuarios,
-                    );
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.manage_accounts_rounded,
-                    'Manuteção',
-                    () {},
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.group,
+                    title: 'Lista de Usuarios',
+                    onTap: () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminListaDeUsuarios,
+                      );
+                    },
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.support_agent_rounded,
-                    'Suporte',
-                    () {},
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.manage_accounts_rounded,
+                    title: 'Manuteção',
+                    onTap: () {},
                   ),
-                  _buildMenuCard(
-                    context,
-                    Icons.settings,
-                    'Configurações do Sistema',
-                    () {},
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.support_agent_rounded,
+                    title: 'Suporte',
+                    onTap: () {},
                   ),
-                  _buildMenuCard(context, Icons.help, 'Ajuda', () {}),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.settings,
+                    title: 'Configurações do Sistema',
+                    onTap: () {},
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.help,
+                    title: 'Ajuda',
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildMenuCard(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 4,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 38, color: AppColors.primary),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ), // inkwell = Efeito de toque no card
     );
   }
 }

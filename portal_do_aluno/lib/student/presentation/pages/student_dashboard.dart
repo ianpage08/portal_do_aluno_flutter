@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
@@ -37,7 +38,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // Aqui você pode implementar notificações ou mensagens
               // Por enquanto, só um exemplo de snackbar
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Nenhuma nova notificação')),
@@ -46,7 +46,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ),
           IconButton(
             onPressed: () {
-              // Usar NavigatorService para logout e navegação consistente
               NavigatorService.logout();
             },
             icon: const Icon(Icons.logout),
@@ -89,17 +88,20 @@ class _StudentDashboardState extends State<StudentDashboard> {
               ),
             ),
             const SizedBox(height: 10),
+
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildMenuCard(
-                    context,
-                    Icons.school,
-                    'Notas e Frequência',
-                    () {
+                  // MenuNavigationCard: widget personalizado dos botões do menu.
+                  // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.school,
+                    title: 'Notas e Frequência',
+                    onTap: () {
                       Navigator.pushNamed(
                         context,
                         RouteNames.studentBoletim,
@@ -107,36 +109,56 @@ class _StudentDashboardState extends State<StudentDashboard> {
                       );
                     },
                   ),
-                  _buildMenuCard(context, Icons.assignment, 'Tarefas', () {
-                    NavigatorService.navigateTo(RouteNames.studentTasks);
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.event,
-                    'Calendário Escolar',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.assignment,
+                    title: 'Tarefas',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.studentTasks);
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.event,
+                    title: 'Calendário Escolar',
+                    onTap: () {
                       NavigatorService.navigateTo(RouteNames.studentCalendar);
                     },
                   ),
-                  _buildMenuCard(context, Icons.message, 'Comunicado', () {
-                    // Se tiver uma página de mensagens, navegue para ela
-                    // Por enquanto, só um exemplo de snackbar
-                    NavigatorService.navigateTo(RouteNames.studentComunicados);
-                  }),
-                  _buildMenuCard(context, Icons.settings, 'Configurações', () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Funcionalidade em desenvolvimento'),
-                      ),
-                    );
-                  }),
-                  _buildMenuCard(context, Icons.help, 'Ajuda', () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Funcionalidade em desenvolvimento'),
-                      ),
-                    );
-                  }),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.message,
+                    title: 'Comunicado',
+                    onTap: () {
+                      NavigatorService.navigateTo(
+                        RouteNames.studentComunicados,
+                      );
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.settings,
+                    title: 'Configurações',
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Funcionalidade em desenvolvimento'),
+                        ),
+                      );
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.help,
+                    title: 'Ajuda',
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Funcionalidade em desenvolvimento'),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -145,34 +167,4 @@ class _StudentDashboardState extends State<StudentDashboard> {
       ),
     );
   }
-}
-
-Widget _buildMenuCard(
-  BuildContext context,
-  IconData icon,
-  String title,
-  VoidCallback onTap,
-) {
-  return Card(
-    elevation: 4,
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 38, color: AppColors.primary),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
 }

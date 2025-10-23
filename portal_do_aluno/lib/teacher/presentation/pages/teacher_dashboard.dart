@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
@@ -68,84 +69,78 @@ class TeacherDashboard extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildMenuCard(context, Icons.school, 'Frequência', () {
-                    NavigatorService.navigateTo(RouteNames.adminFrequencia);
-                  }),
-                  _buildMenuCard(context, Icons.assignment, 'Lançar Notas', () {
-                    NavigatorService.navigateTo(RouteNames.boletim);
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.menu_book,
-                    'Conteúdo da Aula',
-                    () {
+                  // MenuNavigationCard: widget personalizado dos botões do menu.
+                  // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.school,
+                    title: 'Frequência',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.adminFrequencia);
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.assignment,
+                    title: 'Lançar Notas',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.boletim);
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.menu_book,
+                    title: 'Conteúdo da Aula',
+                    onTap: () {
                       NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
                     },
                   ),
-                  _buildMenuCard(context, Icons.class_, 'Minhas Turmas', () {
-                    NavigatorService.navigateTo(RouteNames.teacherClasses);
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.event,
-                    'calendario Escolar',
-                    () {
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.class_,
+                    title: 'Minhas Turmas',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.teacherClasses);
+                    },
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.event,
+                    title: 'calendario Escolar',
+                    onTap: () {
                       NavigatorService.navigateTo(RouteNames.teacherCalendar);
                     },
                   ),
-                  _buildMenuCard(context, Icons.message, 'Comunicados', () {
-                    NavigatorService.navigateTo(
-                      RouteNames.comunicadosProfessor,
-                    );
-                  }),
-                  _buildMenuCard(
-                    context,
-                    Icons.settings,
-                    'Configurações',
-                    () {},
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.message,
+                    title: 'Comunicados',
+                    onTap: () {
+                      NavigatorService.navigateTo(
+                        RouteNames.comunicadosProfessor,
+                      );
+                    },
                   ),
-                  _buildMenuCard(context, Icons.help, 'Ajuda', () {
-                    NavigatorService.navigateTo(RouteNames.taskDetails);
-                  }),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.settings,
+                    title: 'Configurações',
+                    onTap: () {},
+                  ),
+                  MenuNavigationCard(
+                    context: context,
+                    icon: Icons.help,
+                    title: 'Ajuda',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.taskDetails);
+                    },
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildMenuCard(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 4,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 38, color: AppColors.primary),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ), // inkwell = Efeito de toque no card
     );
   }
 }
