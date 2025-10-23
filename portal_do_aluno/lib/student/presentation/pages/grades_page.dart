@@ -18,7 +18,7 @@ class _BoletimPageState extends State<BoletimPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // 🔍 Pega os argumentos da rota (apenas uma vez)
+   
     if (usuario == null) {
       final argumentos =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
@@ -27,25 +27,21 @@ class _BoletimPageState extends State<BoletimPage> {
         final userMap = argumentos['user'] as Map<String, dynamic>;
         usuario = Usuario.fromJson(userMap);
 
-        // ✅ DEBUG: Verifique os valores
-        debugPrint('🔍 usuario.id: ${usuario!.id}');
-        debugPrint('🔍 usuario.alunoId: ${usuario!.alunoId}');
-        debugPrint('🔍 usuario.turmaId: ${usuario!.turmaId}');
+        
 
-        // ✅ Priorize alunoId se existir, senão use id
+        
         alunoId = usuario!.alunoId?.isNotEmpty == true
             ? usuario!.alunoId
             : usuario!.id;
 
-        debugPrint('✅ Usuário carregado: ${usuario!.name}');
-        debugPrint('🎯 alunoId final: $alunoId');
+        
       } else {
-        debugPrint('⚠️ Nenhum argumento "user" encontrado.');
+        
       }
     }
   }
 
-  // ✅ Stream para buscar o boletim do aluno
+  
   Stream<DocumentSnapshot<Map<String, dynamic>>> getBoletim(String alunoId) {
     return FirebaseFirestore.instance
         .collection('boletim')
@@ -70,12 +66,9 @@ class _BoletimPageState extends State<BoletimPage> {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: getBoletim(alunoId!),
       builder: (context, snapshot) {
-        // ✅ DEBUG: Adicione logs para ver o que está acontecendo
-        debugPrint(
-          '🔍 StreamBuilder - Connection: ${snapshot.connectionState}',
-        );
-        debugPrint('🔍 Has Data: ${snapshot.hasData}');
-        debugPrint('🔍 Exists: ${snapshot.data?.exists}');
+        
+        
+        
         if (snapshot.hasError) debugPrint('❌ Error: ${snapshot.error}');
         if (snapshot.hasData && snapshot.data!.exists) {
           debugPrint('📄 Data: ${snapshot.data!.data()}');
@@ -90,7 +83,7 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          // ✅ Se não existe, crie automaticamente
+          
           return _buildCriarBoletimAutomaticamente();
         }
 
@@ -155,7 +148,6 @@ class _BoletimPageState extends State<BoletimPage> {
       ),
     );
   }
-  
 
   // ✅ Função para criar boletim vazio
   Future<void> _criarBoletimVazio() async {
@@ -170,32 +162,6 @@ class _BoletimPageState extends State<BoletimPage> {
     });
 
     debugPrint('✅ Boletim vazio criado para alunoId: $alunoId');
-  }
-
-  Widget _buildViewGrade() {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('disciplinas').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Text('Erro ao carregar disciplinas: ${snapshot.error}'),
-          );
-        }
-        final docDisciplinas = snapshot.data!.docs;
-        return ListView(
-          children: docDisciplinas.map((disciplina) {
-            return SizedBox(
-              width: double.infinity,
-              height: 75,
-              child: Card(child: ListTile(title: Text(disciplina['nome']))),
-            );
-          }).toList(),
-        );
-      },
-    );
   }
 
   Widget _buildMediaEStatus() {

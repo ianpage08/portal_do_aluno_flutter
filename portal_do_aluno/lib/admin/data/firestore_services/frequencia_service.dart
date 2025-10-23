@@ -66,14 +66,50 @@ class FrequenciaService {
     return frequenciasCollection.doc(frequenciaId).delete();
   }
 
+  //Calcula a Presença Geral de todos os alunos
   Future<int> calcularQuantidadeDeFrequenciaPorpresenca({
-    
     required String tipoPresenca,
   }) async {
     final qtdFrequencia = await frequenciasCollection
         .where('presenca', isEqualTo: tipoPresenca)
         .get();
-        
+
     return qtdFrequencia.docs.length;
+  }
+
+  Future<double> calcularQuantidadeDePresencaPorAluno(String alunoId) async {
+    final quantidadePresenca = await frequenciasCollection
+        .where('alunoId', isEqualTo: alunoId)
+        .get();
+    //Evita calculo por zero
+    if (quantidadePresenca.docs.isEmpty) {
+      return 0;
+    }
+
+    int presenca = 0;
+    int falta = 0;
+    int justificativa = 0;
+
+    for (var item in quantidadePresenca.docs) {
+      final status = item['presenca'];
+      if (status == 'presente') {
+        presenca++;
+      } else if (status == 'falta') {
+        falta++;
+      } else if (status == 'justificativa') {
+        justificativa++;
+      }
+    }
+
+    
+    int totalDeAula = presenca + falta + justificativa;
+    if(totalDeAula ==0){
+      return 0.0;
+    }
+    int totalPresenca = presenca + justificativa;
+    
+    double calculopercentual = (totalPresenca / totalDeAula) * 100;
+
+    return double.parse(calculopercentual.toStringAsFixed(2));
   }
 }
