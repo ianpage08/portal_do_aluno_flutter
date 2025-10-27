@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/calendario_service.dart';
 import 'package:portal_do_aluno/admin/data/models/calendario.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -41,13 +44,13 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
         data: dataSelecionada!,
       );
       await _calendarioService.cadastrarCalendario(novoEvento);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Evento salvo com sucesso! 🎉'),
-          backgroundColor: Color.fromARGB(255, 58, 183, 96),
-        ),
-      );
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Evento salvo com sucesso! 🎉',
+          cor: Colors.green,
+        );
+      }
 
       _tituloController.clear();
       _descricaoController.clear();
@@ -81,41 +84,27 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      TextFormField(
+                      TextFormFieldPersonalizado(
                         controller: _tituloController,
-                        decoration: const InputDecoration(
-                          labelText: 'Título',
-                          hintText: 'Ex: Feriado de Natal',
-                          prefixIcon: Icon(
-                            Icons.event,
-                            color: Colors.deepPurple,
-                          ),
-                          fillColor: Color(0xFFF2F2F2),
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
+                        label: 'Título',
+                        hintText: 'Ex: Feriado de Natal',
+                        prefixIcon: const Icon(
+                          Icons.event,
+                          color: Colors.deepPurple,
                         ),
                         validator: (value) =>
                             value!.isEmpty ? 'Informe um título' : null,
                       ),
+
                       const SizedBox(height: 12),
-                      TextFormField(
+                      TextFormFieldPersonalizado(
+                        maxLines: 5,
                         controller: _descricaoController,
-                        maxLines: 3,
-                        decoration: const InputDecoration(
-                          labelText: 'Descrição',
-                          hintText:
-                              'Ex: Evento escolar de comemoração do Natal',
-                          prefixIcon: Icon(
-                            Icons.description,
-                            color: Colors.deepPurple,
-                          ),
-                          fillColor: Color(0xFFF2F2F2),
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
+                        label: 'Descrição',
+                        hintText: 'Ex: Evento escolar de comemoração do Natal',
+                        prefixIcon: const Icon(
+                          Icons.description,
+                          color: Colors.deepPurple,
                         ),
                       ),
                     ],
@@ -175,21 +164,10 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
               ),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _salvarEvento,
-                icon: const Icon(Icons.save),
-                label: const Text('Salvar Evento'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
+            BotaoSalvar(
+              salvarconteudo: () async {
+                await _salvarEvento();
+              },
             ),
           ],
         ),

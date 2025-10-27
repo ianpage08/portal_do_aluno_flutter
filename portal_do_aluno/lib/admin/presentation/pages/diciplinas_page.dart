@@ -34,11 +34,11 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
           ),
         ],
       ),
-      body: Padding(padding: const EdgeInsets.all(8), child: __buildStream()),
+      body: Padding(padding: const EdgeInsets.all(8), child: _buildStream()),
     );
   }
 
-  Widget __buildStream() {
+  Widget _buildStream() {
     return StreamBuilder(
       stream: minhaStream,
       builder: (context, snapshot) {

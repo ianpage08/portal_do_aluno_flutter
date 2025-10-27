@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/data/models/frequencia.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class FrequenciaAdmin extends StatefulWidget {
@@ -32,105 +36,6 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
         .collection('matriculas')
         .where('dadosAcademicos.classId', isEqualTo: turmaId)
         .snapshots();
-  }
-
-  Widget streamDrop() {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: minhaStream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('Nenhuma turma encontrada'));
-        }
-
-        final docs = snapshot.data!.docs;
-
-        return SizedBox(
-          width: double.infinity,
-          child: TextButton.icon(
-            icon: const Icon(Icons.school),
-            label: Text(
-              turmaSelcionada ?? 'Selecione uma turma',
-              style: const TextStyle(fontSize: 20),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: const Color(0xFF5921F3),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return ListView(
-                    children: docs.map((item) {
-                      return ListTile(
-                        title: Text(item['serie']),
-                        onTap: () {
-                          setState(() {
-                            turmaSelcionada = item['serie'];
-                            turmaId = item.id;
-                            presencasSelecionadas.clear();
-                          });
-                          Navigator.pop(context);
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildSelecionardia() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF5921F3),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        onPressed: () async {
-          final DateTime? data = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2025),
-            lastDate: DateTime(2050),
-          );
-          if (data != null) {
-            setState(() {
-              dataSelecionada = data;
-            });
-          }
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.calendar_today),
-            const SizedBox(width: 10),
-            Text(
-              dataSelecionada == null
-                  ? 'Selecionar Data'
-                  : ' ${dataSelecionada!.day}/${dataSelecionada!.month}/${dataSelecionada!.year}',
-              style: const TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget listAluno() {
@@ -249,97 +154,74 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
     );
   }
 
-  Widget salvarPresenca() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.save),
-        label: const Text('Salvar Presenças', style: TextStyle(fontSize: 18)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF5921F3),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        onPressed:
-            presencasSelecionadas.isEmpty ||
-                turmaId == null ||
-                dataSelecionada == null
-            ? null
-            : () async {
-                //  Buscar todos os alunos da turma
-                final alunosSnapshot = await _firestore
-                    .collection('matriculas')
-                    .where('dadosAcademicos.classId', isEqualTo: turmaId)
-                    .get();
-                final totalAlunos = alunosSnapshot.docs.length;
-
-                //  Verificar se todos os alunos foram marcados
-                if (presencasSelecionadas.keys.length != totalAlunos) {
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Marque a presença de todos os alunos antes de salvar!',
-                      ),
-                      backgroundColor: Colors.orange,
-                      duration: Duration(seconds: 3),
-                    ),
-                  );
-                  return;
-                }
-
-                //  Salvar cada frequência
-                for (var pre in presencasSelecionadas.entries) {
-                  final frequencia = Frequencia(
-                    id: '',
-                    alunoId: pre.key,
-                    classId: turmaId!,
-                    data: dataSelecionada!,
-                    presenca: pre.value,
-                  );
-
-                  try {
-                    await _frequenciaService.salvarFrequenciaPorTurma(
-                      alunoId: pre.key,
-                      turmaId: turmaId!,
-                      frequencia: frequencia,
-                    );
-                  } catch (e) {
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Algumas presenças já foram registradas neste dia.',
-                        ),
-                        backgroundColor: Colors.red,
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                    return;
-                  }
-                }
-
-                //  Sucesso
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Presenças salvas com sucesso!'),
-                    backgroundColor: Colors.green,
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-
-                setState(() {
-                  presencasSelecionadas.clear();
-                  dataSelecionada = null;
-                  turmaSelcionada = null;
-                });
-              },
-      ),
+  Future<void> salvarFrequencia() async {
+    final alunosSnapshot = await _firestore
+        .collection('matriculas')
+        .where('dadosAcademicos.classId', isEqualTo: turmaId)
+        .get();
+    final totalAlunos = alunosSnapshot.docs.length;
+    final dataCorreta = DateTime.utc(
+      dataSelecionada!.year,
+      dataSelecionada!.month,
+      dataSelecionada!.day,
     );
+
+    //)
+
+    //  Verificar se todos os alunos foram marcados
+    if (presencasSelecionadas.keys.length != totalAlunos) {
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Marque a presença de todos os alunos antes de salvar!',
+          cor: Colors.orange,
+        );
+      }
+
+      return;
+    }
+
+    //  Salvar cada frequência
+    for (var pre in presencasSelecionadas.entries) {
+      final frequencia = Frequencia(
+        id: '',
+        alunoId: pre.key,
+        classId: turmaId!,
+        data: DateTime.now(),
+        presenca: pre.value,
+      );
+
+      try {
+        await _frequenciaService.salvarFrequenciaPorTurma(
+          alunoId: pre.key,
+          turmaId: turmaId!,
+          frequencia: frequencia,
+        );
+      } catch (e) {
+        if (mounted) {
+          snackBarPersonalizado(
+            context: context,
+            mensagem: '$e',
+            cor: Colors.red,
+          );
+        }
+
+        return;
+      }
+    }
+
+    //  Sucesso
+    if (mounted) {
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Presenças salvas com sucesso!',
+        cor: Colors.green,
+      );
+    }
+
+    setState(() {
+      presencasSelecionadas.clear();
+    });
   }
 
   @override
@@ -348,15 +230,38 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       appBar: const CustomAppBar(title: 'Frequência por Aluno'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: salvarPresenca(),
+        child: BotaoSalvar(
+          salvarconteudo: () async {
+            await salvarFrequencia();
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            streamDrop(),
+            StreamDrop(
+              minhaStream: minhaStream,
+              onSelected: (id, nome) {
+                setState(() {
+                  turmaSelcionada = nome;
+                  turmaId = id;
+                });
+              },
+              mensagemError: 'Nenhuma Turma Encontrada',
+              textLabel: 'Selecione uma turma',
+              nomeItem: 'serie',
+              icon: const Icon(Icons.school),
+            ),
+
             const SizedBox(height: 20),
-            buildSelecionardia(),
+            DataPickerCalendario(
+              onDate: (data) {
+                setState(() {
+                  dataSelecionada = data;
+                });
+              },
+            ),
             const SizedBox(height: 20),
             turmaSelcionada != null
                 ? SizedBox(
