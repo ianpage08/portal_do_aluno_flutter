@@ -88,10 +88,22 @@ class AdminDashboard extends StatelessWidget {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
+                childAspectRatio: 1.2,
                 mainAxisSpacing: 16,
+                physics: const BouncingScrollPhysics(),
                 children: [
                   // MenuNavigationCard: widget personalizado dos botões do menu.
                   // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
+                  MenuNavigationCard(
+                    context: context,
+                    icon: CupertinoIcons.person_2_square_stack,
+                    title: 'Nova Matricula',
+                    onTap: () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminMatriculaCadastro,
+                      );
+                    },
+                  ),
                   MenuNavigationCard(
                     context: context,
                     icon: CupertinoIcons.home,
@@ -114,32 +126,11 @@ class AdminDashboard extends StatelessWidget {
 
                   MenuNavigationCard(
                     context: context,
-                    icon: CupertinoIcons.person_2_square_stack,
-                    title: 'Nova Matricula',
-                    onTap: () {
-                      NavigatorService.navigateTo(
-                        RouteNames.adminMatriculaCadastro,
-                      );
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
                     icon: CupertinoIcons.doc_on_doc,
                     title: 'Relatorios e Documentos',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminGeracaoDocumentos,
-                      );
-                    },
-                  ),
-
-                  MenuNavigationCard(
-                    context: context,
-                    icon: CupertinoIcons.lock_shield,
-                    title: 'Segurança e Permissões',
-                    onTap: () {
-                      NavigatorService.navigateTo(
-                        RouteNames.adminSegurancaEPermissoes,
                       );
                     },
                   ),
@@ -156,21 +147,22 @@ class AdminDashboard extends StatelessWidget {
 
                   MenuNavigationCard(
                     context: context,
-                    icon: CupertinoIcons.person_crop_circle_badge_exclam,
-                    title: 'Suporte',
-                    onTap: () {},
+                    icon: CupertinoIcons.lock_shield,
+                    title: 'Segurança e Permissões',
+                    onTap: () {
+                      NavigatorService.navigateTo(
+                        RouteNames.adminSegurancaEPermissoes,
+                      );
+                    },
                   ),
+
                   MenuNavigationCard(
                     context: context,
                     icon: Icons.settings,
-                    title: 'Configurações do Sistema',
-                    onTap: () {},
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: CupertinoIcons.question_circle,
-                    title: 'Ajuda',
-                    onTap: () {},
+                    title: 'Configurações',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.studentSettings);
+                    },
                   ),
                 ],
               ),

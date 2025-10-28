@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/add_usuarios.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/lista_de_usuarios_page.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/navigation_bottonbar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -28,25 +30,18 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Gestão de Usuários'),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
+      bottomNavigationBar: NavigationBottonbar(
         onTap: _onItemTap,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
+        pageIndex: _selectedIndex,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person_add),
-            label: 'adicionar Usuário',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person_2_fill),
-            label: 'Lista de Usuários',
+          CustomBottomItem(label: 'Adicionar', icon: CupertinoIcons.person_add),
+          CustomBottomItem(
+            label: 'Lista De Usuarios',
+            icon: CupertinoIcons.person_2_square_stack,
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
+      body: TransicaoPage(child: _pages[_selectedIndex]),
     );
   }
 }

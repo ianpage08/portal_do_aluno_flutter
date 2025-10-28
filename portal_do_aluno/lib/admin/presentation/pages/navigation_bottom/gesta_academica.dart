@@ -5,6 +5,8 @@ import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/diciplin
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/matriculas_page.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/turma_page.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/navigation_bottonbar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class GestaAcademica extends StatefulWidget {
@@ -33,33 +35,22 @@ class _GestaAcademicaState extends State<GestaAcademica> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Gestão Escolar'),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
+
+      bottomNavigationBar: NavigationBottonbar(
         onTap: _onItemTap,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
+        pageIndex: _selectedIndex,
+
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.doc_chart),
-            label: 'Turmas',
+          CustomBottomItem(label: 'Turmas', icon: CupertinoIcons.doc_append),
+          CustomBottomItem(label: 'Disciplinas', icon: CupertinoIcons.book),
+          CustomBottomItem(
+            label: 'Calendário',
+            icon: CupertinoIcons.calendar_badge_plus,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.book),
-            label: 'Disciplinas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.calendar_badge_plus),
-            label: 'Calendario',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person_2_fill),
-            label: 'Matriculas',
-          ),
+          CustomBottomItem(label: 'Matriculas', icon: CupertinoIcons.person_3),
         ],
       ),
-      body: _pages[_selectedIndex],
+      body: TransicaoPage(child: _pages[_selectedIndex]),
     );
   }
 }

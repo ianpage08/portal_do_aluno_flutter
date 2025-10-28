@@ -1,23 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/relatorios.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/navigation_bottonbar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
-class RelatoriosDocumentosPage extends StatefulWidget {
-  const RelatoriosDocumentosPage({super.key});
+class ConfiguracaoPage extends StatefulWidget {
+  const ConfiguracaoPage({super.key});
 
   @override
-  State<RelatoriosDocumentosPage> createState() =>
-      _RelatoriosDocumentosPageState();
+  State<ConfiguracaoPage> createState() => _ConfiguracaoPageState();
 }
 
-class _RelatoriosDocumentosPageState extends State<RelatoriosDocumentosPage> {
+class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
   final List<Widget> _pages = [
-    const RelatoriosGerenciais(),
-    const GerarDocumentosPage(),
+    const Center(child: Text('Página de Configurações')),
+    const Center(child: Text('Página de Ajuda')),
+    const Center(child: Text('Página de Suporte')),
   ];
   int _selectedIndex = 0;
 
@@ -30,19 +28,20 @@ class _RelatoriosDocumentosPageState extends State<RelatoriosDocumentosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Relatórios de Documentos'),
+      appBar: const CustomAppBar(title: 'Configurações'),
       bottomNavigationBar: NavigationBottonbar(
         pageIndex: _selectedIndex,
         onTap: _onItemTap,
         items: const [
           CustomBottomItem(
-            label: 'Relatórios',
-            icon: CupertinoIcons.chart_bar_alt_fill,
+            label: 'Configurações',
+            icon: CupertinoIcons.settings,
           ),
           CustomBottomItem(
-            label: 'Documentos',
-            icon: CupertinoIcons.doc_on_doc,
+            label: 'Ajuda',
+            icon: CupertinoIcons.question_circle,
           ),
+          CustomBottomItem(label: 'Suporte', icon: CupertinoIcons.phone),
         ],
       ),
       body: TransicaoPage(child: _pages[_selectedIndex]),

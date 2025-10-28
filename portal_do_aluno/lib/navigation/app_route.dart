@@ -7,7 +7,8 @@ import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastro
 import 'package:portal_do_aluno/admin/presentation/pages/conteudo_dado.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/frequencia_admin.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/frequencia_alunos.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/configuracao.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
@@ -16,7 +17,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gesta
 import 'package:portal_do_aluno/admin/presentation/pages/lista_de_usuarios_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/matricula_cadastro.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/relatorios_e_idicadores.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/relatorios.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
@@ -68,7 +69,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.studentDashboard: (context) => const StudentDashboard(),
   RouteNames.studentGrades: (context) => const LoginPage(),
   RouteNames.studentHelp: (context) => const NoticesPage(),
-  RouteNames.studentSettings: (context) => const LoginPage(),
+  RouteNames.studentSettings: (context) => const ConfiguracaoPage(),
   RouteNames.studentTasks: (context) => const AttendancePage(),
   RouteNames.studentCalendar: (context) => const CalendarPage(),
   RouteNames.studentAttendance: (context) => const AttendancePage(),
