@@ -9,7 +9,7 @@ import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+
 
 class AddUsuarioPage extends StatefulWidget {
   const AddUsuarioPage({super.key});

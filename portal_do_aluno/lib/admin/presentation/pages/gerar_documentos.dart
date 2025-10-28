@@ -1,14 +1,14 @@
-import 'dart:typed_data';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
+
 import 'package:portal_do_aluno/admin/data/firestore_services/contrato_pdf_service.dart';
 import 'package:printing/printing.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+
 
 class GerarDocumentosPage extends StatefulWidget {
   const GerarDocumentosPage({super.key});

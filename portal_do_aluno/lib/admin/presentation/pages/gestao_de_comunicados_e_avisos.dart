@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service.dart';
 import 'package:portal_do_aluno/admin/data/models/comunicado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class ComunicacaoInstitucionalPage extends StatefulWidget {
@@ -70,12 +71,14 @@ class _ComunicacaoInstitucionalPageState
       try {
         await _comunicadoService.enviarComunidado(novoComunicado);
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Comunicado enviado com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (mounted) {
+          snackBarPersonalizado(
+            context: context,
+            mensagem: 'Comunicado enviado com sucesso! 🎉',
+            cor: Colors.green,
+          );
+        }
+
         setState(() {
           _tituloController.clear();
           _mensagemController.clear();
@@ -83,9 +86,10 @@ class _ComunicacaoInstitucionalPageState
           anexoAdicionado = false;
         });
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
-        );
+        if (mounted) {
+          snackBarPersonalizado(context: context, mensagem: 'Erro ao enviar', cor: Colors.red);
+        }
+        
       }
     }
   }

@@ -5,7 +5,7 @@ import 'package:portal_do_aluno/admin/data/models/calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+
 import 'package:table_calendar/table_calendar.dart';
 
 class ControleDeCalendario extends StatefulWidget {

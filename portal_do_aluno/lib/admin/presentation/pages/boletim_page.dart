@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/boletim_service.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -92,10 +93,13 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
         tipo: tipo,
         nota: nota,
       );
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Nota salva com sucesso!')));
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Nota salva com sucesso!',
+          cor: Colors.green,
+        );
+      }
 
       _notaController.clear();
       setState(() {
@@ -103,9 +107,13 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
         tipoDeNota = null;
       });
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao salvar nota: $e')));
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Erro ao salvar nota.',
+          cor: Colors.red,
+        );
+      }
     }
   }
 
@@ -165,8 +173,9 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                             case 'turma':
                               nome =
                                   '${data['serie'] ?? 'Turma sem série'} - ${data['turno'] ?? ''}';
-                              if (data.containsKey('classId'))
+                              if (data.containsKey('classId')) {
                                 id = data['classId'];
+                              }
                               break;
                             case 'aluno':
                               if (camposNome != null && camposNome.isNotEmpty) {
@@ -344,7 +353,6 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                                     color:
                                         Colors.grey[300], // fundo desabilitado
                                     borderRadius: BorderRadius.circular(12),
-                                    
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
@@ -187,20 +188,13 @@ class _LoginPageState extends State<LoginPage> {
                                     await NavigatorService.navigateToDashboard();
                                   } catch (e) {
                                     // Aqui você mostra a mensagem de erro
-                                    if (!mounted) return;
-                                    final mensagem = ScaffoldMessenger.of(
-                                      context,
-                                    );
 
-                                    mensagem.showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Erro ao fazer login: CPF ou senha incorretos',
-                                        ), // Exibe CPF ou senha incorretos
-                                        backgroundColor: Colors.redAccent,
-                                        duration: Duration(seconds: 2),
-                                      ),
-                                    );
+                                    if (mounted) {
+                                      snackBarPersonalizado(
+                                        context: context,
+                                        mensagem: 'Erro ao fazer login',
+                                      );
+                                    }
                                   } finally {
                                     if (mounted) {
                                       setState(() => isLoading = false);

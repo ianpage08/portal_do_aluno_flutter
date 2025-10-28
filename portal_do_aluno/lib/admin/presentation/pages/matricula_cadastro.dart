@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/matricula_service.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -152,19 +153,19 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Aluno cadastrado com sucesso'),
-            backgroundColor: Colors.green,
-          ),
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Aluno cadastrado com sucesso! 🎉',
         );
-        _limparCampos();
       }
+      _limparCampos();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
-      );
-      
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Erro ao cadastrar aluno',
+        );
+      }
     }
   }
 
