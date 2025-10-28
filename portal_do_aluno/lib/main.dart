@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, child) => ResponsiveBreakpoints(child: child!, breakpoints: [
+      builder: (context, child) => ResponsiveBreakpoints.builder(child: child!, breakpoints: [
         const Breakpoint(start: 0, end: 500, name: MOBILE),
         const Breakpoint(start: 501, end: 800, name: TABLET),
         const Breakpoint(start: 800, end: double.infinity, name: DESKTOP),

@@ -1,4 +1,13 @@
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/contrato_pdf_service.dart';
+import 'package:printing/printing.dart';
+import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class GerarDocumentosPage extends StatefulWidget {
@@ -14,6 +23,20 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   final TextEditingController _dataController = TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
   final TextEditingController _anoEscolarController = TextEditingController();
+  String? turmaId;
+  String? turmaSelecionada;
+  String? alunoId;
+  String? alunoNome;
+  final ContratoPdfService _contratoPdfService = ContratoPdfService();
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAlunosPorTurma(
+    String turmaId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('matriculas')
+        .where('dadosAcademicos.classId', isEqualTo: turmaId)
+        .snapshots();
+  }
 
   String? tipoDeDocumento;
   final List<Map<String, dynamic>> documentos = [
@@ -46,7 +69,12 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Gerar Documentos'),
+      appBar: AppBar(
+        title: const Text('Gerar Documentos'),
+
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -169,58 +197,39 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _nomeAlunoController,
-                    decoration: InputDecoration(
-                      labelText: 'Nome Completo',
-                      prefixIcon: const Icon(Icons.person),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Digite o nome completo';
-                      }
-                      return null;
+                  StreamDrop(
+                    minhaStream: FirebaseFirestore.instance
+                        .collection('turmas')
+                        .snapshots(),
+                    onSelected: (id, nome) {
+                      setState(() {
+                        turmaSelecionada = nome;
+                        turmaId = id;
+                      });
                     },
+                    mensagemError: 'Nenhuma Turma Encontrada',
+                    textLabel: 'Selecione uma turma',
+                    nomeItem: 'serie',
+                    icon: const Icon(Icons.school),
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _dataController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.calendar_today),
-                      labelText: 'Data de Nascimento',
-                      hintText: '10/06/2025',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Digite a data de nascimento';
-                      }
-                      return null;
-                    },
-                  ),
+                  turmaId != null
+                      ? StreamDrop(
+                          minhaStream: getAlunosPorTurma(turmaId!),
+                          onSelected: (id, nome) {
+                            setState(() {
+                              alunoNome = nome;
+                              alunoId = id;
+                            });
+                          },
+                          mensagemError: 'Nenhum aluno encontrado',
+                          textLabel: 'Selecione Uma Turma',
+                          nomeItem: 'dadosAluno.nome',
+                          icon: const Icon(Icons.person),
+                        )
+                      : const Text('Selecione uma turma para ver os alunos'),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _anoEscolarController,
-                    decoration: InputDecoration(
-                      labelText: 'Ano Escolar',
-                      prefixIcon: const Icon(Icons.school),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Digite o ano escolar';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
+
                   TextFormField(
                     controller: _observacoesController,
                     maxLines: 3,
@@ -376,14 +385,65 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
     });
   }
 
-  void _gerarDocumento() {
-    if (_formKey.currentState!.validate() && tipoDeDocumento != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gerado com sucesso!'),
-          backgroundColor: Colors.green,
-        ),
+  Future<void> _gerarDocumento() async {
+    if (alunoId == null || turmaId == null) {
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Selecione um aluno e turma',
+        cor: Colors.red,
       );
+      return;
+    }
+    try {
+      final docAluno = await FirebaseFirestore.instance
+          .collection('matriculas')
+          .doc(alunoId)
+          .get();
+
+      if (!docAluno.exists) {
+        if (mounted) {
+          snackBarPersonalizado(
+            context: context,
+            mensagem: 'Aluno não encontrado',
+            cor: Colors.red,
+          );
+          return;
+        }
+      }
+      final dados = docAluno.data()!;
+      final dadosAcademicos = DadosAcademicos.fromJson(
+        dados['dadosAcademicos'] ?? {},
+      );
+      final dadosAluno = DadosAluno.fromJson(dados['dadosAluno'] ?? {});
+      final dadosResponsavel = ResponsaveisAluno.fromJson(
+        dados['responsaveisAluno'] ?? {},
+      );
+      final dadosEndereco = EnderecoAluno.fromJson(
+        dados['dadosEndereco'] ?? {},
+      );
+
+      final contratoPronto = await _contratoPdfService.gerarContratoPdf(
+        dadosPdfAcademicos: dadosAcademicos,
+        dadosPdfAluno: dadosAluno,
+        dadosPdfResponsavel: dadosResponsavel,
+        dadosPdfEndereco: dadosEndereco,
+      );
+      await Printing.layoutPdf(onLayout: (format) => contratoPronto);
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Documento Gerado com sucesso! 🎉',
+        );
+      }
+    } catch (e, s) {
+      debugPrint('erro ao gerar documento $e \n $s');
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Erro ao Gerar Documento ',
+          cor: Colors.red,
+        );
+      }
     }
   }
 

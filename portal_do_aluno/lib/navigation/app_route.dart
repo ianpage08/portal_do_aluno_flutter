@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/boletim_page.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/cadastrar_disciplina.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/cadastro_turma.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastro_turma.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/conteudo_dado.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/controle_de_calendario.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/detalhes_do_aluno_test.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/frequencia_admin.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gerar_documentos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gesta_academica.dart';
+
+import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_usuarios.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
+
 import 'package:portal_do_aluno/admin/presentation/pages/lista_de_usuarios_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/matricula_cadastro.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/relatorios_e_idicadores.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
@@ -36,7 +38,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminReports: (context) => const LoginPage(),
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
-  RouteNames.adminGeracaoDocumentos: (context) => const GerarDocumentosPage(),
+  RouteNames.adminGeracaoDocumentos: (context) => const RelatoriosDocumentosPage(),
   RouteNames.adminListaDeUsuarios: (context) => const ListaDeUsuariosPage(),
   RouteNames.adminFrequencia: (context) => const FrequenciaAdmin(),
   RouteNames.adminComunicacaoInstiticional: (context) =>

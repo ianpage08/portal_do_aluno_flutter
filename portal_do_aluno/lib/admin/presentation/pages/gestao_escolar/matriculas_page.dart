@@ -23,7 +23,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Matrículas'),
+        title: const Text('Lista de Alunos Matrículados'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -157,7 +157,6 @@ class _MatriculasPageState extends State<MatriculasPage> {
                           value: 'excluir',
                           label: 'Excluir',
                           onSelected: (id, context, extra) {
-                          
                             if (id != null) {
                               try {
                                 _matriculaService.excluirMatricula(id);

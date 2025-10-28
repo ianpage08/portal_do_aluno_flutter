@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_referencia_id.dart';
@@ -93,39 +94,7 @@ class AdminDashboard extends StatelessWidget {
                   // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.event_available,
-                    title: 'Gestão de ano Letivo',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.adminCalendar);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.person_add_alt_1_rounded,
-                    title: 'Gestão de Usuários',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.adminGestao);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.co_present,
-                    title: 'Frequencia',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.adminFrequencia);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.menu_book,
-                    title: 'Conteúdo da Aula',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.home,
+                    icon: CupertinoIcons.home,
                     title: 'Gestão Escolar',
                     onTap: () {
                       NavigatorService.navigateTo(
@@ -133,18 +102,20 @@ class AdminDashboard extends StatelessWidget {
                       );
                     },
                   ),
+
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.numbers,
-                    title: 'Boletins',
+                    icon: CupertinoIcons.person_add,
+                    title: 'Gestão de Usuários',
                     onTap: () {
-                      NavigatorService.navigateTo(RouteNames.boletim);
+                      NavigatorService.navigateTo(RouteNames.adminGestao);
                     },
                   ),
+
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.add_reaction_rounded,
-                    title: 'Matriculas',
+                    icon: CupertinoIcons.person_2_square_stack,
+                    title: 'Nova Matricula',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminMatriculaCadastro,
@@ -153,17 +124,18 @@ class AdminDashboard extends StatelessWidget {
                   ),
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.graphic_eq_rounded,
-                    title: 'Relatorio gerencias',
+                    icon: CupertinoIcons.doc_on_doc,
+                    title: 'Relatorios e Documentos',
                     onTap: () {
                       NavigatorService.navigateTo(
-                        RouteNames.adminRelatoriosGerenciais,
+                        RouteNames.adminGeracaoDocumentos,
                       );
                     },
                   ),
+
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.security_outlined,
+                    icon: CupertinoIcons.lock_shield,
                     title: 'Segurança e Permissões',
                     onTap: () {
                       NavigatorService.navigateTo(
@@ -173,7 +145,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.message,
+                    icon: CupertinoIcons.chat_bubble_2_fill,
                     title: 'Comunicação Institicional',
                     onTap: () {
                       NavigatorService.navigateTo(
@@ -181,35 +153,10 @@ class AdminDashboard extends StatelessWidget {
                       );
                     },
                   ),
+
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.dock_outlined,
-                    title: 'Gerar Documentos',
-                    onTap: () {
-                      NavigatorService.navigateTo(
-                        RouteNames.adminGeracaoDocumentos,
-                      );
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.group,
-                    title: 'Lista de Usuarios',
-                    onTap: () {
-                      NavigatorService.navigateTo(
-                        RouteNames.adminListaDeUsuarios,
-                      );
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.manage_accounts_rounded,
-                    title: 'Manuteção',
-                    onTap: () {},
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.support_agent_rounded,
+                    icon: CupertinoIcons.person_crop_circle_badge_exclam,
                     title: 'Suporte',
                     onTap: () {},
                   ),
@@ -221,7 +168,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                   MenuNavigationCard(
                     context: context,
-                    icon: Icons.help,
+                    icon: CupertinoIcons.question_circle,
                     title: 'Ajuda',
                     onTap: () {},
                   ),

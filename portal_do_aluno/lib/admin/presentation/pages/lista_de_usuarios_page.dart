@@ -34,7 +34,11 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Lista de Usuários'),
+      appBar: AppBar(
+        title: const Text('Lista de Usuários'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(

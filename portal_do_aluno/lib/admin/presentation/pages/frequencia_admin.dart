@@ -187,7 +187,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
         id: '',
         alunoId: pre.key,
         classId: turmaId!,
-        data: DateTime.now(),
+        data: dataCorreta,
         presenca: pre.value,
       );
 

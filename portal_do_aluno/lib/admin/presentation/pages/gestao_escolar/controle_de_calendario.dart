@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/calendario_service.dart';
 import 'package:portal_do_aluno/admin/data/models/calendario.dart';
@@ -68,7 +69,11 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Gestão de Calendário'),
+      appBar: AppBar(
+        title: const Text('Controle de Calendário'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -167,6 +172,59 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
             BotaoSalvar(
               salvarconteudo: () async {
                 await _salvarEvento();
+              },
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Eventos Cadastrados',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('calendario')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('Nenhum evento encontrado'));
+                }
+                final eventosDocs = snapshot.data!.docs;
+
+                return ListView.builder(
+                  itemCount: eventosDocs.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final evento = eventosDocs[index];
+                    final dataEvento = (eventosDocs[index]['data'] as Timestamp)
+                        .toDate();
+                    final dataFormatada =
+                        '${dataEvento.day}/${dataEvento.month}/${dataEvento.year}';
+                    final tituloEvento = evento['titulo'];
+                    final descricaoEvento = evento['descricao'];
+                    return ListTile(
+                      title: Text(tituloEvento),
+                      leading: const Icon(Icons.event),
+                      subtitle: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(descricaoEvento),
+                              Text(dataFormatada),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          const Divider(),
+                        ],
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ],

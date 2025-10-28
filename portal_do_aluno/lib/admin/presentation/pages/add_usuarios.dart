@@ -11,14 +11,14 @@ import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
-class GestaoDeUsuarios extends StatefulWidget {
-  const GestaoDeUsuarios({super.key});
+class AddUsuarioPage extends StatefulWidget {
+  const AddUsuarioPage({super.key});
 
   @override
-  State<GestaoDeUsuarios> createState() => _GestaoDeUsuariosState();
+  State<AddUsuarioPage> createState() => _AddUsuarioPageState();
 }
 
-class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
+class _AddUsuarioPageState extends State<AddUsuarioPage> {
   final List<String> tipoUsuario = ['Professor', 'Aluno', 'Administrador'];
   String? turmaId;
 
@@ -383,7 +383,11 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Gestão de Usuários'),
+      appBar: AppBar(
+        title: const Text('Cadastrar Usuário'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -404,7 +408,7 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
                             width: double.infinity,
                             child: TextButton(
                               style: TextButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
+                                backgroundColor: Colors.deepPurple,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 16,
@@ -415,7 +419,7 @@ class _GestaoDeUsuariosState extends State<GestaoDeUsuarios> {
                               ),
                               onPressed: showtipoPerfilModal,
                               child: Text(
-                                'Tipo de Usuário: ${isSelectedTipo ?? '_______'}',
+                                isSelectedTipo ?? 'Selecione o tipo de usuário',
                                 style: const TextStyle(fontSize: 18),
                               ),
                             ),
