@@ -35,7 +35,27 @@ class NavigatorService {
       arguments: arguments,
     );
   }
-  
+
+  static Future<T?> navigateToWithAnimation<T>(
+    Widget page, {
+    RouteTransitionsBuilder transitionsBuilder = _defaultTransition,
+  }) {
+    return navigatorKey.currentState!.push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: transitionsBuilder,
+        transitionDuration: const Duration(milliseconds: 200),
+      ),
+    );
+  }
+
+  static Widget _defaultTransition(
+    BuildContext context,
+    Animation<double> a,
+    Animation<double> sa,
+    Widget child,
+  ) => FadeTransition(opacity: a, child: child);
+
   static void showSnackBar(String message) {
     final context = navigatorKey.currentContext;
     if (context == null) return;
@@ -48,6 +68,7 @@ class NavigatorService {
       ),
     );
   }
+
   //remover todas as rotas anteriores e ir para a nova rota
   static Future<T?> navigateReplaceWith<T, TO>(
     String routeName, {
@@ -396,8 +417,6 @@ class NavigatorService {
       );
     }
   }
-
-  
 
   // Mostrar diálogo de confirmação
   static Future<bool> showConfirmDialog({

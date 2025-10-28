@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/boletim_page.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastro_turma.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/conteudo_dado.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/conteudo_dado.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/frequencia_alunos.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/frequencia_alunos.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/configuracao.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
@@ -27,8 +27,8 @@ import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
 
 import 'package:portal_do_aluno/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/add_grade_page.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/class_page.dart';
+
+import 'package:portal_do_aluno/teacher/presentation/pages/turma_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/professor_comunicados_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
 
@@ -82,7 +82,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.gradeDetails: (context) => const LoginPage(),
   // rotas do Professor
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
-  RouteNames.teacherAssignments: (context) => const ClassModel(),
+  
   RouteNames.teacherAttendance: (context) => const AttendancePage(),
   RouteNames.teacherCalendar: (context) => const CalendarPage(),
   RouteNames.teacherSettings: (context) => const LoginPage(),

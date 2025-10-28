@@ -19,6 +19,7 @@ class MenuNavigationCard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: InkWell(
+        
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(

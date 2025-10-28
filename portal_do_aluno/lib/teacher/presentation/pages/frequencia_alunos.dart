@@ -27,7 +27,9 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
   String? turmaId;
   DateTime? dataSelecionada;
 
-  Map<String, dynamic> presencasSelecionadas = {};
+  final ValueNotifier<Map<String, Presenca>> presencasNotifier = ValueNotifier(
+    {},
+  );
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAlunosPorTurma(
     String turmaId,
@@ -53,100 +55,106 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
 
         final docs = snapshot.data!.docs;
 
-        return ListView.builder(
-          itemCount: docs.length,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final aluno = docs[index];
-            final nome = aluno['dadosAluno']['nome'];
-            final alunoId = aluno.id;
-            final presencaAtual = presencasSelecionadas[alunoId];
+        return ValueListenableBuilder(
+          valueListenable: presencasNotifier,
+          builder: (context, presencas, _) {
+            return ListView.builder(
+              itemCount: docs.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final aluno = docs[index];
+                final nome = aluno['dadosAluno']['nome'];
+                final alunoId = aluno.id;
+                final presencaAtual = presencas[alunoId];
 
-            Color cardColor;
-            if (presencaAtual == Presenca.presente) {
-              cardColor = Colors.green.shade100;
-            } else if (presencaAtual == Presenca.falta) {
-              cardColor = Colors.red.shade100;
-            } else if (presencaAtual == Presenca.justificativa) {
-              cardColor = Colors.yellow.shade100;
-            } else {
-              cardColor = Colors.white;
-            }
+                Color cardColor;
+                if (presencaAtual == Presenca.presente) {
+                  cardColor = Colors.green.shade100;
+                } else if (presencaAtual == Presenca.falta) {
+                  cardColor = Colors.red.shade100;
+                } else if (presencaAtual == Presenca.justificativa) {
+                  cardColor = Colors.yellow.shade100;
+                } else {
+                  cardColor = Colors.white;
+                }
 
-            return Card(
-              elevation: 4,
-              color: cardColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ListTile(
-                title: Text(
-                  'Aluno: $nome',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                return Card(
+                  elevation: 4,
+                  color: cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 2) - 45,
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.check, size: 18),
-                          label: const Text('Presente'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              presencasSelecionadas[alunoId] =
-                                  Presenca.presente;
-                            });
-                          },
-                        ),
+                  child: ListTile(
+                    title: Text(
+                      'Aluno: $nome',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 2) - 45,
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.block, size: 18),
-                          label: const Text('Falta'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Wrap(
+                        spacing: 8,
+                        children: [
+                          SizedBox(
+                            width: (MediaQuery.of(context).size.width / 2) - 45,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.check, size: 18),
+                              label: const Text('Presente'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                presencasNotifier.value = {
+                                  ...presencasNotifier.value,
+                                  alunoId: Presenca.presente,
+                                };
+                              },
+                            ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              presencasSelecionadas[alunoId] = Presenca.falta;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.note, size: 18),
-                          label: const Text('Justificativa'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                            foregroundColor: Colors.black,
+                          SizedBox(
+                            width: (MediaQuery.of(context).size.width / 2) - 45,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.block, size: 18),
+                              label: const Text('Falta'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                presencasNotifier.value = {
+                                  ...presencasNotifier.value,
+                                  alunoId: Presenca.falta,
+                                };
+                              },
+                            ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              presencasSelecionadas[alunoId] =
-                                  Presenca.justificativa;
-                            });
-                          },
-                        ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.note, size: 18),
+                              label: const Text('Justificativa'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                                foregroundColor: Colors.black,
+                              ),
+                              onPressed: () {
+                                presencasNotifier.value = {
+                                  ...presencasNotifier.value,
+                                  alunoId: Presenca.justificativa,
+                                };
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         );
@@ -169,7 +177,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
     //)
 
     //  Verificar se todos os alunos foram marcados
-    if (presencasSelecionadas.keys.length != totalAlunos) {
+    if (presencasNotifier.value.keys.length != totalAlunos) {
       if (mounted) {
         snackBarPersonalizado(
           context: context,
@@ -182,7 +190,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
     }
 
     //  Salvar cada frequência
-    for (var pre in presencasSelecionadas.entries) {
+    for (var pre in presencasNotifier.value.entries) {
       final frequencia = Frequencia(
         id: '',
         alunoId: pre.key,
@@ -220,7 +228,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
     }
 
     setState(() {
-      presencasSelecionadas.clear();
+      presencasNotifier.value.clear();
     });
   }
 

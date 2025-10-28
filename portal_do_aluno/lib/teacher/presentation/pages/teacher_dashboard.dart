@@ -5,6 +5,7 @@ import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/teacher/presentation/pages/frequencia_alunos.dart';
 
 class TeacherDashboard extends StatelessWidget {
   const TeacherDashboard({super.key});
@@ -64,78 +65,87 @@ class TeacherDashboard extends StatelessWidget {
             const SizedBox(height: 20),
 
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  // MenuNavigationCard: widget personalizado dos botões do menu.
-                  // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.school,
-                    title: 'Frequência',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.adminFrequencia);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.assignment,
-                    title: 'Lançar Notas',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.boletim);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.menu_book,
-                    title: 'Conteúdo da Aula',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.class_,
-                    title: 'Minhas Turmas',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.teacherClasses);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.event,
-                    title: 'calendario Escolar',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.teacherCalendar);
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.message,
-                    title: 'Comunicados',
-                    onTap: () {
-                      NavigatorService.navigateTo(
-                        RouteNames.comunicadosProfessor,
-                      );
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.settings,
-                    title: 'Configurações',
-                    onTap: () {},
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.help,
-                    title: 'Ajuda',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.taskDetails);
-                    },
-                  ),
-                ],
+              child: AnimatedOpacity(
+                opacity: 1,
+                duration: const Duration(milliseconds: 300),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 1.2,
+                  physics: const BouncingScrollPhysics(),
+                  mainAxisSpacing: 16,
+                  children: [
+                    // MenuNavigationCard: widget personalizado dos botões do menu.
+                    // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.school,
+                      title: 'Frequência',
+                      onTap: () {
+                        // ver depois para user o route names
+                        NavigatorService.navigateToWithAnimation(
+                          const FrequenciaAdmin(),
+                        );
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.assignment,
+                      title: 'Lançar Notas',
+                      onTap: () {
+                        NavigatorService.navigateTo(RouteNames.boletim);
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.menu_book,
+                      title: 'Conteúdo da Aula',
+                      onTap: () {
+                        NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.class_,
+                      title: 'Minhas Turmas',
+                      onTap: () {
+                        NavigatorService.navigateTo(RouteNames.teacherClasses);
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.event,
+                      title: 'calendario Escolar',
+                      onTap: () {
+                        NavigatorService.navigateTo(RouteNames.teacherCalendar);
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.message,
+                      title: 'Comunicados',
+                      onTap: () {
+                        NavigatorService.navigateTo(
+                          RouteNames.comunicadosProfessor,
+                        );
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.settings,
+                      title: 'Configurações',
+                      onTap: () {},
+                    ),
+                    MenuNavigationCard(
+                      context: context,
+                      icon: Icons.help,
+                      title: 'Ajuda',
+                      onTap: () {
+                        NavigatorService.navigateTo(RouteNames.taskDetails);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
