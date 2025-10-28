@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
+import 'package:provider/provider.dart';
 
 class StreamDrop extends StatefulWidget {
-  final void Function(String id, String nome) onSelected;
-  final VoidCallback? onChange;
-  final String nomeItem;
-  final String mensagemError;
   final String textLabel;
   final Icon icon;
   final Stream<QuerySnapshot<Map<String, dynamic>>> minhaStream;
+  final String nomeCampo; // campo que será exibido no dropdown
+  final String mensagemError; // mensagem a exibir caso não haja dados
+  final void Function(String id, String nome)? onSelected;
+
   const StreamDrop({
     super.key,
     required this.minhaStream,
-    required this.onSelected,
-    required this.mensagemError,
     required this.textLabel,
-    required this.nomeItem,
     required this.icon,
-    this.onChange,
+    required this.nomeCampo,
+    required this.mensagemError,
+    this.onSelected,
   });
 
   @override
@@ -25,18 +26,20 @@ class StreamDrop extends StatefulWidget {
 }
 
 class _StreamDropState extends State<StreamDrop> {
-  String? isSelected;
-  String? isId;
   @override
   Widget build(BuildContext context) {
+    final selectedProvider = context.watch<SelectedProvider>();
+    final displayText = selectedProvider.itemNome ?? widget.textLabel;
+
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: widget.minhaStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('Nenhuma turma encontrada'));
+          return Center(child: Text(widget.mensagemError));
         }
 
         final docs = snapshot.data!.docs;
@@ -45,10 +48,7 @@ class _StreamDropState extends State<StreamDrop> {
           width: double.infinity,
           child: TextButton.icon(
             icon: widget.icon,
-            label: Text(
-              isSelected ?? widget.textLabel,
-              style: const TextStyle(fontSize: 20),
-            ),
+            label: Text(displayText, style: const TextStyle(fontSize: 20)),
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFF5921F3),
               foregroundColor: Colors.white,
@@ -63,17 +63,19 @@ class _StreamDropState extends State<StreamDrop> {
                 builder: (context) {
                   return ListView(
                     children: docs.map((item) {
+                      final nomeItem = item[widget.nomeCampo] ?? '';
                       return ListTile(
-                        title: Text(item[widget.nomeItem]),
-
+                        title: Text(nomeItem),
                         onTap: () {
-                          setState(() {
-                            isSelected = item[widget.nomeItem];
-                            isId = item.id;
-                          });
-                          widget.onSelected(isId!, isSelected!);
+                          context.read<SelectedProvider>().selectItem(
+                            item.id,
+                            nomeItem,
+                          );
 
-                          
+                          if (widget.onSelected != null) {
+                            widget.onSelected!(item.id, nomeItem);
+                          }
+
                           Navigator.pop(context);
                         },
                       );

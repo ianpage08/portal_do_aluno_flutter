@@ -209,7 +209,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                     },
                     mensagemError: 'Nenhuma Turma Encontrada',
                     textLabel: 'Selecione uma turma',
-                    nomeItem: 'serie',
+                    nomeCampo: 'serie',
                     icon: const Icon(Icons.school),
                   ),
                   const SizedBox(height: 16),
@@ -224,7 +224,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                           },
                           mensagemError: 'Nenhum aluno encontrado',
                           textLabel: 'Selecione Uma Turma',
-                          nomeItem: 'dadosAluno.nome',
+                          nomeCampo: 'dadosAluno.nome',
                           icon: const Icon(Icons.person),
                         )
                       : const Text('Selecione uma turma para ver os alunos'),

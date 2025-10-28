@@ -7,6 +7,8 @@ import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendari
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/teacher/presentation/providers/presenca_provider.dart';
+import 'package:provider/provider.dart';
 
 class FrequenciaAdmin extends StatefulWidget {
   const FrequenciaAdmin({super.key});
@@ -23,13 +25,11 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       .collection('turmas')
       .snapshots();
 
-  String? turmaSelcionada;
+  String? turmaSelecionada;
   String? turmaId;
   DateTime? dataSelecionada;
 
-  final ValueNotifier<Map<String, Presenca>> presencasNotifier = ValueNotifier(
-    {},
-  );
+  bool _isSaving = false;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAlunosPorTurma(
     String turmaId,
@@ -41,6 +41,8 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
   }
 
   Widget listAluno() {
+    final providerRead = context.read<PresencaProvider>();
+
     if (turmaId == null) return const SizedBox();
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -55,9 +57,8 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
 
         final docs = snapshot.data!.docs;
 
-        return ValueListenableBuilder(
-          valueListenable: presencasNotifier,
-          builder: (context, presencas, _) {
+        return Consumer<PresencaProvider>(
+          builder: (context, provider, _) {
             return ListView.builder(
               itemCount: docs.length,
               shrinkWrap: true,
@@ -66,23 +67,27 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                 final aluno = docs[index];
                 final nome = aluno['dadosAluno']['nome'];
                 final alunoId = aluno.id;
-                final presencaAtual = presencas[alunoId];
+                final presencaAtual = provider.presencas[alunoId];
 
                 Color cardColor;
-                if (presencaAtual == Presenca.presente) {
-                  cardColor = Colors.green.shade100;
-                } else if (presencaAtual == Presenca.falta) {
-                  cardColor = Colors.red.shade100;
-                } else if (presencaAtual == Presenca.justificativa) {
-                  cardColor = Colors.yellow.shade100;
-                } else {
-                  cardColor = Colors.white;
+                switch (presencaAtual) {
+                  case Presenca.presente:
+                    cardColor = Colors.green.shade100;
+                    break;
+                  case Presenca.falta:
+                    cardColor = Colors.red.shade100;
+                    break;
+                  case Presenca.justificativa:
+                    cardColor = Colors.yellow.shade100;
+                    break;
+                  default:
+                    cardColor = Colors.white;
                 }
 
-                return Card(
-                  elevation: 4,
-                  color: cardColor,
-                  shape: RoundedRectangleBorder(
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  decoration: BoxDecoration(
+                    color: cardColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
@@ -108,10 +113,10 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                                 foregroundColor: Colors.white,
                               ),
                               onPressed: () {
-                                presencasNotifier.value = {
-                                  ...presencasNotifier.value,
-                                  alunoId: Presenca.presente,
-                                };
+                                providerRead.marcarPresenca(
+                                  alunoId,
+                                  Presenca.presente,
+                                );
                               },
                             ),
                           ),
@@ -125,10 +130,10 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                                 foregroundColor: Colors.white,
                               ),
                               onPressed: () {
-                                presencasNotifier.value = {
-                                  ...presencasNotifier.value,
-                                  alunoId: Presenca.falta,
-                                };
+                                providerRead.marcarPresenca(
+                                  alunoId,
+                                  Presenca.falta,
+                                );
                               },
                             ),
                           ),
@@ -142,10 +147,10 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                                 foregroundColor: Colors.black,
                               ),
                               onPressed: () {
-                                presencasNotifier.value = {
-                                  ...presencasNotifier.value,
-                                  alunoId: Presenca.justificativa,
-                                };
+                                providerRead.marcarPresenca(
+                                  alunoId,
+                                  Presenca.justificativa,
+                                );
                               },
                             ),
                           ),
@@ -163,86 +168,99 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
   }
 
   Future<void> salvarFrequencia() async {
+    if (_isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    final frequenciaProvider = context.read<PresencaProvider>();
+    final presencas = frequenciaProvider.presencas;
+
+    if (dataSelecionada == null || turmaId == null) {
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Selecione uma turma e uma data!',
+        cor: Colors.orange,
+      );
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+
     final alunosSnapshot = await _firestore
         .collection('matriculas')
         .where('dadosAcademicos.classId', isEqualTo: turmaId)
         .get();
     final totalAlunos = alunosSnapshot.docs.length;
+
+    if (presencas.keys.length != totalAlunos && mounted) {
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Marque a presença de todos os alunos antes de salvar!',
+        cor: Colors.orange,
+      );
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+
     final dataCorreta = DateTime.utc(
       dataSelecionada!.year,
       dataSelecionada!.month,
       dataSelecionada!.day,
     );
 
-    //)
-
-    //  Verificar se todos os alunos foram marcados
-    if (presencasNotifier.value.keys.length != totalAlunos) {
-      if (mounted) {
-        snackBarPersonalizado(
-          context: context,
-          mensagem: 'Marque a presença de todos os alunos antes de salvar!',
-          cor: Colors.orange,
+    try {
+      for (var pre in presencas.entries) {
+        final frequencia = Frequencia(
+          id: '',
+          alunoId: pre.key,
+          classId: turmaId!,
+          data: dataCorreta,
+          presenca: pre.value,
         );
-      }
 
-      return;
-    }
-
-    //  Salvar cada frequência
-    for (var pre in presencasNotifier.value.entries) {
-      final frequencia = Frequencia(
-        id: '',
-        alunoId: pre.key,
-        classId: turmaId!,
-        data: dataCorreta,
-        presenca: pre.value,
-      );
-
-      try {
         await _frequenciaService.salvarFrequenciaPorTurma(
           alunoId: pre.key,
           turmaId: turmaId!,
           frequencia: frequencia,
         );
-      } catch (e) {
-        if (mounted) {
-          snackBarPersonalizado(
-            context: context,
-            mensagem: '$e',
-            cor: Colors.red,
-          );
-        }
-
-        return;
       }
-    }
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Presenças salvas com sucesso!',
+          cor: Colors.green,
+        );
+      }
 
-    //  Sucesso
-    if (mounted) {
-      snackBarPersonalizado(
-        context: context,
-        mensagem: 'Presenças salvas com sucesso!',
-        cor: Colors.green,
-      );
+      frequenciaProvider.limpar();
+    } catch (e) {
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Erro ao salvar: $e',
+          cor: Colors.red,
+        );
+      }
+    } finally {
+      setState(() {
+        _isSaving = false;
+      });
     }
-
-    setState(() {
-      presencasNotifier.value.clear();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: const CustomAppBar(title: 'Frequência por Aluno'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: BotaoSalvar(
-          salvarconteudo: () async {
-            await salvarFrequencia();
-          },
-        ),
+        child: BotaoSalvar(salvarconteudo: salvarFrequencia),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -252,16 +270,16 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
               minhaStream: minhaStream,
               onSelected: (id, nome) {
                 setState(() {
-                  turmaSelcionada = nome;
+                  turmaSelecionada = nome;
                   turmaId = id;
+                  context.read<PresencaProvider>().limpar();
                 });
               },
               mensagemError: 'Nenhuma Turma Encontrada',
               textLabel: 'Selecione uma turma',
-              nomeItem: 'serie',
+              nomeCampo: 'serie',
               icon: const Icon(Icons.school),
             ),
-
             const SizedBox(height: 20),
             DataPickerCalendario(
               onDate: (data) {
@@ -271,7 +289,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
               },
             ),
             const SizedBox(height: 20),
-            turmaSelcionada != null
+            turmaSelecionada != null
                 ? SizedBox(
                     height: MediaQuery.of(context).size.height * 0.65,
                     child: listAluno(),

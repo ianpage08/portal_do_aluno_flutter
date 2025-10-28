@@ -103,9 +103,9 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                         minhaStream: getTurma(),
                         mensagemError: 'Nenhuma Turma Encontrada',
                         textLabel: 'Selecione uma turma',
-                        nomeItem: 'serie',
+                        nomeCampo: 'serie',
                         icon: const Icon(Icons.school),
-                        onChange: () {},
+
                         onSelected: (id, nome) {
                           setState(() {
                             turmaSelecionada = nome;
@@ -118,7 +118,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                         minhaStream: getDisciplinas(),
                         mensagemError: 'Nenhuma Disciplina Encontrada',
                         textLabel: 'Selecione uma Disciplina',
-                        nomeItem: 'nome',
+                        nomeCampo: 'nome',
                         icon: const Icon(Icons.note),
                         onSelected: (id, nome) {
                           setState(() {
