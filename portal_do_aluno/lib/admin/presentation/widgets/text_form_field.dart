@@ -11,6 +11,8 @@ class TextFormFieldPersonalizado extends StatelessWidget {
   final int? maxLines;
   final String? Function(String? value)? validator;
   final TextInputType? keyboardType;
+  final bool enable;
+  final Color? fillColor;
   
 
   const TextFormFieldPersonalizado({
@@ -25,6 +27,8 @@ class TextFormFieldPersonalizado extends StatelessWidget {
     this.maxLines,
     this.validator,
     this.keyboardType,
+    this.enable = true,
+    this.fillColor = const Color.fromARGB(15, 72, 1, 204),
   });
 
   @override
@@ -42,7 +46,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
 
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true, //ativa a cor de fundo
-        fillColor: const Color.fromARGB(15, 72, 1, 204),
+        fillColor: fillColor,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.grey),
@@ -61,6 +65,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
       ),
       validator: validator,
       keyboardType: keyboardType,
+      enabled: enable,
     );
   }
 }

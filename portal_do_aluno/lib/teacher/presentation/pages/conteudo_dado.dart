@@ -124,10 +124,6 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                           setState(() {
                             disciplinaSelecionada = nome;
                             disciplinaId = id;
-
-                            if (disciplinaSelecionada == null) {
-                              nome = 'Selecione uma disciplina';
-                            }
                           });
                         },
                       ),
@@ -167,7 +163,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                               },
                             ),
 
-                            const SizedBox(height: 20),
+                            
 
                             // Lista de conteúdos já cadastrados
                           ],
