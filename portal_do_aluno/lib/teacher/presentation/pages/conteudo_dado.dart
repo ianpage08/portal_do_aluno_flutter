@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/conteudo_service.dart';
 import 'package:portal_do_aluno/admin/data/models/conteudo_presenca.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:provider/provider.dart';
 
 class OqueFoiDado extends StatefulWidget {
   const OqueFoiDado({super.key});
@@ -20,15 +22,14 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
   final TextEditingController _conteudoMinistradoController =
       TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
-  String? turmaSelecionada;
   String? turmaId;
   DateTime? dataSelecionada;
-  String? disciplinaSelecionada;
   String? disciplinaId;
   bool isLoading = false;
 
   final ConteudoPresencaService _conteudoPresencaService =
       ConteudoPresencaService();
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getTurma() {
     return FirebaseFirestore.instance.collection('turmas').snapshots();
   }
@@ -74,6 +75,11 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
       // Limpar campos
       _conteudoMinistradoController.clear();
       _observacoesController.clear();
+
+      // Limpar seleções do provider
+      if (mounted) {
+        context.read<SelectedProvider>().limparDrop('disciplina');
+      }
     } catch (e) {
       if (mounted) {
         snackBarPersonalizado(
@@ -99,22 +105,24 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     children: [
+                      // ✅ Apenas um dropdown de turma
                       StreamDrop(
+                        dropId: 'turma',
                         minhaStream: getTurma(),
                         mensagemError: 'Nenhuma Turma Encontrada',
                         textLabel: 'Selecione uma turma',
                         nomeCampo: 'serie',
                         icon: const Icon(Icons.school),
-
                         onSelected: (id, nome) {
                           setState(() {
-                            turmaSelecionada = nome;
                             turmaId = id;
                           });
+                          debugPrint('✅ Turma selecionada: $nome (ID: $id)');
                         },
                       ),
                       const SizedBox(height: 20),
                       StreamDrop(
+                        dropId: 'disciplina',
                         minhaStream: getDisciplinas(),
                         mensagemError: 'Nenhuma Disciplina Encontrada',
                         textLabel: 'Selecione uma Disciplina',
@@ -122,9 +130,11 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                         icon: const Icon(Icons.note),
                         onSelected: (id, nome) {
                           setState(() {
-                            disciplinaSelecionada = nome;
                             disciplinaId = id;
                           });
+                          debugPrint(
+                            '✅ Disciplina selecionada: $nome (ID: $id)',
+                          );
                         },
                       ),
                       const SizedBox(height: 20),
@@ -145,7 +155,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                               controller: _conteudoMinistradoController,
                               label: 'Conteúdo Ministrado em Aula',
                               hintText:
-                                  'Ex: “Revisão de equações do 1º grau e introdução a inequações”',
+                                  'Ex: "Revisão de equações do 1º grau e introdução a inequações"',
                             ),
 
                             const SizedBox(height: 20),
@@ -162,10 +172,6 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                                 await salvarconteudo();
                               },
                             ),
-
-                            
-
-                            // Lista de conteúdos já cadastrados
                           ],
                         ),
                       ),

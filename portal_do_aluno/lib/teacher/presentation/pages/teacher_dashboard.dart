@@ -104,14 +104,7 @@ class TeacherDashboard extends StatelessWidget {
                         NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
                       },
                     ),
-                    MenuNavigationCard(
-                      context: context,
-                      icon: Icons.class_,
-                      title: 'Minhas Turmas',
-                      onTap: () {
-                        NavigatorService.navigateTo(RouteNames.teacherClasses);
-                      },
-                    ),
+
                     MenuNavigationCard(
                       context: context,
                       icon: Icons.event,
@@ -134,14 +127,8 @@ class TeacherDashboard extends StatelessWidget {
                       context: context,
                       icon: Icons.settings,
                       title: 'Configurações',
-                      onTap: () {},
-                    ),
-                    MenuNavigationCard(
-                      context: context,
-                      icon: Icons.help,
-                      title: 'Ajuda',
                       onTap: () {
-                        NavigatorService.navigateTo(RouteNames.taskDetails);
+                        NavigatorService.navigateTo(RouteNames.studentSettings);
                       },
                     ),
                   ],

@@ -4,15 +4,17 @@ import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.d
 import 'package:provider/provider.dart';
 
 class StreamDrop extends StatefulWidget {
+  final String dropId; 
   final String textLabel;
   final Icon icon;
   final Stream<QuerySnapshot<Map<String, dynamic>>> minhaStream;
-  final String nomeCampo; // campo que será exibido no dropdown
-  final String mensagemError; // mensagem a exibir caso não haja dados
+  final String nomeCampo; 
+  final String mensagemError; 
   final void Function(String id, String nome)? onSelected;
 
   const StreamDrop({
     super.key,
+    required this.dropId,
     required this.minhaStream,
     required this.textLabel,
     required this.icon,
@@ -29,7 +31,10 @@ class _StreamDropState extends State<StreamDrop> {
   @override
   Widget build(BuildContext context) {
     final selectedProvider = context.watch<SelectedProvider>();
-    final displayText = selectedProvider.itemNome ?? widget.textLabel;
+    final displayText =
+        selectedProvider.getNome(widget.dropId) ?? widget.textLabel;
+
+    debugPrint(' StreamDrop(${widget.dropId}): displayText = $displayText');
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: widget.minhaStream,
@@ -67,7 +72,13 @@ class _StreamDropState extends State<StreamDrop> {
                       return ListTile(
                         title: Text(nomeItem),
                         onTap: () {
+                          debugPrint(
+                            ' StreamDrop(${widget.dropId}): Selecionando $nomeItem (ID: ${item.id})',
+                          );
+
+                          
                           context.read<SelectedProvider>().selectItem(
+                            widget.dropId, 
                             item.id,
                             nomeItem,
                           );

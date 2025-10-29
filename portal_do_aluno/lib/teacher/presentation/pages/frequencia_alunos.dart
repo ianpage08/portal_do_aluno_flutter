@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/data/models/frequencia.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
@@ -238,6 +239,9 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       }
 
       frequenciaProvider.limpar();
+      if (mounted) {
+        context.read<SelectedProvider>().limparDrop('turma');
+      }
     } catch (e) {
       if (mounted) {
         snackBarPersonalizado(
@@ -255,7 +259,6 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: const CustomAppBar(title: 'Frequência por Aluno'),
       bottomNavigationBar: Padding(
@@ -267,6 +270,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
         child: Column(
           children: [
             StreamDrop(
+              dropId: 'turma',
               minhaStream: minhaStream,
               onSelected: (id, nome) {
                 setState(() {

@@ -198,6 +198,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                 children: [
                   const SizedBox(height: 16),
                   StreamDrop(
+                    dropId: 'turma',
                     minhaStream: FirebaseFirestore.instance
                         .collection('turmas')
                         .snapshots(),
@@ -215,6 +216,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                   const SizedBox(height: 16),
                   turmaId != null
                       ? StreamDrop(
+                          dropId: 'aluno',
                           minhaStream: getAlunosPorTurma(turmaId!),
                           onSelected: (id, nome) {
                             setState(() {

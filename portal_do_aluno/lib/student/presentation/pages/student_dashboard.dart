@@ -93,6 +93,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
+                childAspectRatio: 1.2,
                 mainAxisSpacing: 16,
                 children: [
                   // MenuNavigationCard: widget personalizado dos botões do menu.
@@ -140,23 +141,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     icon: Icons.settings,
                     title: 'Configurações',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Funcionalidade em desenvolvimento'),
-                        ),
-                      );
-                    },
-                  ),
-                  MenuNavigationCard(
-                    context: context,
-                    icon: Icons.help,
-                    title: 'Ajuda',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Funcionalidade em desenvolvimento'),
-                        ),
-                      );
+                      NavigatorService.navigateTo(RouteNames.studentSettings);
                     },
                   ),
                 ],
