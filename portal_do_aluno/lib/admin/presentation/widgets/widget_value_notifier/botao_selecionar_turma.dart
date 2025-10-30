@@ -57,43 +57,34 @@ class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
+
+                    backgroundColor: const Color.fromARGB(242, 255, 255, 255),
                     builder: (context) {
-                      return DraggableScrollableSheet(
-                        initialChildSize: 0.6,
-                        maxChildSize: 0.9,
-                        minChildSize: 0.4,
-                        builder: (_, controller) {
-                          return Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20),
-                              ),
-                            ),
-                            child: ListView.builder(
-                              controller: controller,
-                              itemCount: docTurmas.length,
-                              itemBuilder: (context, index) {
-                                final turma = docTurmas[index];
-                                final nome = turma['serie'] as String;
-                                final turno = turma['turno'] as String;
-                                final nomeCompleto = '$nome - $turno';
-                                return ListTile(
-                                  title: Text(nomeCompleto.toUpperCase()),
-                                  onTap: () {
-                                    widget.turmaSelecionada.value =
-                                        nomeCompleto;
-                                    widget.onTurmaSelecionada?.call(
-                                      turma.id,
-                                      nomeCompleto,
-                                    );
-                                    Navigator.pop(context);
-                                  },
-                                );
-                              },
-                            ),
+                      return ListView.builder(
+                        itemCount: docTurmas.length,
+                        itemBuilder: (context, index) {
+                          final turma = docTurmas[index];
+                          final nome = turma['serie'] as String;
+                          final turno = turma['turno'] as String;
+                          final nomeCompleto = '$nome - $turno';
+                          final nomeFormatado = nomeCompleto
+                              .split(' ')
+                              .map((palavra) {
+                                if (palavra.isEmpty) return palavra;
+                                return palavra[0].toUpperCase() +
+                                    palavra.substring(1);
+                              })
+                              .join(' ');
+                          return ListTile(
+                            title: Text(nomeFormatado),
+                            onTap: () {
+                              widget.turmaSelecionada.value = nomeCompleto;
+                              widget.onTurmaSelecionada?.call(
+                                turma.id,
+                                nomeCompleto,
+                              );
+                              Navigator.pop(context);
+                            },
                           );
                         },
                       );

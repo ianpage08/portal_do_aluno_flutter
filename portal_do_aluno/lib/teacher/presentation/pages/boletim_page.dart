@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/boletim_service.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/botao_desativado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_limpar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/fixed_drop.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop_generico.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -28,7 +31,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   String? turmaNome;
 
   String? alunoId;
-  String? alunoNome;
+  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
 
   String? disciplinaId;
   String? disciplinaNome;
@@ -50,6 +53,8 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     'Nota Extra',
   ];
 
+  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getTurmas() =>
       _firestore.collection('turmas').orderBy('serie').snapshots();
 
@@ -65,7 +70,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   void limparCampos() {
     setState(() {
       alunoId = null;
-      alunoNome = null;
+      turmaId = null;
       disciplinaId = null;
       disciplinaNome = null;
       unidadeSelecionada = null;
@@ -147,70 +152,35 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                     child: Column(
                       children: [
                         // 🔹 Turma
-                        StreamDropGenerico(
-                          tipo: 'turma',
-                          titulo: 'Selecione uma Turma',
-                          stream: getTurmas(),
-                          selecionado: turmaNome,
-                          icon: Icons.school,
-                          onSelected: (id, nome) {
+                        BotaoSelecionarTurma(
+                          turmaSelecionada: turmaSelecionada,
+                          onTurmaSelecionada: (id, turmaNome) {
                             setState(() {
                               turmaId = id;
-                              turmaNome = nome;
                               limparCampos();
                             });
+                            debugPrint(
+                              '✅ Turma selecionada: $turmaNome (ID: $turmaId)',
+                            );
                           },
-                          habilitado: true,
                         ),
+
                         const SizedBox(height: 16),
 
                         // 🔹 Aluno
                         turmaId != null
-                            ? StreamDropGenerico(
-                                tipo: 'aluno',
-                                titulo: 'Selecione um Aluno',
-                                stream: getAlunos(turmaId!),
-                                selecionado: alunoNome,
-                                icon: Icons.person,
-                                camposNome: const {'dadosAluno': 'nome'},
-                                onSelected: (id, nome) {
+                            ? BotaoSelecionarAluno(
+                                alunoSelecionado: alunoSelecionado,
+                                turmaId: turmaId,
+                                onAlunoSelecionado: (id, nomeCompleto) {
                                   setState(() {
                                     alunoId = id;
-                                    alunoNome = nome;
                                   });
                                 },
                               )
-                            : SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Colors.grey[300], // fundo desabilitado
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.person,
-                                        color: Colors.grey[600],
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'Selecione um Aluno',
-                                        style: TextStyle(
-                                          color: Colors
-                                              .grey[600], // texto desabilitado
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                            : const BotaoDesativado(
+                                label: 'Selecione uma Aluno',
+                                icon: CupertinoIcons.person_fill,
                               ),
 
                         const SizedBox(height: 16),

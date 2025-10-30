@@ -5,11 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
-
 
 class AddUsuarioPage extends StatefulWidget {
   const AddUsuarioPage({super.key});
@@ -60,121 +61,8 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
   String? cpfSelecionado;
   String? alunoId;
-  String? alunoSelecionado;
-  String? turmaSelecionada;
-
-  Widget showStream() {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: getstreamTurma(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return const Center(child: Text('Erro ao carregar turmas'));
-        }
-
-        final docsTurma = snapshot.data!.docs;
-
-        return SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: TextButton.icon(
-            label: turmaSelecionada != null
-                ? Text(turmaSelecionada!)
-                : const Text('Selecione uma turma'),
-            style: TextButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 128, 37, 247),
-              foregroundColor: const Color.fromARGB(255, 255, 232, 232),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            ),
-            icon: const Icon(Icons.school),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return ListView(
-                    children: docsTurma.map((item) {
-                      return ListTile(
-                        title: Text(item['serie']),
-                        subtitle: Text(item['turno']),
-                        onTap: () {
-                          turmaSelecionada = item['serie'];
-                          setState(() {
-                            turmaId = item.id;
-                          });
-                          Navigator.pop(context);
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget showStreamAluno() {
-    if (turmaId == null) {
-      return const SizedBox();
-    }
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: getAluno(turmaId!),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return const Center(child: Text('Erro ao carregar alunos'));
-        }
-        final docsAluno = snapshot.data!.docs;
-
-        return SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: TextButton.icon(
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return ListView(
-                    children: docsAluno.map((docAluno) {
-                      final dadosAluno = DadosAluno.fromJson(
-                        docAluno['dadosAluno'],
-                      );
-                      return ListTile(
-                        title: Text(dadosAluno.nome),
-                        onTap: () {
-                          setState(() {
-                            alunoId = dadosAluno.id;
-                            alunoSelecionado = dadosAluno.nome;
-                            cpfSelecionado = dadosAluno.cpf;
-                          });
-                          Navigator.pop(context);
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              );
-            },
-            label: alunoSelecionado != null
-                ? Text(alunoSelecionado!)
-                : const Text('Selecione um aluno'),
-            style: TextButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 128, 37, 247),
-              foregroundColor: const Color.fromARGB(255, 224, 223, 214),
-            ),
-            icon: const Icon(Icons.person),
-          ),
-        );
-      },
-    );
-  }
+  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
+  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
 
   void showtipoPerfilModal() {
     showModalBottomSheet(
@@ -210,10 +98,8 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
       isSelectedTipo = null;
 
       cpfSelecionado = null;
-      turmaSelecionada = null;
       turmaId = null;
       alunoId = null;
-      alunoSelecionado = null;
     });
   }
 
@@ -302,7 +188,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
       final confirmarSenha = confirmarSenhaController.text.trim();
       final cpf = cpfController.text.replaceAll(RegExp(r'[^0-9]'), '');
       if (isSelectedTipo == 'Aluno' &&
-          (alunoId == null || alunoSelecionado == null)) {
+          (alunoId == null || alunoSelecionado.value == null)) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Selecione turma e aluno antes de cadastrar'),
@@ -351,7 +237,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
           id: '',
           turmaId: turmaId ?? '',
           alunoId: alunoId ?? '',
-          name: alunoSelecionado ?? nome,
+          name: alunoSelecionado.value ?? nome,
           cpf: cpfSelecionado ?? cpf,
           password: senha,
           type: _mapTipo(isSelectedTipo),
@@ -428,9 +314,27 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           Column(
                             children: [
                               if (isSelectedTipo == 'Aluno') ...[
-                                showStream(),
+                                BotaoSelecionarTurma(
+                                  turmaSelecionada: turmaSelecionada,
+                                  onTurmaSelecionada: (id, nomeCompleto) {
+                                    setState(() {
+                                      turmaId = id;
+                                    });
+                                  },
+                                ),
                                 const SizedBox(height: 12),
-                                showStreamAluno(),
+                                if (turmaId != null)
+                                  BotaoSelecionarAluno(
+                                    alunoSelecionado: alunoSelecionado,
+                                    turmaId: turmaId,
+
+                                    onAlunoSelecionado: (id, nomeCompleto) {
+                                      alunoId = id;
+                                      debugPrint(
+                                        'Aluno ID selecionado: $alunoId',
+                                      );
+                                    },
+                                  ),
                                 const SizedBox(height: 12),
                               ],
 

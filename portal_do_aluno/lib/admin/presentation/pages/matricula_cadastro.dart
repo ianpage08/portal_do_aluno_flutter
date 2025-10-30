@@ -9,6 +9,7 @@ import 'package:portal_do_aluno/admin/presentation/widgets/fixed_drop.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop_generico.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -54,9 +55,8 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
   final TextEditingController _medicamentosController = TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
 
-  final ValueNotifier<String?> _turmaIdSelecionada = ValueNotifier<String?>(
-    null,
-  );
+  final ValueNotifier<String?> _turmaId = ValueNotifier<String?>(null);
+  final ValueNotifier<String?> _turmaNome = ValueNotifier<String?>(null);
   final ValueNotifier<String?> _sexoSelecionado = ValueNotifier<String?>(null);
   final ValueNotifier<DateTime?> dataSelecionada = ValueNotifier<DateTime?>(
     null,
@@ -119,7 +119,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
   void _cadastrarAluno() async {
     if (!_formKey.currentState!.validate() ||
         dataSelecionada.value == null ||
-        _turmaIdSelecionada.value == null) {
+        _turmaId.value == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Preencha todos os campos obrigatórios corretamente'),
@@ -156,7 +156,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     );
 
     final dadosAcademicos = DadosAcademicos(
-      classId: _turmaIdSelecionada.value!,
+      classId: _turmaId.value!,
       numeroMatricula: _numeroMatriculaController.text,
       turma: _tumarControler.text,
       anoLetivo: _anoLetivoController.text,
@@ -173,7 +173,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
 
     try {
       await _matriculaService.cadastrarAlunoCompleto(
-        turmaId: _turmaIdSelecionada.value!,
+        turmaId: _turmaId.value!,
         dadosAluno: dadosAluno,
         enderecoAluno: enderecoAluno,
         responsaveisAluno: responsaveisAluno,
@@ -229,7 +229,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     _sexoSelecionado.value = null;
     dataSelecionada.value = null;
     turnoSelecionado.value = null;
-    _turmaIdSelecionada.value = null;
+    _turmaId.value = null;
   }
 
   @override
@@ -438,23 +438,12 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
           );
         },
       ),
-      ValueListenableBuilder<String?>(
-        valueListenable: _turmaIdSelecionada,
-        builder: (context, value, child) {
-          return StreamDropGenerico(
-            tipo: 'turma',
-            icon: CupertinoIcons.house_alt_fill,
-            titulo: 'Selecione uma turma',
-            stream: FirebaseFirestore.instance
-                .collection('turmas')
-                .orderBy('serie')
-                .snapshots(),
-            selecionado: value,
-            onSelected: (id, nome) {
-              _turmaIdSelecionada.value = id;
-              _tumarControler.text = nome;
-            },
-          );
+      BotaoSelecionarTurma(
+        turmaSelecionada: _turmaNome,
+        onTurmaSelecionada: (id, turmaNome) {
+          _turmaNome.value = turmaNome;
+          _turmaId.value = id;
+          debugPrint('Turma selecionada: $turmaNome (ID: $id)');
         },
       ),
     ],

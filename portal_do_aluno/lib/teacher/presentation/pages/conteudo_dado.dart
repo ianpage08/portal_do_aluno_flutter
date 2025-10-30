@@ -8,6 +8,7 @@ import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendari
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
       TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
   String? turmaId;
+  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
   DateTime? dataSelecionada;
   String? disciplinaId;
   bool isLoading = false;
@@ -106,20 +108,17 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                   child: Column(
                     children: [
                       // ✅ Apenas um dropdown de turma
-                      StreamDrop(
-                        dropId: 'turma',
-                        minhaStream: getTurma(),
-                        mensagemError: 'Nenhuma Turma Encontrada',
-                        textLabel: 'Selecione uma turma',
-                        nomeCampo: 'serie',
-                        icon: const Icon(Icons.school),
-                        onSelected: (id, nome) {
-                          setState(() {
-                            turmaId = id;
-                          });
-                          debugPrint('✅ Turma selecionada: $nome (ID: $id)');
+                      BotaoSelecionarTurma(
+                        turmaSelecionada: turmaSelecionada,
+                        
+                        onTurmaSelecionada: (id, turmaNome) {
+                          turmaId = id;
+                          debugPrint(
+                            '✅ Turma selecionada: $turmaNome (ID: $turmaId)',
+                          );
                         },
                       ),
+
                       const SizedBox(height: 20),
                       StreamDrop(
                         dropId: 'disciplina',

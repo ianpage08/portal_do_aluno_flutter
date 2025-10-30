@@ -6,7 +6,7 @@ import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.d
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
+
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:portal_do_aluno/teacher/presentation/providers/presenca_provider.dart';

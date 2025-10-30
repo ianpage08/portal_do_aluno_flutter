@@ -1,14 +1,12 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/data/firestore_services/contrato_pdf_service.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:printing/printing.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
-
 
 class GerarDocumentosPage extends StatefulWidget {
   const GerarDocumentosPage({super.key});
@@ -24,9 +22,9 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   final TextEditingController _observacoesController = TextEditingController();
   final TextEditingController _anoEscolarController = TextEditingController();
   String? turmaId;
-  String? turmaSelecionada;
+  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
   String? alunoId;
-  String? alunoNome;
+  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
   final ContratoPdfService _contratoPdfService = ContratoPdfService();
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAlunosPorTurma(
@@ -84,7 +82,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
               const SizedBox(height: 16),
               _buildCardInfo(),
               const SizedBox(height: 16),
-              _buildPreVizualizacao(),
+
               const SizedBox(height: 16),
               _buildButoesDeAcao(),
             ],
@@ -197,37 +195,23 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  StreamDrop(
-                    dropId: 'turma',
-                    minhaStream: FirebaseFirestore.instance
-                        .collection('turmas')
-                        .snapshots(),
-                    onSelected: (id, nome) {
+                  BotaoSelecionarTurma(
+                    turmaSelecionada: turmaSelecionada,
+                    onTurmaSelecionada: (id, turmaNome) {
                       setState(() {
-                        turmaSelecionada = nome;
                         turmaId = id;
                       });
+                      turmaSelecionada.value = turmaNome;
                     },
-                    mensagemError: 'Nenhuma Turma Encontrada',
-                    textLabel: 'Selecione uma turma',
-                    nomeCampo: 'serie',
-                    icon: const Icon(Icons.school),
                   ),
                   const SizedBox(height: 16),
                   turmaId != null
-                      ? StreamDrop(
-                          dropId: 'aluno',
-                          minhaStream: getAlunosPorTurma(turmaId!),
-                          onSelected: (id, nome) {
-                            setState(() {
-                              alunoNome = nome;
-                              alunoId = id;
-                            });
+                      ? BotaoSelecionarAluno(
+                          alunoSelecionado: alunoSelecionado,
+                          turmaId: turmaId!,
+                          onAlunoSelecionado: (id, nomeCompleto) {
+                            alunoId = id;
                           },
-                          mensagemError: 'Nenhum aluno encontrado',
-                          textLabel: 'Selecione Uma Turma',
-                          nomeCampo: 'dadosAluno.nome',
-                          icon: const Icon(Icons.person),
                         )
                       : const Text('Selecione uma turma para ver os alunos'),
                   const SizedBox(height: 16),
@@ -245,89 +229,6 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPreVizualizacao() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Row(
-                  children: [
-                    Icon(Icons.description, color: Colors.deepPurpleAccent),
-                    SizedBox(width: 8),
-                    Text(
-                      'Pré-vizualização',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.deepPurpleAccent,
-                  ),
-                  onPressed: _atualizarPreVizualizacao,
-                  child: const Row(
-                    children: [
-                      Icon(Icons.refresh),
-                      SizedBox(width: 8),
-                      Text('Atualizar'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Icon(Icons.note_add),
-                const SizedBox(width: 5),
-                Text(tipoDeDocumento ?? 'Selecione um tipo de documento'),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                const Icon(Icons.person, color: Colors.deepPurpleAccent),
-                const SizedBox(width: 5),
-                Text('Nome: ${_nomeAlunoController.text} '),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                const Icon(
-                  Icons.calendar_month_outlined,
-                  color: Colors.deepPurpleAccent,
-                ),
-                const SizedBox(width: 5),
-                Text('Data de Nascimento: ${_dataController.text}'),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today,
-                  color: Colors.deepPurpleAccent,
-                ),
-                const SizedBox(width: 5),
-                Text('Ano Escolar: ${_anoEscolarController.text} '),
-              ],
             ),
           ],
         ),
@@ -377,14 +278,6 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
         ),
       ],
     );
-  }
-
-  void _atualizarPreVizualizacao() {
-    setState(() {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Atulizado com sucesso!')));
-    });
   }
 
   Future<void> _gerarDocumento() async {
