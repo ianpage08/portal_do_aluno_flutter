@@ -7,6 +7,7 @@ import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:portal_do_aluno/teacher/presentation/providers/presenca_provider.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       .collection('turmas')
       .snapshots();
 
-  String? turmaSelecionada;
+  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
   String? turmaId;
   DateTime? dataSelecionada;
 
@@ -269,20 +270,15 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            StreamDrop(
-              dropId: 'turma',
-              minhaStream: minhaStream,
-              onSelected: (id, nome) {
+            BotaoSelecionarTurma(
+              turmaSelecionada: turmaSelecionada,
+
+              onTurmaSelecionada: (id, nomeCompleto) {
                 setState(() {
-                  turmaSelecionada = nome;
                   turmaId = id;
-                  context.read<PresencaProvider>().limpar();
                 });
+                turmaSelecionada.value = nomeCompleto;
               },
-              mensagemError: 'Nenhuma Turma Encontrada',
-              textLabel: 'Selecione uma turma',
-              nomeCampo: 'serie',
-              icon: const Icon(Icons.school),
             ),
             const SizedBox(height: 20),
             DataPickerCalendario(
@@ -293,7 +289,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
               },
             ),
             const SizedBox(height: 20),
-            turmaSelecionada != null
+            turmaSelecionada.value != null
                 ? SizedBox(
                     height: MediaQuery.of(context).size.height * 0.65,
                     child: listAluno(),

@@ -10,7 +10,6 @@ class StreamDropGenerico extends StatefulWidget {
   final IconData? icon;
   final Map<String, String>? camposNome;
   final bool habilitado;
-  final String? mensagemError; // 👈 Novo campo opcional de erro
 
   const StreamDropGenerico({
     super.key,
@@ -22,7 +21,6 @@ class StreamDropGenerico extends StatefulWidget {
     this.icon,
     this.camposNome,
     this.habilitado = true,
-    this.mensagemError,
   });
 
   @override
@@ -30,26 +28,25 @@ class StreamDropGenerico extends StatefulWidget {
 }
 
 class _StreamDropGenericoState extends State<StreamDropGenerico> {
+  String? selecionadoInterno;
+
+  @override
+  void initState() {
+    super.initState();
+    selecionadoInterno = widget.selecionado;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: widget.stream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          // 👇 Exibe a mensagem de erro personalizada ou padrão
-          return Center(
-            child: Text(
-              widget.mensagemError ?? 'Nenhum ${widget.tipo} encontrado',
-              style: const TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-          );
-        }
-
         final docs = snapshot.data!.docs;
+        if (docs.isEmpty) return Text('Nenhum ${widget.tipo} encontrado');
 
         return SizedBox(
           width: double.infinity,
@@ -59,16 +56,14 @@ class _StreamDropGenericoState extends State<StreamDropGenerico> {
               color: widget.habilitado ? Colors.white : Colors.grey[600],
             ),
             label: Text(
-              widget.selecionado ?? widget.titulo,
+              selecionadoInterno ?? widget.titulo,
               style: TextStyle(
                 fontSize: 16,
                 color: widget.habilitado ? Colors.white : Colors.grey[600],
               ),
             ),
             style: TextButton.styleFrom(
-              backgroundColor: widget.habilitado
-                  ? Colors.blue
-                  : Colors.grey[300],
+              backgroundColor: widget.habilitado ? Colors.blue : Colors.grey[300],
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -92,26 +87,18 @@ class _StreamDropGenericoState extends State<StreamDropGenerico> {
                                 id = data['classId'];
                               }
                               break;
-
                             case 'aluno':
-                              if (widget.camposNome != null &&
-                                  widget.camposNome!.isNotEmpty) {
+                              if (widget.camposNome != null && widget.camposNome!.isNotEmpty) {
                                 final nivel1 = widget.camposNome!.keys.first;
                                 final nivel2 = widget.camposNome!.values.first;
-                                nome =
-                                    data[nivel1]?[nivel2] ?? 'Aluno sem nome';
+                                nome = (data[nivel1]?[nivel2] ?? 'Aluno sem nome').toString();
                               } else {
-                                nome = 'Aluno sem nome';
+                                nome = data['nome'] ?? 'Aluno sem nome';
                               }
                               break;
-
                             case 'disciplina':
-                              nome =
-                                  data['nome'] ??
-                                  data['titulo'] ??
-                                  'Disciplina sem nome';
+                              nome = data['nome'] ?? data['titulo'] ?? 'Disciplina sem nome';
                               break;
-
                             default:
                               nome = 'Sem nome';
                           }
@@ -119,6 +106,9 @@ class _StreamDropGenericoState extends State<StreamDropGenerico> {
                           return ListTile(
                             title: Text(nome),
                             onTap: () {
+                              setState(() {
+                                selecionadoInterno = nome;
+                              });
                               widget.onSelected(id, nome);
                               Navigator.pop(context);
                             },

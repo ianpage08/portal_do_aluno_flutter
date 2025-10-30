@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/matricula_service.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/fixed_drop.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop_generico.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -14,7 +19,8 @@ class MatriculaCadastro extends StatefulWidget {
   State<MatriculaCadastro> createState() => _MatriculaCadastroState();
 }
 
-class _MatriculaCadastroState extends State<MatriculaCadastro> {
+class _MatriculaCadastroState extends State<MatriculaCadastro>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final MatriculaService _matriculaService = MatriculaService();
 
@@ -22,8 +28,6 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _naturalidadeController = TextEditingController();
-  final TextEditingController _sexoController = TextEditingController();
-  DateTime? _dataNascimentoController;
 
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _ruaController = TextEditingController();
@@ -50,16 +54,41 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   final TextEditingController _medicamentosController = TextEditingController();
   final TextEditingController _observacoesController = TextEditingController();
 
-  // 👇 Armazenar o ID real da turma
-  String? _turmaIdSelecionada;
+  final ValueNotifier<String?> _turmaIdSelecionada = ValueNotifier<String?>(
+    null,
+  );
+  final ValueNotifier<String?> _sexoSelecionado = ValueNotifier<String?>(null);
+  final ValueNotifier<DateTime?> dataSelecionada = ValueNotifier<DateTime?>(
+    null,
+  );
+  final ValueNotifier<String?> turnoSelecionado = ValueNotifier<String?>(null);
+
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _animationController.forward();
+    });
+  }
 
   @override
   void dispose() {
-    final List<TextEditingController> controlles = [
+    for (final c in [
       _nomeController,
       _cpfController,
       _naturalidadeController,
-      _sexoController,
       _cepController,
       _ruaController,
       _numeroController,
@@ -80,17 +109,17 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
       _alergiasController,
       _medicamentosController,
       _observacoesController,
-    ];
-    for (var controller in controlles) {
-      controller.dispose();
+    ]) {
+      c.dispose();
     }
+    _animationController.dispose();
     super.dispose();
   }
 
   void _cadastrarAluno() async {
     if (!_formKey.currentState!.validate() ||
-        _dataNascimentoController == null ||
-        _turmaIdSelecionada == null) {
+        dataSelecionada.value == null ||
+        _turmaIdSelecionada.value == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Preencha todos os campos obrigatórios corretamente'),
@@ -103,9 +132,9 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
     final dadosAluno = DadosAluno(
       nome: _nomeController.text,
       cpf: _cpfController.text,
-      sexo: _sexoController.text,
+      sexo: _sexoSelecionado.value ?? '',
       naturalidade: _naturalidadeController.text,
-      dataNascimento: _dataNascimentoController!,
+      dataNascimento: dataSelecionada.value!,
     );
 
     final enderecoAluno = EnderecoAluno(
@@ -127,11 +156,11 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
     );
 
     final dadosAcademicos = DadosAcademicos(
-      classId: _turmaIdSelecionada!, // 👈 ID real da turma
+      classId: _turmaIdSelecionada.value!,
       numeroMatricula: _numeroMatriculaController.text,
       turma: _tumarControler.text,
       anoLetivo: _anoLetivoController.text,
-      turno: _turnoController.text,
+      turno: turnoSelecionado.value ?? '',
       situacao: _situacaoController.text,
       dataMatricula: DateTime.now(),
     );
@@ -144,7 +173,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
 
     try {
       await _matriculaService.cadastrarAlunoCompleto(
-        turmaId: _turmaIdSelecionada!, // 👈 ID real da turma
+        turmaId: _turmaIdSelecionada.value!,
         dadosAluno: dadosAluno,
         enderecoAluno: enderecoAluno,
         responsaveisAluno: responsaveisAluno,
@@ -170,11 +199,10 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
   }
 
   void _limparCampos() {
-    final List<TextEditingController> controlles = [
+    for (final c in [
       _nomeController,
       _cpfController,
       _naturalidadeController,
-      _sexoController,
       _cepController,
       _ruaController,
       _numeroController,
@@ -191,20 +219,17 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
       _tumarControler,
       _anoLetivoController,
       _turnoController,
+      _situacaoController,
       _alergiasController,
       _medicamentosController,
       _observacoesController,
-      _situacaoController,
-    ];
-
-    for (var controller in controlles) {
-      controller.clear();
+    ]) {
+      c.clear();
     }
-
-    setState(() {
-      _dataNascimentoController = null;
-      _turmaIdSelecionada = null; // 👈 resetar ID da turma
-    });
+    _sexoSelecionado.value = null;
+    dataSelecionada.value = null;
+    turnoSelecionado.value = null;
+    _turmaIdSelecionada.value = null;
   }
 
   @override
@@ -213,43 +238,43 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
       appBar: const CustomAppBar(title: 'Cadastro de Matrícula'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const Text(
-                'Formulário de Cadastro de Matrícula',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              _buildCardAluno(),
-              const SizedBox(height: 16),
-              _buildCardEndereco(),
-              const SizedBox(height: 16),
-              _buildCardResponsaveis(),
-              const SizedBox(height: 16),
-              _buildCardAcademicos(),
-              const SizedBox(height: 16),
-              _buildCardMedicas(),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 28, 1, 104),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(50),
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const Text(
+                  'Formulário de Cadastro de Matrícula',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                onPressed: _cadastrarAluno,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.save),
-                    SizedBox(width: 8),
-                    Text('Cadastrar Aluno', style: TextStyle(fontSize: 20)),
-                  ],
+                const SizedBox(height: 12),
+                _buildCardAluno(),
+                const SizedBox(height: 16),
+                _buildCardEndereco(),
+                const SizedBox(height: 16),
+                _buildCardResponsaveis(),
+                const SizedBox(height: 16),
+                _buildCardAcademicos(),
+                const SizedBox(height: 16),
+                _buildCardMedicas(),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 28, 1, 104),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  icon: const Icon(CupertinoIcons.floppy_disk),
+                  label: const Text(
+                    'Cadastrar Aluno',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: _cadastrarAluno,
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -258,346 +283,222 @@ class _MatriculaCadastroState extends State<MatriculaCadastro> {
 
   // ==================== Widgets por seção ====================
 
-  Widget _buildCardAluno() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const Text(
-              'Dados do Aluno',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Nome Completo Aluno',
-              controller: _nomeController,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'CPF',
-              controller: _cpfController,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(11),
-                CpfInputFormatter(),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Naturalidade',
-              controller: _naturalidadeController,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Sexo', controller: _sexoController),
-            const SizedBox(height: 12),
-            _buildDataNascimento(),
-          ],
+  Widget _buildCardAluno() => _cardSection(
+    title: 'Dados do Aluno',
+    children: [
+      TextFormFieldPersonalizado(
+        label: 'Nome Completo do Aluno',
+        controller: _nomeController,
+        prefixIcon: const Icon(CupertinoIcons.person_fill),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'CPF',
+        controller: _cpfController,
+        prefixIcon: const Icon(CupertinoIcons.number),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(11),
+          CpfInputFormatter(),
+        ],
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Naturalidade',
+        controller: _naturalidadeController,
+        prefixIcon: const Icon(CupertinoIcons.location_solid),
+      ),
+      ValueListenableBuilder<String?>(
+        valueListenable: _sexoSelecionado,
+        builder: (context, sexo, child) => FixedDrop(
+          itens: const ['Masculino', 'Feminino'],
+          selecionado: sexo,
+          titulo: 'Selecione o sexo do aluno(a)',
+          icon: CupertinoIcons.person_2_fill,
+          onSelected: (valor) => _sexoSelecionado.value = valor,
         ),
       ),
-    );
-  }
+      ValueListenableBuilder<DateTime?>(
+        valueListenable: dataSelecionada,
+        builder: (context, dataEscolhida, child) {
+          return DataPickerCalendario(
+            onDate: (data) => dataSelecionada.value = data,
+          );
+        },
+      ),
+    ],
+  );
 
-  Widget _buildCardEndereco() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const Text(
-              'Endereço',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'CEP',
-              controller: _cepController,
-              maxLength: 8,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Rua', controller: _ruaController),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Número', controller: _numeroController),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Bairro', controller: _bairroController),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Cidade', controller: _cidadeController),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Estado', controller: _estadoController),
-          ],
+  Widget _buildCardEndereco() => _cardSection(
+    title: 'Endereço',
+    children: [
+      TextFormFieldPersonalizado(
+        label: 'CEP',
+        controller: _cepController,
+        prefixIcon: const Icon(CupertinoIcons.map_pin_ellipse),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Rua',
+        controller: _ruaController,
+        prefixIcon: const Icon(CupertinoIcons.location),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Número',
+        controller: _numeroController,
+        prefixIcon: const Icon(CupertinoIcons.number_square),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Bairro',
+        controller: _bairroController,
+        prefixIcon: const Icon(CupertinoIcons.map_pin),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Cidade',
+        controller: _cidadeController,
+        prefixIcon: const Icon(CupertinoIcons.building_2_fill),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Estado',
+        controller: _estadoController,
+        prefixIcon: const Icon(CupertinoIcons.flag),
+      ),
+    ],
+  );
+
+  Widget _buildCardResponsaveis() => _cardSection(
+    title: 'Responsáveis',
+    children: [
+      TextFormFieldPersonalizado(
+        label: 'Nome da Mãe',
+        controller: _nomeMaeController,
+        prefixIcon: const Icon(
+          CupertinoIcons.person_crop_circle_fill_badge_checkmark,
         ),
       ),
-    );
-  }
-
-  Widget _buildCardResponsaveis() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const Text(
-              'Responsáveis',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Nome da Mãe',
-              controller: _nomeMaeController,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'CPF da Mãe',
-              controller: _cpfMaeController,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(11),
-                CpfInputFormatter(),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Telefone da Mãe',
-              controller: _telefoneMaeController,
-              maxLength: 11,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Nome do Pai',
-              controller: _nomePaiController,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'CPF do Pai',
-              controller: _cpfPaiController,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(11),
-                CpfInputFormatter(),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Telefone do Pai',
-              controller: _telefonePaiController,
-              maxLength: 11,
-            ),
-          ],
-        ),
+      TextFormFieldPersonalizado(
+        label: 'CPF da Mãe',
+        controller: _cpfMaeController,
+        prefixIcon: const Icon(CupertinoIcons.number_circle),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(11),
+          CpfInputFormatter(),
+        ],
       ),
-    );
-  }
-
-  Widget _buildCardAcademicos() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const Text(
-              'Dados Acadêmicos',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Número da Matrícula',
-              controller: _numeroMatriculaController,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Ano Letivo',
-              controller: _anoLetivoController,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Turno', controller: _turnoController),
-            const SizedBox(height: 12),
-            _buildTextForm(title: 'Situação', controller: _situacaoController),
-            const SizedBox(height: 12),
-            _buildEscolherNomeTurma(), // 👈 seleção da turma
-          ],
-        ),
+      TextFormFieldPersonalizado(
+        label: 'Telefone da Mãe',
+        controller: _telefoneMaeController,
+        prefixIcon: const Icon(CupertinoIcons.phone_fill),
+        maxLength: 11,
       ),
-    );
-  }
-
-  Widget _buildCardMedicas() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const Text(
-              'Informações Médicas',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Alergias',
-              controller: _alergiasController,
-              obrigatorio: false,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Medicações',
-              controller: _medicamentosController,
-              obrigatorio: false,
-            ),
-            const SizedBox(height: 12),
-            _buildTextForm(
-              title: 'Observações',
-              controller: _observacoesController,
-              obrigatorio: false,
-            ),
-          ],
-        ),
+      TextFormFieldPersonalizado(
+        label: 'Nome do Pai',
+        controller: _nomePaiController,
+        prefixIcon: const Icon(CupertinoIcons.person_crop_circle_fill),
       ),
-    );
-  }
-
-  // ==================== Campos auxiliares ====================
-  Widget _buildTextForm({
-    required String title,
-    required TextEditingController controller,
-    List<TextInputFormatter>? inputFormatters,
-    bool obrigatorio = true,
-    int? maxLength,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLength: maxLength,
-      inputFormatters: [if (inputFormatters != null) ...inputFormatters],
-      validator: obrigatorio
-          ? (value) =>
-                (value == null || value.isEmpty) ? 'Campo obrigatório' : null
-          : null,
-      decoration: InputDecoration(
-        labelText: title,
-        filled: true,
-        fillColor: const Color.fromARGB(48, 218, 194, 250),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: Color.fromARGB(255, 28, 1, 104),
-            width: 2,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
+      TextFormFieldPersonalizado(
+        label: 'CPF do Pai',
+        controller: _cpfPaiController,
+        prefixIcon: const Icon(CupertinoIcons.number_circle_fill),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(11),
+          CpfInputFormatter(),
+        ],
       ),
-    );
-  }
+      TextFormFieldPersonalizado(
+        label: 'Telefone do Pai',
+        controller: _telefonePaiController,
+        prefixIcon: const Icon(CupertinoIcons.phone),
+        maxLength: 11,
+      ),
+    ],
+  );
 
-  Widget _buildDataNascimento() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
-          'Data de Nascimento:',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 29, 0, 107),
-            foregroundColor: Colors.white,
-          ),
-          onPressed: () async {
-            final DateTime? data = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now().subtract(
-                const Duration(days: 365 * 10),
-              ),
-              firstDate: DateTime(1950),
-              lastDate: DateTime.now(),
-            );
-            if (data != null) {
-              setState(() {
-                _dataNascimentoController = data;
-              });
-            }
-          },
-          child: Text(
-            _dataNascimentoController == null
-                ? 'Selecionar Data'
-                : '${_dataNascimentoController!.day}/${_dataNascimentoController!.month}/${_dataNascimentoController!.year}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEscolherNomeTurma() {
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton.icon(
-        icon: const Icon(Icons.school),
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        label: Text(
-          _tumarControler.text.isEmpty
-              ? 'Selecione uma Turma'
-              : _tumarControler.text,
-          style: const TextStyle(fontSize: 18),
-        ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection('turmas')
-                    .orderBy('serie')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  final docs = snapshot.data!.docs;
-
-                  return ListView(
-                    children: docs.map((item) {
-                      final nome = item['serie'] != null
-                          ? '${item['serie']} - ${item['turno'] ?? ''}'
-                          : 'Turma sem nome';
-                      return ListTile(
-                        title: Text(nome),
-                        onTap: () {
-                          setState(() {
-                            _turmaIdSelecionada =
-                                item.id; // 👈 salva ID real da turma
-                            _tumarControler.text = nome; // mostra o nome
-                            Navigator.pop(context);
-                          });
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              );
+  Widget _buildCardAcademicos() => _cardSection(
+    title: 'Dados Acadêmicos',
+    children: [
+      TextFormFieldPersonalizado(
+        label: 'Número da Matrícula',
+        controller: _numeroMatriculaController,
+        prefixIcon: const Icon(CupertinoIcons.doc_text),
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Ano Letivo',
+        controller: _anoLetivoController,
+        prefixIcon: const Icon(CupertinoIcons.calendar_today),
+      ),
+      ValueListenableBuilder<String?>(
+        valueListenable: turnoSelecionado,
+        builder: (context, value, child) {
+          return FixedDrop(
+            itens: const ['Matutino', 'Vespertino'],
+            selecionado: value,
+            titulo: 'Selecione o turno',
+            icon: CupertinoIcons.time_solid,
+            onSelected: (valor) => turnoSelecionado.value = valor,
+          );
+        },
+      ),
+      ValueListenableBuilder<String?>(
+        valueListenable: _turmaIdSelecionada,
+        builder: (context, value, child) {
+          return StreamDropGenerico(
+            tipo: 'turma',
+            icon: CupertinoIcons.house_alt_fill,
+            titulo: 'Selecione uma turma',
+            stream: FirebaseFirestore.instance
+                .collection('turmas')
+                .orderBy('serie')
+                .snapshots(),
+            selecionado: value,
+            onSelected: (id, nome) {
+              _turmaIdSelecionada.value = id;
+              _tumarControler.text = nome;
             },
           );
         },
+      ),
+    ],
+  );
+
+  Widget _buildCardMedicas() => _cardSection(
+    title: 'Informações Médicas',
+    children: [
+      TextFormFieldPersonalizado(
+        label: 'Alergias',
+        controller: _alergiasController,
+        prefixIcon: const Icon(CupertinoIcons.bandage_fill),
+        obrigatorio: false,
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Medicações',
+        controller: _medicamentosController,
+        prefixIcon: const Icon(CupertinoIcons.capsule_fill),
+        obrigatorio: false,
+      ),
+      TextFormFieldPersonalizado(
+        label: 'Observações',
+        controller: _observacoesController,
+        prefixIcon: const Icon(CupertinoIcons.text_bubble_fill),
+        obrigatorio: false,
+      ),
+    ],
+  );
+
+  Widget _cardSection({required String title, required List<Widget> children}) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            ...children.expand((child) => [child, const SizedBox(height: 12)]),
+          ],
+        ),
       ),
     );
   }
