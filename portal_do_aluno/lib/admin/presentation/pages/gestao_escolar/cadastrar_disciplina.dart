@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/cadastrar_diciplina_service.dart';
 import 'package:portal_do_aluno/admin/data/models/disciplinas/diciplinas.dart';
+import 'package:portal_do_aluno/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_limpar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -15,40 +17,43 @@ class CadastrarDisciplina extends StatefulWidget {
 
 class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nomeDisciplinaController =
-      TextEditingController();
-  final TextEditingController _nomeProfessorController =
-      TextEditingController();
-  final TextEditingController _aulasPrevistasController =
-      TextEditingController();
-  final TextEditingController _cargaHorariaController = TextEditingController();
+  final Map<String, TextEditingController> _mapController = {
+    'nomeDisciplina': TextEditingController(),
+    'nomeProfessor': TextEditingController(),
+    'aulasPrevistas': TextEditingController(),
+    'cargaHoraria': TextEditingController(),
+  };
+  List<TextEditingController> get _allControllers =>
+      _mapController.values.toList();
+
   final DisciplinaService cadastrarNovaDisciplina = DisciplinaService();
+  void _limparCampos() {
+    FormHelper.limparControllers(_allControllers);
+  }
 
   Future<void> _cadastrarMateria() async {
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os dados Corretamente'),
-          backgroundColor: Colors.red,
-        ),
+    if (!FormHelper.isFormValid(_formKey, _allControllers)) {
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Por favor, preencha todos os campos corretamente.',
+        cor: Colors.red,
       );
       return;
     }
     final disciplina = Disciplina(
       id: '',
-      nome: _nomeDisciplinaController.text,
-      professor: _nomeProfessorController.text,
-      cargaHoraria: int.parse(_cargaHorariaController.text),
-      aulaPrevistas: int.parse(_aulasPrevistasController.text),
+      nome: _mapController['nomeDisciplina']!.text,
+      professor: _mapController['nomeProfessor']!.text,
+      cargaHoraria: int.parse(_mapController['cargaHoraria']!.text),
+      aulaPrevistas: int.parse(_mapController['aulasPrevistas']!.text),
     );
     try {
       await cadastrarNovaDisciplina.cadastrarNovaDisciplina(disciplina);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Disciplina cadastrada com sucesso'),
-            backgroundColor: Colors.green,
-          ),
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Disciplina cadastrada com sucesso! 🎉',
+          cor: Colors.green,
         );
         _limparCampos();
       }
@@ -57,21 +62,11 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
     }
   }
 
-  void _limparCampos() {
-    setState(() {
-      _nomeDisciplinaController.clear();
-      _nomeProfessorController.clear();
-      _aulasPrevistasController.clear();
-      _cargaHorariaController.clear();
-    });
-  }
-
   @override
   void dispose() {
-    _nomeDisciplinaController.dispose();
-    _nomeProfessorController.dispose();
-    _aulasPrevistasController.dispose();
-    _cargaHorariaController.dispose();
+    for (var controller in _mapController.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -101,7 +96,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           ),
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
-                            controller: _nomeDisciplinaController,
+                            controller: _mapController['nomeDisciplina']!,
                             prefixIcon: const Icon(Icons.book),
                             label: 'Nome da Disciplina',
                             hintText: 'ex: Matemática',
@@ -109,7 +104,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           ),
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
-                            controller: _aulasPrevistasController,
+                            controller: _mapController['aulasPrevistas']!,
                             prefixIcon: const Icon(
                               Icons.calendar_month_outlined,
                             ),
@@ -119,7 +114,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           ),
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
-                            controller: _cargaHorariaController,
+                            controller: _mapController['cargaHoraria']!,
                             prefixIcon: const Icon(Icons.lock_clock_outlined),
                             label: 'Carga Horaria',
                             hintText: 'ex: 180',
@@ -127,7 +122,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           ),
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
-                            controller: _nomeProfessorController,
+                            controller: _mapController['nomeProfessor']!,
                             prefixIcon: const Icon(Icons.person),
                             label: 'Nome do Professor',
                             hintText: 'ex: Paulo José',
