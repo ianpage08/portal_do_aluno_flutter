@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/data/firestore_services/boletim_service.dart';
+import 'package:portal_do_aluno/admin/helper/boletim_helper.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_desativado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_limpar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
@@ -39,6 +39,8 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   String? unidadeSelecionada;
   String? tipoDeNota;
 
+  final BoletimHelper _boletimHelper = BoletimHelper();
+
   final List<String> unidades = [
     'Unidade 1',
     'Unidade 2',
@@ -70,40 +72,17 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     });
   }
 
-  Future<void> salvarBoletim() async {
+  Future<void> salvarNota() async {
     if (!_formKey.currentState!.validate()) return;
-
-    if (turmaId == null ||
-        alunoId == null ||
-        disciplinaId == null ||
-        unidadeSelecionada == null ||
-        tipoDeNota == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos!')),
-      );
-      return;
-    }
-
-    final double nota = double.tryParse(_notaController.text) ?? 0.0;
-    final int unidade = int.parse(
-      unidadeSelecionada!.split(' ')[1],
-    ); // "Unidade 1" → 1
-    final String tipo = tipoDeNota!.toLowerCase().replaceAll(
-      ' ',
-      '',
-    ); // "Nota Extra" → "notaextra"
-
-    final boletimService = BoletimService();
-
     try {
-      await boletimService.salvarOuAtualizarNota(
+      await _boletimHelper.salvarNota(
         alunoId: alunoId!,
-        matriculaId: turmaId!,
+        turmaId: turmaId!,
+        disciplinaNome: disciplinaNome!,
         disciplinaId: disciplinaId!,
-        nomeDisciplina: disciplinaNome!,
-        unidade: unidade,
-        tipo: tipo,
-        nota: nota,
+        unidade: unidadeSelecionada!,
+        tipoDeNota: tipoDeNota!,
+        nota: double.parse(_notaController.text),
       );
       if (mounted) {
         snackBarPersonalizado(
@@ -112,7 +91,6 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
           cor: Colors.green,
         );
       }
-
       _notaController.clear();
     } catch (e) {
       if (mounted) {
@@ -248,7 +226,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                 // 🔹 Botão Salvar
                 BotaoSalvar(
                   salvarconteudo: () async {
-                    salvarBoletim();
+                    salvarNota();
                   },
                 ),
                 const SizedBox(height: 8),
