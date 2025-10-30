@@ -55,22 +55,13 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
 
   final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getTurmas() =>
-      _firestore.collection('turmas').orderBy('serie').snapshots();
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAlunos(String classId) =>
-      _firestore
-          .collection('matriculas')
-          .where('dadosAcademicos.classId', isEqualTo: classId)
-          .snapshots();
-
   Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() =>
       _firestore.collection('disciplinas').snapshots();
 
   void limparCampos() {
     setState(() {
       alunoId = null;
-      turmaId = null;
+
       disciplinaId = null;
       disciplinaNome = null;
       unidadeSelecionada = null;
