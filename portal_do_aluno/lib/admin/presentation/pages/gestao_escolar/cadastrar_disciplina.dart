@@ -28,11 +28,11 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
 
   final DisciplinaService cadastrarNovaDisciplina = DisciplinaService();
   void _limparCampos() {
-    FormHelper.limparControllers(_allControllers);
+    FormHelper.limparControllers(controllers:_allControllers);
   }
 
   Future<void> _cadastrarMateria() async {
-    if (!FormHelper.isFormValid(_formKey, _allControllers)) {
+    if (!FormHelper.isFormValid(formKey: _formKey, listControllers: _allControllers)) {
       snackBarPersonalizado(
         context: context,
         mensagem: 'Por favor, preencha todos os campos corretamente.',
@@ -55,7 +55,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
           mensagem: 'Disciplina cadastrada com sucesso! 🎉',
           cor: Colors.green,
         );
-        _limparCampos();
+        FormHelper.limparControllers(controllers: _allControllers);
       }
     } catch (e) {
       return;

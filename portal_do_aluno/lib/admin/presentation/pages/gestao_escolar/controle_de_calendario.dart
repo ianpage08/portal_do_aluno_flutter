@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/calendario_service.dart';
 import 'package:portal_do_aluno/admin/data/models/calendario.dart';
+import 'package:portal_do_aluno/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
@@ -18,15 +19,20 @@ class ControleDeCalendario extends StatefulWidget {
 class _ControleDeCalendarioState extends State<ControleDeCalendario> {
   final CalendarioService _calendarioService = CalendarioService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _tituloController = TextEditingController();
-  final TextEditingController _descricaoController = TextEditingController();
+  final Map<String, TextEditingController> _mapController = {
+    'titulo': TextEditingController(),
+    'descricao': TextEditingController(),
+  };
+  List<TextEditingController> get _allControllers =>
+      _mapController.values.toList();
   DateTime? dataSelecionada;
   DateTime _focusDay = DateTime.now();
 
   @override
   void dispose() {
-    _tituloController.dispose();
-    _descricaoController.dispose();
+    for (var controller in _allControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -37,11 +43,11 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
   }
 
   Future<void> _salvarEvento() async {
-    if (_formKey.currentState!.validate() && dataSelecionada != null) {
+    if (FormHelper.isFormValid(formKey: _formKey, listControllers: _allControllers) && dataSelecionada != null) {
       final novoEvento = Calendario(
         id: '',
-        titulo: _tituloController.text,
-        descricao: _descricaoController.text,
+        titulo: _mapController['titulo']!.text,
+        descricao: _mapController['descricao']!.text,
         data: dataSelecionada!,
       );
       await _calendarioService.cadastrarCalendario(novoEvento);
@@ -52,17 +58,11 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
           cor: Colors.green,
         );
       }
+      FormHelper.limparControllers(controllers: _allControllers);
 
-      _tituloController.clear();
-      _descricaoController.clear();
       setState(() => dataSelecionada = null);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os campos e selecione uma data! ⚠️'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      snackBarPersonalizado(context: context, mensagem: 'Por favor, preencha todos os campos corretamente.', cor: Colors.red);
     }
   }
 
@@ -90,7 +90,8 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
                   child: Column(
                     children: [
                       TextFormFieldPersonalizado(
-                        controller: _tituloController,
+                        controller: _mapController['titulo']!,
+                        keyboardType: TextInputType.text,
                         label: 'Título',
                         hintText: 'Ex: Feriado de Natal',
                         prefixIcon: const Icon(
@@ -104,7 +105,8 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
                       const SizedBox(height: 12),
                       TextFormFieldPersonalizado(
                         maxLines: 5,
-                        controller: _descricaoController,
+                        controller: _mapController['descricao']!,
+                        keyboardType: TextInputType.text, 
                         label: 'Descrição',
                         hintText: 'Ex: Evento escolar de comemoração do Natal',
                         prefixIcon: const Icon(

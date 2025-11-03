@@ -27,17 +27,16 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   final TextEditingController _notaController = TextEditingController();
 
   // IDs e nomes selecionados
-  String? turmaId;
-  String? turmaNome;
+  final Map<String, String?> _mapSelectedValues = {
+    'turmaId': null,
+    'alunoId': null,
+    'disciplinaId': null,
+    'disciplinaNome': null,
+    'unidadeSelecionada': null,
+    'tipoDeNota': null,
+  };
 
-  String? alunoId;
   final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
-
-  String? disciplinaId;
-  String? disciplinaNome;
-
-  String? unidadeSelecionada;
-  String? tipoDeNota;
 
   final BoletimHelper _boletimHelper = BoletimHelper();
 
@@ -62,12 +61,12 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
 
   void limparCampos() {
     setState(() {
-      alunoId = null;
+      _mapSelectedValues['alunoId'] = null;
 
-      disciplinaId = null;
-      disciplinaNome = null;
-      unidadeSelecionada = null;
-      tipoDeNota = null;
+      _mapSelectedValues['disciplinaId'] = null;
+      _mapSelectedValues['disciplinaNome'] = null;
+      _mapSelectedValues['unidadeSelecionada'] = null;
+      _mapSelectedValues['tipoDeNota'] = null;
       _notaController.clear();
     });
   }
@@ -76,12 +75,12 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     if (!_formKey.currentState!.validate()) return;
     try {
       await _boletimHelper.salvarNota(
-        alunoId: alunoId!,
-        turmaId: turmaId!,
-        disciplinaNome: disciplinaNome!,
-        disciplinaId: disciplinaId!,
-        unidade: unidadeSelecionada!,
-        tipoDeNota: tipoDeNota!,
+        alunoId: _mapSelectedValues['alunoId']!,
+        turmaId: _mapSelectedValues['turmaId']!,
+        disciplinaNome: _mapSelectedValues['disciplinaNome']!,
+        disciplinaId: _mapSelectedValues['disciplinaId']!,
+        unidade: _mapSelectedValues['unidadeSelecionada']!,
+        tipoDeNota: _mapSelectedValues['tipoDeNota']!,
         nota: double.parse(_notaController.text),
       );
       if (mounted) {
@@ -125,11 +124,11 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                           turmaSelecionada: turmaSelecionada,
                           onTurmaSelecionada: (id, turmaNome) {
                             setState(() {
-                              turmaId = id;
+                              _mapSelectedValues['turmaId'] = id;
                               limparCampos();
                             });
                             debugPrint(
-                              '✅ Turma selecionada: $turmaNome (ID: $turmaId)',
+                              '✅ Turma selecionada: $turmaNome (ID: ${_mapSelectedValues['turmaId']})',
                             );
                           },
                         ),
@@ -137,13 +136,13 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                         const SizedBox(height: 16),
 
                         // 🔹 Aluno
-                        turmaId != null
+                        _mapSelectedValues['turmaId'] != null
                             ? BotaoSelecionarAluno(
                                 alunoSelecionado: alunoSelecionado,
-                                turmaId: turmaId,
+                                turmaId: _mapSelectedValues['turmaId'],
                                 onAlunoSelecionado: (id, nomeCompleto) {
                                   setState(() {
-                                    alunoId = id;
+                                    _mapSelectedValues['alunoId'] = id;
                                   });
                                 },
                               )
@@ -159,45 +158,47 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                           tipo: 'disciplina',
                           titulo: 'Selecione uma Disciplina',
                           stream: getDisciplinas(),
-                          selecionado: disciplinaNome,
+                          selecionado: _mapSelectedValues['disciplinaNome'],
                           icon: Icons.book,
                           onSelected: (id, nome) {
                             setState(() {
-                              disciplinaId = id;
-                              disciplinaNome = nome;
+                              _mapSelectedValues['disciplinaId'] = id;
+                              _mapSelectedValues['disciplinaNome'] = nome;
                             });
                           },
-                          habilitado: alunoId != null,
+                          habilitado: _mapSelectedValues['alunoId'] != null,
                         ),
                         const SizedBox(height: 16),
 
                         // 🔹 Unidade
                         FixedDrop(
                           itens: unidades,
-                          selecionado: unidadeSelecionada,
+                          selecionado: _mapSelectedValues['unidadeSelecionada'],
                           titulo: 'Selecione uma Unidade',
                           icon: Icons.note_alt,
                           onSelected: (valor) {
                             setState(() {
-                              unidadeSelecionada = valor;
+                              _mapSelectedValues['unidadeSelecionada'] = valor;
                             });
                           },
-                          habilitado: disciplinaId != null,
+                          habilitado:
+                              _mapSelectedValues['disciplinaId'] != null,
                         ),
                         const SizedBox(height: 16),
 
                         // 🔹 Tipo de Avaliação
                         FixedDrop(
                           itens: tiposDeAvaliacao,
-                          selecionado: tipoDeNota,
+                          selecionado: _mapSelectedValues['tipoDeNota'],
                           titulo: 'Selecione um Tipo de Avaliação',
                           icon: Icons.assignment,
                           onSelected: (valor) {
                             setState(() {
-                              tipoDeNota = valor;
+                              _mapSelectedValues['tipoDeNota'] = valor;
                             });
                           },
-                          habilitado: unidadeSelecionada != null,
+                          habilitado:
+                              _mapSelectedValues['unidadeSelecionada'] != null,
                         ),
                         const SizedBox(height: 16),
 
@@ -209,11 +210,11 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                           label: 'Nota',
                           hintText: 'Ex: 8.5',
                           keyboardType: TextInputType.number,
-                          enable: tipoDeNota != null,
+                          enable: _mapSelectedValues['tipoDeNota'] != null,
                           validator: (value) => value == null || value.isEmpty
                               ? 'Digite a nota'
                               : null,
-                          fillColor: tipoDeNota != null
+                          fillColor: _mapSelectedValues['tipoDeNota'] != null
                               ? Colors.white
                               : Colors.grey[200],
                         ),
@@ -234,7 +235,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                 BotaoLimpar(
                   limparconteudo: () async {
                     setState(() {
-                      turmaId = null;
+                      _mapSelectedValues['turmaId'] = null;
                       limparCampos();
                     });
                   },

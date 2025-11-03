@@ -4,6 +4,8 @@ Reset de senha e permissões.*/
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/admin/helper/form_helper.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
 
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
@@ -20,6 +22,14 @@ class AddUsuarioPage extends StatefulWidget {
 }
 
 class _AddUsuarioPageState extends State<AddUsuarioPage> {
+  @override
+  void dispose() {
+    for (var controller in _allControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   final List<String> tipoUsuario = ['Professor', 'Aluno', 'Administrador'];
   String? turmaId;
 
@@ -36,12 +46,14 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
   String? isSelectedTipo;
   bool isPasswordVisible = false;
-  final TextEditingController nomeController = TextEditingController();
-
-  final TextEditingController senhaController = TextEditingController();
-  final TextEditingController confirmarSenhaController =
-      TextEditingController();
-  final TextEditingController cpfController = TextEditingController();
+  final Map<String, TextEditingController> _mapController = {
+    'nome': TextEditingController(),
+    'senha': TextEditingController(),
+    'confirmarSenha': TextEditingController(),
+    'cpf': TextEditingController(),
+  };
+  List<TextEditingController> get _allControllers =>
+      _mapController.values.toList();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   UserType _mapTipo(String? tipo) {
@@ -61,6 +73,10 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
   String? cpfSelecionado;
   String? alunoId;
+  final Map<String, ValueNotifier<String?>> _mapValueNotifier = {
+    'alunoSelecionado': ValueNotifier<String?>(null),
+    'turmaSelecionada': ValueNotifier<String?>(null),
+  };
   final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
   final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
 
@@ -91,12 +107,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
   void _limparCampos() {
     setState(() {
-      nomeController.clear();
-      senhaController.clear();
-      confirmarSenhaController.clear();
-      cpfController.clear();
       isSelectedTipo = null;
-
       cpfSelecionado = null;
       turmaId = null;
       alunoId = null;
@@ -107,7 +118,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     return Column(
       children: [
         TextFormField(
-          controller: nomeController,
+          controller: _mapController['nome']!,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[100],
@@ -121,7 +132,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
         ),
         const SizedBox(height: 12),
         TextFormField(
-          controller: cpfController,
+          controller: _mapController['cpf']!,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             CpfInputFormatter(),
@@ -146,7 +157,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     return Column(
       children: [
         TextFormField(
-          controller: nomeController,
+          controller: _mapController['nome']!,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[100],
@@ -160,7 +171,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
         ),
         const SizedBox(height: 12),
         TextFormField(
-          controller: cpfController,
+          controller: _mapController['cpf']!,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             CpfInputFormatter(),
@@ -182,34 +193,36 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
   }
 
   void _adicionarUsuario() async {
-    if (_formKey.currentState!.validate()) {
-      final nome = nomeController.text.trim();
-      final senha = senhaController.text.trim();
-      final confirmarSenha = confirmarSenhaController.text.trim();
-      final cpf = cpfController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (!FormHelper.isFormValid(formKey: _formKey, listControllers: _allControllers)) {
+      final nome = _mapController['nome']!.text.trim();
+      final senha = _mapController['senha']!.text.trim();
+      final confirmarSenha = _mapController['confirmarSenha']!.text.trim();
+      final cpf = _mapController['cpf']!.text.replaceAll(RegExp(r'[^0-9]'), '');
       if (isSelectedTipo == 'Aluno' &&
-          (alunoId == null || alunoSelecionado.value == null)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Selecione turma e aluno antes de cadastrar'),
-          ),
+          (alunoId == null || _mapValueNotifier['alunoSelecionado']!.value == null)) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Selecione um aluno antes de cadastrar.',
+          cor: Colors.orange,
         );
       }
       if (isSelectedTipo == 'Professor' &&
-          (nomeController.text.isEmpty || cpfController.text.isEmpty)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Preencha nome e CPF do professor')),
+          (_mapController['nome']!.text.isEmpty ||
+              _mapController['cpf']!.text.isEmpty)) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Preencha todos os campos antes de cadastrar.',
+          cor: Colors.orange,
         );
         return;
       }
       if (isSelectedTipo == 'Aluno' &&
           (cpfSelecionado == null || cpfSelecionado!.isEmpty) &&
           alunoId == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Selecione o aluno antes de cadastrar.'),
-            backgroundColor: Colors.orange,
-          ),
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Selecione um aluno com CPF válido antes de cadastrar.',
+          cor: Colors.orange,
         );
         return;
       }
@@ -223,12 +236,10 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
             .get();
         if (verificarCpf.docs.isNotEmpty) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('CPF já cadastrado!'),
-                backgroundColor: Colors.red,
-                duration: Duration(seconds: 2),
-              ),
+            snackBarPersonalizado(
+              context: context,
+              mensagem: 'CPF já cadastrado no sistema.',
+              cor: Colors.red,
             );
           }
           return;
@@ -247,12 +258,10 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
           //feddback visual
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Usuário cadastrado com sucesso!'),
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
-              ),
+            snackBarPersonalizado(
+              context: context,
+              mensagem: 'Usuário cadastrado com sucesso! 🎉',
+              cor: Colors.green,
             );
           }
 
@@ -348,7 +357,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           ),
 
                           TextFormField(
-                            controller: senhaController,
+                            controller: _mapController['senha']!,
                             obscureText: !isPasswordVisible,
                             decoration: InputDecoration(
                               prefixIcon: const Icon(Icons.lock),
@@ -395,7 +404,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           ),
                           const SizedBox(height: 12),
                           TextFormField(
-                            controller: confirmarSenhaController,
+                            controller: _mapController['confirmarSenha']!,
                             obscureText: !isPasswordVisible,
                             decoration: InputDecoration(
                               prefixIcon: const Icon(Icons.lock),
@@ -417,7 +426,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                               fillColor: Colors.grey[100],
                             ),
                             validator: (value) {
-                              if (value != senhaController.text) {
+                              if (value != _mapController['senha']!.text) {
                                 return 'Senhas não coincidem';
                               }
 

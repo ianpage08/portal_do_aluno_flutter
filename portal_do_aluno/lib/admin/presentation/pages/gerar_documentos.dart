@@ -17,14 +17,25 @@ class GerarDocumentosPage extends StatefulWidget {
 
 class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nomeAlunoController = TextEditingController();
-  final TextEditingController _dataController = TextEditingController();
-  final TextEditingController _observacoesController = TextEditingController();
-  final TextEditingController _anoEscolarController = TextEditingController();
-  String? turmaId;
-  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
-  String? alunoId;
-  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
+  final Map<String, TextEditingController> _mapController = {
+    'nomeAluno': TextEditingController(),
+    'anoEscolar': TextEditingController(),
+    'data': TextEditingController(),
+    'observacoes': TextEditingController(),
+  };
+
+  final Map<String, String?> _mapSelectedValues = {
+    'turmaId': null,
+    'alunoId': null,
+  };
+
+  final Map<String, ValueNotifier<String?>> _mapValueNotifier = {
+    'turma': ValueNotifier<String?>(null),
+    'aluno': ValueNotifier<String?>(null),
+  };
+  List<TextEditingController> get _allControllers =>
+      _mapController.values.toList();
+
   final ContratoPdfService _contratoPdfService = ContratoPdfService();
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAlunosPorTurma(
@@ -196,28 +207,28 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                 children: [
                   const SizedBox(height: 16),
                   BotaoSelecionarTurma(
-                    turmaSelecionada: turmaSelecionada,
+                    turmaSelecionada: _mapValueNotifier['turma']!,
                     onTurmaSelecionada: (id, turmaNome) {
                       setState(() {
-                        turmaId = id;
+                        _mapSelectedValues['turmaId'] = id;
                       });
-                      turmaSelecionada.value = turmaNome;
+                      _mapValueNotifier['turma']!.value = turmaNome;
                     },
                   ),
                   const SizedBox(height: 16),
-                  turmaId != null
+                  _mapSelectedValues['turmaId'] != null
                       ? BotaoSelecionarAluno(
-                          alunoSelecionado: alunoSelecionado,
-                          turmaId: turmaId!,
+                          alunoSelecionado: _mapValueNotifier['aluno']!,
+                          turmaId: _mapSelectedValues['turmaId']!,
                           onAlunoSelecionado: (id, nomeCompleto) {
-                            alunoId = id;
+                            _mapSelectedValues['alunoId'] = id;
                           },
                         )
                       : const Text('Selecione uma turma para ver os alunos'),
                   const SizedBox(height: 16),
 
                   TextFormField(
-                    controller: _observacoesController,
+                    controller: _mapController['nomeAluno']!,
                     maxLines: 3,
                     decoration: InputDecoration(
                       labelText: 'Observações (Opcional)',
@@ -281,7 +292,8 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   }
 
   Future<void> _gerarDocumento() async {
-    if (alunoId == null || turmaId == null) {
+    if (_mapSelectedValues['turmaId'] == null ||
+        _mapSelectedValues['alunoId'] == null) {
       snackBarPersonalizado(
         context: context,
         mensagem: 'Selecione um aluno e turma',
@@ -292,7 +304,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
     try {
       final docAluno = await FirebaseFirestore.instance
           .collection('matriculas')
-          .doc(alunoId)
+          .doc(_mapSelectedValues['alunoId'])
           .get();
 
       if (!docAluno.exists) {
@@ -343,11 +355,8 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   }
 
   void _limparCampos() {
+    
     setState(() {
-      _nomeAlunoController.clear();
-      _anoEscolarController.clear();
-      _dataController.clear();
-      _observacoesController.clear();
       tipoDeDocumento = null;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -360,10 +369,12 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
 
   @override
   void dispose() {
-    _nomeAlunoController.dispose(); // libera o TextEditingController
-    _anoEscolarController.dispose();
-    _dataController.dispose(); // idem
-    _observacoesController.dispose(); // idem
+    for (var controller in _allControllers) {
+      controller.dispose();
+    }
+    _mapValueNotifier['turma']!.dispose();
+    _mapValueNotifier['aluno']!.dispose();
+
     super.dispose(); // chama o dispose da classe pai
   }
 }
