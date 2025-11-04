@@ -3,23 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:portal_do_aluno/admin/data/models/usuario_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
+import 'package:portal_do_aluno/core/notifications/notification_service_remote.dart';
+import 'package:portal_do_aluno/firebase_options.dart';
 
 import 'package:portal_do_aluno/navigation/app_route.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/teacher/presentation/providers/presenca_provider.dart';
+import 'package:portal_do_aluno/core/notifications/notification_service_local.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationServiceRemote().init();
+  await NotificationService().init();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UsuarioProvider()),
         ChangeNotifierProvider(create: (_) => PresencaProvider()),
-        ChangeNotifierProvider(create: (_) => SelectedProvider())
+        ChangeNotifierProvider(create: (_) => SelectedProvider()),
       ],
       child: const MyApp(),
     ),

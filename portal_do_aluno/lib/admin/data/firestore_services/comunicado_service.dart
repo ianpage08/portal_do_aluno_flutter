@@ -34,4 +34,41 @@ class ComunicadoService {
     final qtd = await comunicadosCollection.get();
     return qtd.docs.length;
   }
+  Future<List<String>> getTokensDestinatario(String destinatario) async {
+  QuerySnapshot snapshot;
+
+  switch (destinatario) {
+    case 'Todos':
+      snapshot = await FirebaseFirestore.instance.collection('usuarios').get();
+      break;
+    case 'Alunos':
+      snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .where('type', isEqualTo: 'student')
+          .get();
+      break;
+    case 'Professores':
+      snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .where('type', isEqualTo: 'teacher')
+          .get();
+      break;
+    case 'Responsáveis':
+      snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .where('type', isEqualTo: 'responsavel')
+          .get();
+      break;
+    default:
+      snapshot = await FirebaseFirestore.instance.collection('usuarios').get();
+  }
+
+  // Filtra apenas os tokens não nulos
+  return snapshot.docs
+      .map((doc) => doc['fcmToken'] as String?)
+      .where((token) => token != null)
+      .cast<String>()
+      .toList();
+}
+
 }
