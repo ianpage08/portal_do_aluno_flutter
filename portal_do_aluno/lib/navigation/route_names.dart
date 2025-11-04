@@ -1,5 +1,6 @@
 class RouteNames {
   static const String login = '/login';
+  static const  String notification = '/notification';
 
   //Dashboard
   static const String studentDashboard = '/student_dashboard';

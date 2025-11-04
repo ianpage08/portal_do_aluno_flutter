@@ -22,7 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
-            // ação de notificação
+            NavigatorService.navigateTo(RouteNames.notification);
           },
           icon: const Icon(Icons.notifications),
         ),
