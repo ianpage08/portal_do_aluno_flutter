@@ -8,6 +8,7 @@ class Usuario {
   final String name;
   final String password;
   final UserType type;
+  
 
   Usuario({
     required this.id,

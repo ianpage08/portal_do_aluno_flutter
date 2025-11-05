@@ -140,7 +140,7 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                             ? BotaoSelecionarAluno(
                                 alunoSelecionado: alunoSelecionado,
                                 turmaId: _mapSelectedValues['turmaId'],
-                                onAlunoSelecionado: (id, nomeCompleto) {
+                                onAlunoSelecionado: (id, nomeCompleto, cpf) {
                                   setState(() {
                                     _mapSelectedValues['alunoId'] = id;
                                   });

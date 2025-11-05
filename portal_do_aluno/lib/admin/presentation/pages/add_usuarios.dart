@@ -1,7 +1,5 @@
-/* Cadastrar/editar/excluir professores, alunos e responsáveis.
-
-Reset de senha e permissões.*/
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/helper/form_helper.dart';
@@ -14,6 +12,8 @@ import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 
+/// Página para adicionar um novo usuário no sistema.
+/// Pode ser professor, aluno ou administrador.
 class AddUsuarioPage extends StatefulWidget {
   const AddUsuarioPage({super.key});
 
@@ -22,30 +22,7 @@ class AddUsuarioPage extends StatefulWidget {
 }
 
 class _AddUsuarioPageState extends State<AddUsuarioPage> {
-  @override
-  void dispose() {
-    for (var controller in _allControllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  final List<String> tipoUsuario = ['Professor', 'Aluno', 'Administrador'];
-  String? turmaId;
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getstreamTurma() {
-    return FirebaseFirestore.instance.collection('turmas').snapshots();
-  }
-
-  Stream<QuerySnapshot> getAluno(String classId) {
-    return FirebaseFirestore.instance
-        .collection('matriculas')
-        .where('dadosAcademicos.classId', isEqualTo: classId)
-        .snapshots();
-  }
-
-  String? isSelectedTipo;
-  bool isPasswordVisible = false;
+  // Controllers para os campos de texto do formulário.
   final Map<String, TextEditingController> _mapController = {
     'nome': TextEditingController(),
     'senha': TextEditingController(),
@@ -54,8 +31,47 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
   };
   List<TextEditingController> get _allControllers =>
       _mapController.values.toList();
+
+  // Controladores obrigatórios para validação
+  List<TextEditingController> get controllersObrigatorios => [
+    _mapController['senha']!,
+    _mapController['confirmarSenha']!,
+  ];
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  // Estado que guarda o tipo de usuário selecionado.
+  String? isSelectedTipo;
+
+  // Stream para obter turmas do Firestore.
+  Stream<QuerySnapshot<Map<String, dynamic>>> getstreamTurma() {
+    return FirebaseFirestore.instance.collection('turmas').snapshots();
+  }
+
+  // Stream para obter alunos da turma selecionada.
+  Stream<QuerySnapshot> getAluno(String classId) {
+    return FirebaseFirestore.instance
+        .collection('matriculas')
+        .where('dadosAcademicos.classId', isEqualTo: classId)
+        .snapshots();
+  }
+
+  // Map que mantém ValueNotifiers para seleção dinâmica.
+  final Map<String, ValueNotifier<String?>> _mapValueNotifier = {
+    'alunoSelecionado': ValueNotifier<String?>(null),
+    'turmaSelecionada': ValueNotifier<String?>(null),
+  };
+
+  // Variáveis que armazenam dados selecionados.
+  String? turmaId;
+  String? cpfSelecionado;
+  String? alunoId;
+  String? nomeAluno;
+
+  // Controle para visibilidade da senha no formulário.
+  bool isPasswordVisible = false;
+
+  // Conversão de tipo de usuário string para enum UserType.
   UserType _mapTipo(String? tipo) {
     switch (tipo) {
       case 'Professor':
@@ -71,15 +87,16 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     }
   }
 
-  String? cpfSelecionado;
-  String? alunoId;
-  final Map<String, ValueNotifier<String?>> _mapValueNotifier = {
-    'alunoSelecionado': ValueNotifier<String?>(null),
-    'turmaSelecionada': ValueNotifier<String?>(null),
-  };
-  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
-  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
+  @override
+  void dispose() {
+    // Liberar recursos dos controllers para evitar vazamento de memória
+    for (var controller in _mapController.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
+  /// Exibe modal para seleção do tipo de usuário
   void showtipoPerfilModal() {
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -88,13 +105,12 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
       context: context,
       builder: (context) {
         return ListView(
-          children: tipoUsuario.map((tipo) {
+          children: ['Professor', 'Aluno', 'Administrador'].map((tipo) {
             return ListTile(
               title: Text(tipo),
               onTap: () {
                 setState(() {
                   isSelectedTipo = tipo;
-
                   Navigator.pop(context);
                 });
               },
@@ -105,16 +121,29 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     );
   }
 
+  /// Limpa os campos e variáveis selecionadas no formulário
   void _limparCampos() {
     setState(() {
       isSelectedTipo = null;
-      cpfSelecionado = null;
       turmaId = null;
+      cpfSelecionado = null;
       alunoId = null;
+      nomeAluno = null;
+
+      // Resetar valores nos ValueNotifiers para atualizar UI
+      _mapValueNotifier['alunoSelecionado']!.value = null;
+      _mapValueNotifier['turmaSelecionada']!.value = null;
+
+      // Limpar campos de texto
+      for (var controller in _allControllers) {
+        controller.clear();
+      }
     });
   }
 
-  Widget _professorcadastro() {
+  /// Widget para campos de cadastro do professor
+  /// O parâmetro [enabled] controla se os campos podem ser editados ou não
+  Widget _professorcadastro({required bool enabled}) {
     return Column(
       children: [
         TextFormField(
@@ -127,6 +156,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
             hintText: 'Leila Miranda Maciel',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
+          enabled: enabled,
           validator: (value) =>
               value == null || value.isEmpty ? 'Digite o nome' : null,
         ),
@@ -145,6 +175,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
             hintText: '853.654.895-59',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
+          enabled: enabled,
           validator: (value) =>
               value == null || value.isEmpty ? 'Digite o Cpf' : null,
         ),
@@ -153,7 +184,9 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     );
   }
 
-  Widget _administradorcadastro() {
+  /// Widget para campos de cadastro do administrador
+  /// Similar ao professor, com controle de habilitação [enabled]
+  Widget _administradorcadastro({required bool enabled}) {
     return Column(
       children: [
         TextFormField(
@@ -166,6 +199,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
             hintText: 'Leila Miranda Maciel',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
+          enabled: enabled,
           validator: (value) =>
               value == null || value.isEmpty ? 'Digite o nome' : null,
         ),
@@ -184,6 +218,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
             hintText: '853.654.895-59',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
+          enabled: enabled,
           validator: (value) =>
               value == null || value.isEmpty ? 'Digite o Cpf' : null,
         ),
@@ -192,20 +227,29 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     );
   }
 
+  /// Método para adicionar um usuário ao banco de dados
+  /// Faz validações e interage com o serviço de cadastro
   void _adicionarUsuario() async {
-    if (!FormHelper.isFormValid(formKey: _formKey, listControllers: _allControllers)) {
+    if (FormHelper.isFormValid(
+      formKey: _formKey,
+      listControllers: controllersObrigatorios,
+    )) {
       final nome = _mapController['nome']!.text.trim();
       final senha = _mapController['senha']!.text.trim();
       final confirmarSenha = _mapController['confirmarSenha']!.text.trim();
       final cpf = _mapController['cpf']!.text.replaceAll(RegExp(r'[^0-9]'), '');
-      if (isSelectedTipo == 'Aluno' &&
-          (alunoId == null || _mapValueNotifier['alunoSelecionado']!.value == null)) {
+
+      // Validações específicas para tipo Aluno
+      if (isSelectedTipo == 'Aluno' && (alunoId == null || nomeAluno == null)) {
         snackBarPersonalizado(
           context: context,
           mensagem: 'Selecione um aluno antes de cadastrar.',
           cor: Colors.orange,
         );
+        return;
       }
+
+      // Validação para professor
       if (isSelectedTipo == 'Professor' &&
           (_mapController['nome']!.text.isEmpty ||
               _mapController['cpf']!.text.isEmpty)) {
@@ -216,24 +260,18 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
         );
         return;
       }
-      if (isSelectedTipo == 'Aluno' &&
-          (cpfSelecionado == null || cpfSelecionado!.isEmpty) &&
-          alunoId == null) {
-        snackBarPersonalizado(
-          context: context,
-          mensagem: 'Selecione um aluno com CPF válido antes de cadastrar.',
-          cor: Colors.orange,
-        );
-        return;
-      }
+
+      // Continuação se todos os campos de senha, cpf e nome estiverem preenchidos
       if (senha.isNotEmpty &&
           confirmarSenha.isNotEmpty &&
-          cpf.isNotEmpty &&
-          nome.isNotEmpty) {
+          (cpf.isNotEmpty || cpfSelecionado != null) &&
+          (nome.isNotEmpty || nomeAluno != null)) {
+        // Verificação para CPF duplicado no Firestore
         final verificarCpf = await FirebaseFirestore.instance
             .collection('usuarios')
             .where('cpf', isEqualTo: cpf)
             .get();
+
         if (verificarCpf.docs.isNotEmpty) {
           if (mounted) {
             snackBarPersonalizado(
@@ -244,19 +282,22 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
           }
           return;
         }
+
+        // Criar novo objeto Usuario para salvar
         final novoUsuario = Usuario(
           id: '',
           turmaId: turmaId ?? '',
           alunoId: alunoId ?? '',
-          name: alunoSelecionado.value ?? nome,
+          name: nomeAluno ?? nome,
           cpf: cpfSelecionado ?? cpf,
           password: senha,
           type: _mapTipo(isSelectedTipo),
         );
+
         try {
           await CadastroService().cadastroUsuario(novoUsuario);
 
-          //feddback visual
+          // Feedback visual para usuário
           if (mounted) {
             snackBarPersonalizado(
               context: context,
@@ -293,12 +334,14 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                 padding: const EdgeInsets.only(bottom: 50),
                 child: Column(
                   children: [
+                    // Formulário que agrupa os campos de entrada e validação
                     Form(
                       key: _formKey,
                       child: Column(
                         children: [
                           const SizedBox(height: 12),
 
+                          // Botão para selecionar o tipo de usuário
                           SizedBox(
                             width: double.infinity,
                             child: TextButton(
@@ -320,42 +363,65 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                             ),
                           ),
                           const SizedBox(height: 12),
+
+                          // Coluna que exibe widgets de seleção dinâmicos conforme o tipo
                           Column(
                             children: [
+                              // Se for aluno: seleção de turma e aluno (widgets podem ser extraídos)
                               if (isSelectedTipo == 'Aluno') ...[
                                 BotaoSelecionarTurma(
-                                  turmaSelecionada: turmaSelecionada,
+                                  turmaSelecionada:
+                                      _mapValueNotifier['turmaSelecionada']!,
                                   onTurmaSelecionada: (id, nomeCompleto) {
                                     setState(() {
                                       turmaId = id;
                                     });
+                                    debugPrint(
+                                      'Turma ID selecionada: $turmaId',
+                                    );
                                   },
                                 ),
                                 const SizedBox(height: 12),
                                 if (turmaId != null)
                                   BotaoSelecionarAluno(
-                                    alunoSelecionado: alunoSelecionado,
+                                    alunoSelecionado:
+                                        _mapValueNotifier['alunoSelecionado']!,
                                     turmaId: turmaId,
-
-                                    onAlunoSelecionado: (id, nomeCompleto) {
+                                    onAlunoSelecionado: (id, nomeCompleto, cpf) {
                                       alunoId = id;
+                                      cpfSelecionado = cpf;
+                                      nomeAluno = nomeCompleto;
+                                      debugPrint(
+                                        'Nome do Aluno selecionado: $nomeAluno',
+                                      );
                                       debugPrint(
                                         'Aluno ID selecionado: $alunoId',
+                                      );
+                                      debugPrint(
+                                        'Aluno CPF selecionado: $cpfSelecionado',
                                       );
                                     },
                                   ),
                                 const SizedBox(height: 12),
                               ],
 
+                              // Se for professor, exibe campos específicos (função já isolada)
                               if (isSelectedTipo == 'Professor') ...[
-                                _professorcadastro(),
+                                _professorcadastro(
+                                  enabled: isSelectedTipo == 'Professor',
+                                ),
                               ],
+
+                              // Se for administrador, exibe campos específicos (função já isolada)
                               if (isSelectedTipo == 'Administrador') ...[
-                                _administradorcadastro(),
+                                _administradorcadastro(
+                                  enabled: isSelectedTipo == 'Administrador',
+                                ),
                               ],
                             ],
                           ),
 
+                          // Campos para senha e confirmação de senha
                           TextFormField(
                             controller: _mapController['senha']!,
                             obscureText: !isPasswordVisible,
@@ -403,6 +469,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                             },
                           ),
                           const SizedBox(height: 12),
+
                           TextFormField(
                             controller: _mapController['confirmarSenha']!,
                             obscureText: !isPasswordVisible,
@@ -429,11 +496,12 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                               if (value != _mapController['senha']!.text) {
                                 return 'Senhas não coincidem';
                               }
-
                               return null;
                             },
                           ),
                           const SizedBox(height: 12),
+
+                          // Card com dicas para criar senha segura
                           const SizedBox(
                             child: Card(
                               child: Column(
@@ -451,7 +519,6 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text('Mínimo de 8 caracteres'),
-
                                         Text(
                                           'Incluir letras maiúsculas e minúsculas',
                                         ),
@@ -468,7 +535,10 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                         ],
                       ),
                     ),
+
                     const SizedBox(height: 16),
+
+                    // Linha com botões para adicionar usuário ou limpar dados
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [

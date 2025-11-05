@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -32,6 +33,7 @@ class CadastroService {
       'type': usuario.type.name,
       'turmaId': usuario.turmaId,
       'alunoId': usuario.alunoId,
+      
     });
 
     return usuarioRef.id;

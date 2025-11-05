@@ -37,9 +37,9 @@ Future<String> getAccessToken() async {
 
 // Função que envia a notificação para um token FCM específico
 Future<void> enviarNotification(
-  String token,  // token FCM do dispositivo que vai receber a notificação
-  String title,  // título da notificação
-  String message // corpo da notificação
+  String token, // token FCM do dispositivo que vai receber a notificação
+  String title, // título da notificação
+  String message, // corpo da notificação
 ) async {
   final accessToken = await getAccessToken(); // Pega o token OAuth2
 
@@ -52,13 +52,17 @@ Future<void> enviarNotification(
   final body = jsonEncode({
     'message': {
       'token': token, // Destinatário da notificação
-      'notification': {'title': title, 'body': message}, // Dados visuais da notificação
-    },
-    'android': {'priority': 'high'}, // Prioridade no Android
-    'apns': {
-      'headers': {'apns-priority': '10'}, // Prioridade no iOS
+      'notification': {
+        'title': title,
+        'body': message,
+      }, // Dados visuais da notificação
+      'android': {'priority': 'high'}, // Prioridade no Android
+      'apns': {
+        'headers': {'apns-priority': '10'}, // Prioridade no iOS
+      },
     },
   });
+  debugPrint('Access token: $accessToken');
 
   // Envia a requisição POST para a API FCM
   final responsta = await http.post(
@@ -67,13 +71,13 @@ Future<void> enviarNotification(
       'Authorization': 'Bearer $accessToken', // Autenticação usando o token
       'Content-Type': 'application/json; charset=UTF-8', // JSON
     },
-    body: body
+    body: body,
   );
 
   // Verifica se deu certo
-  if(responsta.statusCode == 200){
+  if (responsta.statusCode == 200) {
     debugPrint('Notificação enviada com sucesso');
-  }else{
+  } else {
     debugPrint('Erro ao enviar notificação: ${responsta.statusCode}');
   }
 }

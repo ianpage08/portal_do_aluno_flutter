@@ -220,7 +220,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                       ? BotaoSelecionarAluno(
                           alunoSelecionado: _mapValueNotifier['aluno']!,
                           turmaId: _mapSelectedValues['turmaId']!,
-                          onAlunoSelecionado: (id, nomeCompleto) {
+                          onAlunoSelecionado: (id, nomeCompleto, cpf) {
                             _mapSelectedValues['alunoId'] = id;
                           },
                         )

@@ -71,17 +71,18 @@ class _ComunicacaoInstitucionalPageState
 
       try {
         await _comunicadoService.enviarComunidado(novoComunicado);
-        List<String> tokens = await _comunicadoService.getTokensDestinatario(
+        final tokens = await _comunicadoService.getTokensDestinatario(
           _isSelectedDestinatario!,
         );
-        debugPrint('Tokens: ${tokens.toString()}');
-        for (String token in tokens) {
+        
+        for (final token in tokens) {
           await enviarNotification(
             token,
             novoComunicado.titulo,
             novoComunicado.mensagem,
           );
         }
+        if (!context.mounted) return;
         if (mounted) {
           snackBarPersonalizado(
             context: context,

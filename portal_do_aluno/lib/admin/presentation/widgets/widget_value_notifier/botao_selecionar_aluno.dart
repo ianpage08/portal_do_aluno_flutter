@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class BotaoSelecionarAluno extends StatefulWidget {
   final ValueNotifier<String?> alunoSelecionado;
   final String? turmaId;
-  final void Function(String id, String nomeCompleto) onAlunoSelecionado;
+  final void Function(String id, String nomeCompleto, String cpf) onAlunoSelecionado;
 
   const BotaoSelecionarAluno({
     super.key,
@@ -75,6 +75,7 @@ class _BotaoSelecionarAlunoState extends State<BotaoSelecionarAluno> {
                         final alunoNome = capitalizar(
                           aluno['dadosAluno']['nome'],
                         );
+                        final alunoCpf = aluno['dadosAluno']['cpf'];
 
                         final alunoId = aluno['dadosAluno']['id'];
                         return ListTile(
@@ -83,7 +84,7 @@ class _BotaoSelecionarAlunoState extends State<BotaoSelecionarAluno> {
                             style: const TextStyle(fontSize: 18),
                           ),
                           onTap: () {
-                            widget.onAlunoSelecionado.call(alunoId, alunoNome);
+                            widget.onAlunoSelecionado.call(alunoId, alunoNome, alunoCpf);
                             widget.alunoSelecionado.value = alunoNome;
                             Navigator.pop(context);
                           },
