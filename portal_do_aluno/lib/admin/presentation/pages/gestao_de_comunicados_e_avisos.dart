@@ -74,8 +74,9 @@ class _ComunicacaoInstitucionalPageState
         final tokens = await _comunicadoService.getTokensDestinatario(
           _isSelectedDestinatario!,
         );
-        
+
         for (final token in tokens) {
+          
           await enviarNotification(
             token,
             novoComunicado.titulo,
@@ -97,11 +98,13 @@ class _ComunicacaoInstitucionalPageState
           _isSelectedDestinatario = null;
           anexoAdicionado = false;
         });
-      } catch (e) {
+      } catch (e, s) {
         if (mounted) {
+          debugPrint('Erro ao enviar: $e');
+          debugPrintStack(stackTrace:  s);
           snackBarPersonalizado(
             context: context,
-            mensagem: 'Erro ao enviar',
+            mensagem: 'Erro ao enviar Comunicado',
             cor: Colors.red,
           );
         }

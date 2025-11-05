@@ -20,7 +20,7 @@ class TokensService {
           .doc(fmcToken);
       final doc = await docRef.get();
 
-      if (!doc.exists) {
+      if (!doc.exists ) {
         await docRef.set({
           'userId': userId,
           'fmcToken': fmcToken,

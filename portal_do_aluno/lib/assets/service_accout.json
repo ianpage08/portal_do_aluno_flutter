@@ -1,0 +1,6 @@
+{
+  "type": "service_account",
+  "project_id": "banco-de-usuarios-alunos",
+  
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC...\n-----END PRIVATE KEY-----\n"
+}
