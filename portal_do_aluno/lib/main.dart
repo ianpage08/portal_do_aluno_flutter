@@ -4,6 +4,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:portal_do_aluno/admin/data/models/usuario_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/core/notifications/notification_service_remote.dart';
+import 'package:portal_do_aluno/core/theme/dark_theme.dart';
+import 'package:portal_do_aluno/core/theme/light_theme.dart';
+import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/firebase_options.dart';
 
 import 'package:portal_do_aluno/navigation/app_route.dart';
@@ -26,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UsuarioProvider()),
         ChangeNotifierProvider(create: (_) => PresencaProvider()),
         ChangeNotifierProvider(create: (_) => SelectedProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const MyApp(),
     ),
@@ -37,6 +41,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       builder: (context, child) => ResponsiveBreakpoints.builder(
         child: child!,
@@ -54,10 +59,10 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [Locale('pt', 'BR')],
       title: 'Portal do Aluno',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      themeMode: themeProvider.themeMode,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+
       initialRoute: RouteNames.login,
       routes: routes,
       onGenerateRoute: onGenerateRoute,

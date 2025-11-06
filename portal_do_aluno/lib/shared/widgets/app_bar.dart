@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -13,13 +15,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return AppBar(
       title: Text(title),
-      backgroundColor:
-          backGround ?? Colors.deepPurple, // cor padrão se não passar nada
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       centerTitle: true,
-      foregroundColor: Colors.white,
+      foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
       actions: [
+        Switch(
+          value: themeProvider.isDarkmode,
+          onChanged: (value) {
+            themeProvider.setTheme(value);
+          },
+        ),
         IconButton(
           onPressed: () {
             NavigatorService.navigateTo(RouteNames.notification);

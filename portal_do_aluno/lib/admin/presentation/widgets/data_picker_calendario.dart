@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 class DataPickerCalendario extends StatefulWidget {
   final DateTime? isSelecionada;
   final Function(DateTime? data) onDate;
-  const DataPickerCalendario({super.key,  this.isSelecionada, required this.onDate});
+  const DataPickerCalendario({
+    super.key,
+    this.isSelecionada,
+    required this.onDate,
+  });
 
   @override
   State<DataPickerCalendario> createState() => _DataPickerCalendarioState();
@@ -22,14 +26,7 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF5921F3),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
+        style: Theme.of(context).elevatedButtonTheme.style!,
         onPressed: () async {
           final DateTime? data = await showDatePicker(
             context: context,
@@ -59,6 +56,5 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
         ),
       ),
     );
-    
   }
 }

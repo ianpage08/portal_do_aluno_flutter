@@ -37,17 +37,7 @@ class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
               curve: Curves.easeInOut,
               duration: const Duration(milliseconds: 300),
               child: TextButton.icon(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.deepPurpleAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                style: Theme.of(context).textButtonTheme.style,
 
                 label: Text(
                   value ?? 'Selecione Uma Turma',

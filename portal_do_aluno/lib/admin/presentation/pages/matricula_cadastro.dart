@@ -218,18 +218,17 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
                 const SizedBox(height: 16),
                 _buildCardMedicas(),
                 const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 28, 1, 104),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(50),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: Theme.of(context).elevatedButtonTheme.style,
+                    icon: const Icon(CupertinoIcons.floppy_disk),
+                    label: const Text(
+                      'Cadastrar Aluno',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: _cadastrarAluno,
                   ),
-                  icon: const Icon(CupertinoIcons.floppy_disk),
-                  label: const Text(
-                    'Cadastrar Aluno',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: _cadastrarAluno,
                 ),
                 const SizedBox(height: 20),
               ],

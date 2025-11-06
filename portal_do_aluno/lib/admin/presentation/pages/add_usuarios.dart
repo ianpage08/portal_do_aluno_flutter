@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
@@ -99,9 +100,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
   /// Exibe modal para seleção do tipo de usuário
   void showtipoPerfilModal() {
     showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       context: context,
       builder: (context) {
         return ListView(
@@ -422,28 +421,23 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           ),
 
                           // Campos para senha e confirmação de senha
-                          TextFormField(
+                          TextFormFieldPersonalizado(
                             controller: _mapController['senha']!,
                             obscureText: !isPasswordVisible,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isPasswordVisible = !isPasswordVisible;
-                                  });
-                                },
-                                icon: isPasswordVisible
-                                    ? const Icon(Icons.visibility_off)
-                                    : const Icon(Icons.visibility),
-                              ),
-                              labelText: 'Senha',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
+
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
+                              },
+                              icon: isPasswordVisible
+                                  ? const Icon(Icons.visibility_off)
+                                  : const Icon(Icons.visibility),
                             ),
+                            label: 'Senha',
+
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, insira a senha';
@@ -470,28 +464,23 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           ),
                           const SizedBox(height: 12),
 
-                          TextFormField(
+                          TextFormFieldPersonalizado(
                             controller: _mapController['confirmarSenha']!,
                             obscureText: !isPasswordVisible,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isPasswordVisible = !isPasswordVisible;
-                                  });
-                                },
-                                icon: isPasswordVisible
-                                    ? const Icon(Icons.visibility_off)
-                                    : const Icon(Icons.visibility),
-                              ),
-                              labelText: 'Confirmar Senha',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[100],
+
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
+                              },
+                              icon: isPasswordVisible
+                                  ? const Icon(Icons.visibility_off)
+                                  : const Icon(Icons.visibility),
                             ),
+                            label: 'Confirmar Senha',
+
                             validator: (value) {
                               if (value != _mapController['senha']!.text) {
                                 return 'Senhas não coincidem';

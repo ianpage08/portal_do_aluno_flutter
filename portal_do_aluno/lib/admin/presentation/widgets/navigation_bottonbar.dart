@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomBottomItem {
@@ -38,8 +37,8 @@ class _NavigationBottonbarState extends State<NavigationBottonbar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: widget.backgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(50)),
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         boxShadow: const [
           BoxShadow(
             color: Color.fromARGB(33, 0, 0, 0),
@@ -69,11 +68,7 @@ class _NavigationBottonbarState extends State<NavigationBottonbar> {
                     duration: widget.animationDuration,
                     child: Text(
                       item.label,
-                      style: TextStyle(
-                        color: widget.activeColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(),
                     ),
                   ),
                   AnimatedContainer(
@@ -82,7 +77,7 @@ class _NavigationBottonbarState extends State<NavigationBottonbar> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: isSelected
-                          ? widget.activeColor
+                          ? Theme.of(context).focusColor
                           : Colors.transparent,
                       border: Border.all(
                         color: isSelected
@@ -94,7 +89,7 @@ class _NavigationBottonbarState extends State<NavigationBottonbar> {
                       item.icon,
                       color: isSelected
                           ? widget.backgroundColor
-                          : widget.activeColor,
+                          : Theme.of(context).iconTheme.color,
                       size: 30,
                     ),
                   ),

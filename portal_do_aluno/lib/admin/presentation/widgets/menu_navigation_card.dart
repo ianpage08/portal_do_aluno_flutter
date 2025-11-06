@@ -19,7 +19,6 @@ class MenuNavigationCard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: InkWell(
-        
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -27,15 +26,16 @@ class MenuNavigationCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 38, color: AppColors.primary),
+              Icon(
+                icon,
+                size: 38,
+                color: Theme.of(context).appBarTheme.foregroundColor,
+              ),
               const SizedBox(height: 10),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ],
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/app_constants/colors.dart';
 
 class FixedDrop extends StatefulWidget {
   final List<String> itens;
@@ -7,7 +8,8 @@ class FixedDrop extends StatefulWidget {
   final IconData icon;
   final void Function(String valor) onSelected;
   final bool habilitado;
-  const FixedDrop({super.key,
+  const FixedDrop({
+    super.key,
     required this.itens,
     required this.selecionado,
     required this.titulo,
@@ -23,23 +25,23 @@ class FixedDrop extends StatefulWidget {
 class _FixedDropState extends State<FixedDrop> {
   @override
   Widget build(BuildContext context) {
-    
     return SizedBox(
       width: double.infinity,
+      height: 50,
       child: TextButton.icon(
-        icon: Icon(widget.icon, color: widget.habilitado ? Colors.white : Colors.grey[600]),
+        icon: Icon(
+          widget.icon,
+          color: widget.habilitado ? Colors.white : Colors.grey[600],
+        ),
         label: Text(
           widget.selecionado ?? widget.titulo,
-          style: TextStyle(
-            fontSize: 16,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
             color: widget.habilitado ? Colors.white : Colors.grey[600],
           ),
         ),
-        style: TextButton.styleFrom(
-          backgroundColor: widget.habilitado ? Colors.blue : Colors.grey[300],
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        style: Theme.of(context).textButtonTheme.style!.copyWith(
+          backgroundColor: WidgetStatePropertyAll(
+            widget.habilitado ? AppColors.darkPrimary : Colors.grey[300],
           ),
         ),
         onPressed: widget.habilitado
@@ -63,4 +65,4 @@ class _FixedDropState extends State<FixedDrop> {
       ),
     );
   }
-  }
+}

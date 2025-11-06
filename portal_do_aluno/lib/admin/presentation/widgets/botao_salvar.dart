@@ -26,14 +26,7 @@ class _BotaoSalvarState extends State<BotaoSalvar> {
               )
             : const Icon(Icons.save),
         label: isLoading ? const Text('Salvando...') : const Text('Salvar'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF5921F3),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
+        style: Theme.of(context).elevatedButtonTheme.style,
         onPressed: isLoading
             ? null
             : () async {

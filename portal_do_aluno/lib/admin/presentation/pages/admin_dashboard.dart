@@ -46,10 +46,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final usuario = Usuario.fromJson(usuarioMap);
 
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Administrador',
-        backGround: AppColors.admin,
-      ),
+      appBar: const CustomAppBar(title: 'Administrador'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -71,7 +68,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             children: [
                               const CircleAvatar(
                                 radius: 30,
-                                backgroundColor: AppColors.admin,
+                                backgroundColor: Color.fromARGB(
+                                  255,
+                                  88,
+                                  70,
+                                  20,
+                                ),
                                 child: Icon(
                                   Icons.person,
                                   size: 30,

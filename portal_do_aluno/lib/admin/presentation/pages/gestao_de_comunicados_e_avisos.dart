@@ -5,6 +5,7 @@ import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service
 import 'package:portal_do_aluno/admin/data/models/comunicado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_pontinho.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -76,7 +77,6 @@ class _ComunicacaoInstitucionalPageState
         );
 
         for (final token in tokens) {
-          
           await enviarNotification(
             token,
             novoComunicado.titulo,
@@ -101,7 +101,7 @@ class _ComunicacaoInstitucionalPageState
       } catch (e, s) {
         if (mounted) {
           debugPrint('Erro ao enviar: $e');
-          debugPrintStack(stackTrace:  s);
+          debugPrintStack(stackTrace: s);
           snackBarPersonalizado(
             context: context,
             mensagem: 'Erro ao enviar Comunicado',
@@ -151,16 +151,12 @@ class _ComunicacaoInstitucionalPageState
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
+                  TextFormFieldPersonalizado(
                     controller: _tituloController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.title),
-                      labelText: 'Título',
-                      hintText: 'Reunião de Pais - 3º Bimestre',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+
+                    prefixIcon: const Icon(Icons.title),
+                    label: 'Título',
+                    hintText: 'Reunião de Pais - 3º Bimestre',
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -168,13 +164,7 @@ class _ComunicacaoInstitucionalPageState
 
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
+                      style: Theme.of(context).elevatedButtonTheme.style,
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
@@ -237,16 +227,11 @@ class _ComunicacaoInstitucionalPageState
                     ),
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
+                  TextFormFieldPersonalizado(
                     controller: _mensagemController,
                     maxLines: 4,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.message),
-                      labelText: 'Mensagem',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                    prefixIcon: const Icon(Icons.message),
+                    label: 'Mensagem',
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -300,12 +285,7 @@ class _ComunicacaoInstitucionalPageState
               height: 60,
 
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                style: Theme.of(context).elevatedButtonTheme.style,
                 onPressed: _enviarMenssagem,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
