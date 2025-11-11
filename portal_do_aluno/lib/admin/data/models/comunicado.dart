@@ -8,6 +8,7 @@ class Comunicado {
   final String mensagem;
   final DateTime dataPublicacao;
   final Destinatario destinatario;
+  
 
   Comunicado({
     required this.id,

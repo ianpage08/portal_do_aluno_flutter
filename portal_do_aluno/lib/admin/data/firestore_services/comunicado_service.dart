@@ -22,9 +22,39 @@ class ComunicadoService {
 
   Future<void> enviarComunidado(Comunicado comunidado) async {
     final docRef = comunicadosCollection.doc();
-    final novaComunicado = comunidado.copyWith(id: docRef.id);
+    final novoComunicado = comunidado.copyWith(id: docRef.id);
 
-    await docRef.set(novaComunicado.toJson());
+    await docRef.set(novoComunicado.toJson());
+
+    final usuariosSnapshot = await buscarUsuariosPorTipo(
+      novoComunicado.destinatario.toString(),
+    );
+    final batch = _firestore.batch();
+
+    for (var destinatario in usuariosSnapshot.docs) {
+      final userId = destinatario.id;
+      final document = _firestore
+          .collection('usuarios')
+          .doc(userId)
+          .collection('visualizacoes')
+          .doc(docRef.id);
+      debugPrint('🧾 Adicionando comunicado para usuário: $userId');
+      debugPrint(userId);
+      debugPrint(docRef.id);
+      debugPrint(document.toString());
+
+      batch.set(document, {
+        'id': docRef.id,
+        'userId': userId,
+        'titulo': novoComunicado.titulo,
+        'mensagem': novoComunicado.mensagem,
+        'dataPublicacao': novoComunicado.dataPublicacao,
+
+        'visualizado': false,
+      });
+    }
+    await batch.commit();
+    debugPrint(' Comunicado enviado e subcoleções criadas com sucesso!');
   }
 
   Future<void> excluirComunicado(String comunicadoId) async {
@@ -36,38 +66,42 @@ class ComunicadoService {
     return qtd.docs.length;
   }
 
+  Future<QuerySnapshot> buscarUsuariosPorTipo(String destinatario) {
+    switch (destinatario) {
+      case 'Todos':
+        return _firestore.collection('usuarios').get();
+
+      case 'Alunos':
+        return _firestore
+            .collection('usuarios')
+            .where('type', isEqualTo: 'aluno')
+            .get();
+
+      case 'Professores':
+        return _firestore
+            .collection('usuarios')
+            .where('type', isEqualTo: 'teacher')
+            .get();
+
+      case 'Responsáveis':
+        return _firestore
+            .collection('usuarios')
+            .where('type', isEqualTo: 'responsavel')
+            .get();
+
+      default:
+        return _firestore.collection('usuarios').get();
+    }
+  }
+
   Future<List<String>> getTokensDestinatario(String destinatario) async {
     final firestore = FirebaseFirestore.instance;
     List<String> tokens = [];
 
     try {
-      QuerySnapshot usuariosSnapshot;
-
-      switch (destinatario) {
-        case 'Todos':
-          usuariosSnapshot = await firestore.collection('usuarios').get();
-          break;
-        case 'Alunos':
-          usuariosSnapshot = await firestore
-              .collection('usuarios')
-              .where('type', isEqualTo: 'aluno')
-              .get();
-          break;
-        case 'Professores':
-          usuariosSnapshot = await firestore
-              .collection('usuarios')
-              .where('type', isEqualTo: 'teacher')
-              .get();
-          break;
-        case 'Responsáveis':
-          usuariosSnapshot = await firestore
-              .collection('usuarios')
-              .where('type', isEqualTo: 'responsavel')
-              .get();
-          break;
-        default:
-          usuariosSnapshot = await firestore.collection('usuarios').get();
-      }
+      QuerySnapshot usuariosSnapshot = await buscarUsuariosPorTipo(
+        destinatario,
+      );
 
       // Busca tokens de cada usuário sem quebrar o fluxo
       for (var usuario in usuariosSnapshot.docs) {
@@ -92,11 +126,28 @@ class ComunicadoService {
         }
       }
 
-      
       return tokens;
     } catch (e) {
       debugPrint('❌ Erro geral ao buscar tokens: $e');
       return [];
     }
+  }
+  // vai me retorna as vizualizações em tempo real
+
+  Stream<int> contadorDeVizualizacoesVista() {
+    final queryDoc = _firestore
+        .collectionGroup('visualizacoes')
+        .where('visualizado', isEqualTo: true)
+        .snapshots();
+
+    return queryDoc.map((snapshot) => snapshot.docs.length);
+  }
+
+  Stream<int> contadorDeVizalizacoesNaoVistas() {
+    final query = _firestore
+        .collectionGroup('visualizacoes')
+        .where('visualizado', isEqualTo: false)
+        .snapshots();
+    return query.map((snapshot) => snapshot.docs.length);
   }
 }

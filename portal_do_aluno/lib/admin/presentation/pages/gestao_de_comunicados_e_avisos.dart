@@ -290,8 +290,8 @@ class _ComunicacaoInstitucionalPageState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.send, color: Colors.white, size: 20),
-                    SizedBox(width: 12),
+                    const Icon(Icons.send, color: Colors.white, size: 20),
+                    const SizedBox(width: 12),
                     Text(
                       'Enviar Comunicado',
                       style: Theme.of(context).textTheme.titleMedium,
@@ -334,13 +334,26 @@ class _ComunicacaoInstitucionalPageState
             );
           },
         ),
-        _itemEstatisticas(
-          Icons.visibility,
-          'Vizualizações',
-          '135',
-          Colors.green,
-          Colors.green.shade50,
-          Colors.green.shade900,
+        StreamBuilder<int>(
+          stream: _comunicadoService.contadorDeVizualizacoesVista(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasData) {
+              return const Text('Nenhum aruivo encontrado');
+            }
+            final total = snapshot.data ?? 0;
+
+            return _itemEstatisticas(
+              Icons.visibility,
+              'Vizualizações',
+              total.toString(),
+              Colors.green,
+              Colors.green.shade50,
+              Colors.green.shade900,
+            );
+          },
         ),
       ],
     );

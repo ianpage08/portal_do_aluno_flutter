@@ -28,6 +28,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             themeProvider.setTheme(value);
           },
         ),
+        
         IconButton(
           onPressed: () {
             NavigatorService.navigateTo(RouteNames.notification);
@@ -38,7 +39,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: () {
             NavigatorService.navigateTo(RouteNames.login);
           },
-          icon: const Icon(Icons.logout),
+          icon: const Icon(Icons.logout, ),
+          
         ),
       ],
     );
