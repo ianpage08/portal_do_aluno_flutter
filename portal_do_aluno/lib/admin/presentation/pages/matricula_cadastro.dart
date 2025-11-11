@@ -203,9 +203,9 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
             key: _formKey,
             child: Column(
               children: [
-                const Text(
+                Text(
                   'Formulário de Cadastro de Matrícula',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 12),
                 _buildCardAluno(),
@@ -440,10 +440,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text(title, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             ...children.expand((child) => [child, const SizedBox(height: 12)]),
           ],

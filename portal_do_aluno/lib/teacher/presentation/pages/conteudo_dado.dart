@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/conteudo_service.dart';
 import 'package:portal_do_aluno/admin/data/models/conteudo_presenca.dart';
@@ -110,7 +111,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                       // ✅ Apenas um dropdown de turma
                       BotaoSelecionarTurma(
                         turmaSelecionada: turmaSelecionada,
-                        
+
                         onTurmaSelecionada: (id, turmaNome) {
                           turmaId = id;
                           debugPrint(
@@ -150,6 +151,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                         child: Column(
                           children: [
                             TextFormFieldPersonalizado(
+                              prefixIcon: const Icon(CupertinoIcons.book),
                               maxLines: 5,
                               controller: _conteudoMinistradoController,
                               label: 'Conteúdo Ministrado em Aula',
@@ -159,6 +161,9 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
 
                             const SizedBox(height: 20),
                             TextFormFieldPersonalizado(
+                              prefixIcon: const Icon(
+                                CupertinoIcons.doc_on_clipboard,
+                              ),
                               controller: _observacoesController,
                               label: 'Observações',
                               hintText:

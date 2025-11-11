@@ -30,7 +30,7 @@ class _RelatoriosDocumentosPageState extends State<RelatoriosDocumentosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Relatórios de Documentos'),
+      appBar: const CustomAppBar(title: 'Rela e Doc'),
       bottomNavigationBar: NavigationBottonbar(
         pageIndex: _selectedIndex,
         onTap: _onItemTap,

@@ -19,7 +19,6 @@ class TextFormFieldPersonalizado extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final bool obscureText;
 
-
   const TextFormFieldPersonalizado({
     super.key,
     required this.controller,
@@ -41,13 +40,11 @@ class TextFormFieldPersonalizado extends StatelessWidget {
       vertical: 14,
     ),
     this.obscureText = false,
-
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      
       obscureText: obscureText,
       controller: controller,
       maxLength: maxLength,
@@ -64,12 +61,14 @@ class TextFormFieldPersonalizado extends StatelessWidget {
                     : null
               : null),
       decoration: InputDecoration(
-        
         labelText: label,
         hintText: hintText,
-        prefixIcon: prefixIcon,
+        prefixIcon: Icon(
+          prefixIcon?.icon,
+          color: Theme.of(context).iconTheme.color,
+        ),
         suffixIcon: suffixIcon,
-        iconColor: Theme.of(context).inputDecorationTheme.iconColor,
+        iconColor: Theme.of(context).iconTheme.color,
         filled: true,
         fillColor: fillColor,
         contentPadding: contentPadding,

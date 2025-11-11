@@ -6,49 +6,48 @@ ThemeData get lightTheme {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: Colors.white,
+    primaryColor: AppColors.lightPrimary,
+    scaffoldBackgroundColor: AppColors.lightBackground,
 
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF6A1B9A), // Roxo vibrante para destaque
-      foregroundColor: Colors.white,
+      backgroundColor: AppColors.appBar,
+      foregroundColor: AppColors.lightTextPrimary,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
-      elevation: 0,
+      elevation: 1,
     ),
+    cardTheme: const CardThemeData(color: AppColors.lightCard, elevation: 1),
+    focusColor: AppColors.lightSecondary,
 
-    cardTheme: const CardThemeData(color: Color(0xFFF4F2FB), elevation: 0),
-
-    focusColor: AppColors.primary,
-
-    iconTheme: const IconThemeData(color: Color.fromARGB(255, 149, 134, 167)),
-
+    iconTheme: const IconThemeData(color: AppColors.lightIcon),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        backgroundColor: const Color(0xFF7E57C2),
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.lightPrimary,
+        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
     ),
-
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.lightPrimary,
+        foregroundColor: AppColors.lightTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
     ),
 
     inputDecorationTheme: const InputDecorationTheme(
+      hintStyle: TextStyle(color: AppColors.lighThint),
+      labelStyle: TextStyle(color: AppColors.lighThint),
       filled: true,
-      fillColor: Color(0xFFF1EAFD), // lilás bem suave
-      iconColor: Color(0xFF4A148C),
+      fillColor: Color.fromARGB(255, 172, 160, 228),
+      iconColor: AppColors.lightIcon,
       border: OutlineInputBorder(borderSide: BorderSide.none),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Color(0xFFB39DDB), width: 1),
+        borderSide: BorderSide(color: AppColors.lightBorder, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Color(0xFF7E57C2), width: 2),
+        borderSide: BorderSide(color: AppColors.lightBorder, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColors.error, width: 2),
@@ -57,19 +56,18 @@ ThemeData get lightTheme {
         borderSide: BorderSide(color: AppColors.error, width: 2),
       ),
     ),
-
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF2E1A47),
+        color: AppColors.lightTextPrimary,
       ),
-      titleMedium: TextStyle(fontSize: 16, color: Color(0xFF3E2A59)),
-      titleSmall: TextStyle(fontSize: 14, color: Color(0xFF4B3A6B)),
+      titleMedium: TextStyle(fontSize: 16, color: AppColors.lightTextPrimary),
+      titleSmall: TextStyle(fontSize: 14, color: AppColors.lightTextPrimary),
     ),
-
     colorScheme: const ColorScheme.light(
-      primary: Color(0xFF6A1B9A), // Roxo principal
+      primary: Color.fromARGB(162, 170, 170, 170),
+
       secondary: AppColors.student,
       tertiary: AppColors.teacher,
     ),

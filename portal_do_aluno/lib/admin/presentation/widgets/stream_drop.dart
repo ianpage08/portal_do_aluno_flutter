@@ -4,12 +4,12 @@ import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.d
 import 'package:provider/provider.dart';
 
 class StreamDrop extends StatefulWidget {
-  final String dropId; 
+  final String dropId;
   final String textLabel;
   final Icon icon;
   final Stream<QuerySnapshot<Map<String, dynamic>>> minhaStream;
-  final String nomeCampo; 
-  final String mensagemError; 
+  final String nomeCampo;
+  final String mensagemError;
   final void Function(String id, String nome)? onSelected;
 
   const StreamDrop({
@@ -53,15 +53,8 @@ class _StreamDropState extends State<StreamDrop> {
           width: double.infinity,
           child: TextButton.icon(
             icon: widget.icon,
-            label: Text(displayText, style: const TextStyle(fontSize: 20)),
-            style: TextButton.styleFrom(
-              backgroundColor: const Color(0xFF5921F3),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+            label: Text(displayText, style: const TextStyle(fontSize: 16)),
+            style: Theme.of(context).textButtonTheme.style,
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -76,9 +69,8 @@ class _StreamDropState extends State<StreamDrop> {
                             ' StreamDrop(${widget.dropId}): Selecionando $nomeItem (ID: ${item.id})',
                           );
 
-                          
                           context.read<SelectedProvider>().selectItem(
-                            widget.dropId, 
+                            widget.dropId,
                             item.id,
                             nomeItem,
                           );

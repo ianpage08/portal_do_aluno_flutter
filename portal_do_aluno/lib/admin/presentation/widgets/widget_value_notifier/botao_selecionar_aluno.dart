@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 class BotaoSelecionarAluno extends StatefulWidget {
   final ValueNotifier<String?> alunoSelecionado;
   final String? turmaId;
-  final void Function(String id, String nomeCompleto, String cpf) onAlunoSelecionado;
+  final void Function(String id, String nomeCompleto, String cpf)
+  onAlunoSelecionado;
 
   const BotaoSelecionarAluno({
     super.key,
@@ -54,17 +55,7 @@ class _BotaoSelecionarAlunoState extends State<BotaoSelecionarAluno> {
               duration: const Duration(seconds: 1),
               curve: Curves.bounceIn,
               child: TextButton.icon(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.deepPurpleAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                style: Theme.of(context).textButtonTheme.style,
                 onPressed: () => showModalBottomSheet(
                   context: context,
                   builder: (context) {
@@ -84,7 +75,11 @@ class _BotaoSelecionarAlunoState extends State<BotaoSelecionarAluno> {
                             style: const TextStyle(fontSize: 18),
                           ),
                           onTap: () {
-                            widget.onAlunoSelecionado.call(alunoId, alunoNome, alunoCpf);
+                            widget.onAlunoSelecionado.call(
+                              alunoId,
+                              alunoNome,
+                              alunoCpf,
+                            );
                             widget.alunoSelecionado.value = alunoNome;
                             Navigator.pop(context);
                           },

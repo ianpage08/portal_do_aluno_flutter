@@ -87,12 +87,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   children: [
                                     Text(
                                       'Admin: ${dadosUsuario.name}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
                                     ),
-                                    const Text('Escola: AEEC'),
+                                    Text(
+                                      'Escola: AEEC',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall,
+                                    ),
                                   ],
                                 ),
                               ),

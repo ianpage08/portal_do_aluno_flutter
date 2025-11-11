@@ -13,6 +13,43 @@ class AppColors {
   static const Color darkError = Color(0xFFF43F5E); // Erro
   static const Color darkSuccess = Color(0xFF10B981); // Sucesso
   static const Color darkAppBar = Color(0xFF2E003E);
+
+  // Light Theme Colors
+  static const Color appBar = Color(0xFFD6DEE7); // Cinza azulado claro — estilo
+  // Fundo AppBar
+  static const Color lightPrimary = Color(
+    0xFF3A6EA5,
+  ); // Azul elegante (botões e destaques)
+  static const Color lightSecondary = Color(
+    0xFF5C86C5,
+  ); // Azul mais suave para realces
+  static const Color lightBackground = Color(
+    0xFFF7F8FA,
+  ); // Fundo quase branco com leve toque azulado
+  static const Color lightCard = Color(
+    0xFFFFFFFF,
+  ); // Cartões e painéis brancos limpos
+  static const Color lightTextPrimary = Color(
+    0xFF1C1C1E,
+  ); // Preto-acinzentado típico do iOS
+  static const Color lightTextSecondary = Color(
+    0xFF5E5E68,
+  ); // Cinza médio para textos secundários
+  static const Color lightIcon = Color(0xFF3A6EA5); // Ícones em azul frio
+  static const Color lightBorder = Color.fromARGB(
+    255,
+    198,
+    198,
+    238,
+  ); // Bordas e divisores sutis
+  static const Color lightInputFill = Color(
+    0xFFF2F3F6,
+  ); // Campos de texto em cinza bem claro
+  static const Color lightButton = Color(0xFF3A6EA5); // Botões no tom principal
+  static const Color lightSuccess = Color(0xFF34C759); // Verde iOS
+  static const Color lighTerror = Color(0xFFFF3B30); // Vermelho iOS
+  static const Color lighThint = Color(0xFF8E8E93); // Placeholders e dicas
+
   static const Color primary = Color.fromARGB(255, 36, 1, 87); // roxo
   static const Color student = Color(0xFF2196F3); // azul
   static const Color teacher = Color(0xFF4CAF50); // verde

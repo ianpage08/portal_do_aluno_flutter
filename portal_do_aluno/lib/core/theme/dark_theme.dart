@@ -6,7 +6,7 @@ ThemeData get darkTheme {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    primaryColor: AppColors.primary,
+    primaryColor: AppColors.darkSecondary,
     scaffoldBackgroundColor: AppColors.darkBackground,
 
     appBarTheme: const AppBarTheme(
@@ -23,7 +23,7 @@ ThemeData get darkTheme {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
         backgroundColor: AppColors.darkPrimary,
-        foregroundColor: AppColors.darkTextPrimary,
+        foregroundColor: const Color.fromARGB(255, 245, 241, 212),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
     ),
@@ -66,7 +66,10 @@ ThemeData get darkTheme {
         fontWeight: FontWeight.bold,
         color: AppColors.darkTextPrimary,
       ),
-      titleMedium: TextStyle(fontSize: 16, color: AppColors.darkTextPrimary),
+      titleMedium: TextStyle(
+        fontSize: 16,
+        color: Color.fromARGB(255, 252, 251, 226),
+      ),
       titleSmall: TextStyle(fontSize: 14, color: AppColors.darkTextPrimary),
     ),
     colorScheme: const ColorScheme.dark(

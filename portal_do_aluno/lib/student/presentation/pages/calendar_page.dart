@@ -108,8 +108,8 @@ class _CalendarPageState extends State<CalendarPage> {
                           boxShadow: [
                             BoxShadow(
                               color: Colors.deepPurple,
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
+                              blurRadius: 2,
+                              offset: Offset(0, 1),
                             ),
                           ],
                         ),

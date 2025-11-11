@@ -44,13 +44,15 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.calendar_today),
+            const Icon(Icons.calendar_today, color: Colors.white),
             const SizedBox(width: 10),
             Text(
               dataSelecionada != null
                   ? '${dataSelecionada!.day}/${dataSelecionada!.month}/${dataSelecionada!.year}'
                   : 'Selecionar Data',
-              style: const TextStyle(fontSize: 18),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium!.copyWith(color: Colors.white),
             ),
           ],
         ),

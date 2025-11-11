@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
@@ -45,16 +46,16 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Form(
-                  key: _formKey, // ✅ Corrigido
+                  key: _formKey,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min, // ✅ Melhor layout
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // Logo
                       Container(
                         height: 100,
                         width: 100,
                         decoration: BoxDecoration(
-                          color: AppColors.primary,
+                          color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: const Icon(
@@ -70,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
+                              color: Theme.of(context).primaryColor,
                             ),
                       ),
                       const SizedBox(height: 8),
@@ -85,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 32),
 
                       // Campo CPF
-                      TextFormField(
+                      TextFormFieldPersonalizado(
                         controller: _cpfController,
                         keyboardType: TextInputType.number, //  Melhor para CPF
                         inputFormatters: [
@@ -95,13 +96,12 @@ class _LoginPageState extends State<LoginPage> {
                           ), //  Máximo 11 dígitos
                           CpfInputFormatter(), //  Formatação CPF
                         ],
-                        decoration: const InputDecoration(
-                          labelText: 'CPF',
 
-                          prefixIcon: Icon(Icons.person),
-                          hintText: '000.000.000-00',
-                          border: OutlineInputBorder(),
-                        ),
+                        label: 'CPF',
+
+                        prefixIcon: const Icon(Icons.person),
+                        hintText: '000.000.000-00',
+
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, insira seu CPF';
@@ -115,30 +115,29 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
-                        enabled: !isLoading,
+                        enable: !isLoading,
                       ),
                       const SizedBox(height: 16),
 
                       // Campo Senha
-                      TextFormField(
+                      TextFormFieldPersonalizado(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          labelText: 'Senha',
-                          hintText: 'Digite sua senha',
-                          prefixIcon: const Icon(Icons.lock),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
+
+                        label: 'Senha',
+                        hintText: 'Digite sua senha',
+                        prefixIcon: const Icon(Icons.lock),
+
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                           ),
                         ),
 
@@ -151,20 +150,17 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
-                        enabled: !isLoading,
+
+                        enable: !isLoading,
                       ),
                       const SizedBox(height: 24),
 
                       // Botão Login
                       SizedBox(
                         width: double.infinity,
-                        height: 50, // ✅ Altura melhor
+                        height: 50,
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor:
-                                Colors.white, // ✅ Melhor que definir no Text
-                          ),
+                          style: Theme.of(context).elevatedButtonTheme.style,
                           onPressed: isLoading
                               ? null
                               : () async {
@@ -220,16 +216,27 @@ class _LoginPageState extends State<LoginPage> {
                                 )
                               : const Text(
                                   'Entrar',
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
                                 ),
                         ),
                       ),
                       const SizedBox(height: 16),
 
                       // Link Esqueci Senha
-                      TextButton(
-                        onPressed: isLoading ? null : _handleForgotPassword,
-                        child: const Text('Esqueci minha senha'),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: TextButton(
+                          onPressed: isLoading ? null : _handleForgotPassword,
+                          style: Theme.of(context).textButtonTheme.style,
+                          child: const Text(
+                            'Esqueci minha senha',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 24),
 
@@ -237,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.grey[100],
+                          color: const Color.fromARGB(255, 95, 100, 122),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.grey[300]!),
                         ),
@@ -247,7 +254,10 @@ class _LoginPageState extends State<LoginPage> {
                             Text(
                               'Usuários de Teste:',
                               style: Theme.of(context).textTheme.titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.bold),
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                             ),
                             const SizedBox(height: 12),
                             _buildTestUser(
@@ -262,9 +272,9 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             _buildTestUser(
                               'admin',
-                              '85352349500',
+                              '853.523.495-00',
                               '@Maciel2003',
-                            ), // ✅ Corrigido
+                            ),
                           ],
                         ),
                       ),
@@ -287,8 +297,8 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Expanded(
             child: Text(
-              '$tipo: $cpf / $senha', // ✅ Vírgula removida
-              style: const TextStyle(fontSize: 12),
+              '$tipo: $cpf / $senha', 
+              style: const TextStyle(fontSize: 12, color: Colors.white),
             ),
           ),
           IconButton(
@@ -296,7 +306,7 @@ class _LoginPageState extends State<LoginPage> {
               _cpfController.text = cpf;
               _passwordController.text = senha;
             },
-            icon: const Icon(Icons.copy, size: 16),
+            icon: const Icon(Icons.copy, size: 16, color: Colors.white),
           ),
         ],
       ),

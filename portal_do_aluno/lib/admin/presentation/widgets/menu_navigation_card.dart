@@ -26,11 +26,7 @@ class MenuNavigationCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 38,
-                color: Theme.of(context).appBarTheme.foregroundColor,
-              ),
+              Icon(icon, size: 38, color: Theme.of(context).iconTheme.color),
               const SizedBox(height: 10),
               Text(
                 title,

@@ -92,12 +92,14 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                     color: cardColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  margin: const EdgeInsets.only(bottom: 10),
                   child: ListTile(
                     title: Text(
                       'Aluno: $nome',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
+                        color: Colors.black,
                       ),
                     ),
                     subtitle: Padding(
@@ -112,7 +114,12 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                               label: const Text('Presente'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
+                                foregroundColor: const Color.fromARGB(
+                                  255,
+                                  0,
+                                  0,
+                                  0,
+                                ),// ajustar depois 
                               ),
                               onPressed: () {
                                 providerRead.marcarPresenca(
@@ -129,7 +136,12 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                               label: const Text('Falta'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
+                                foregroundColor: const Color.fromARGB(
+                                  255,
+                                  0,
+                                  0,
+                                  0,
+                                ),// ajustar depois 
                               ),
                               onPressed: () {
                                 providerRead.marcarPresenca(
@@ -145,8 +157,18 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                               icon: const Icon(Icons.note, size: 18),
                               label: const Text('Justificativa'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
-                                foregroundColor: Colors.black,
+                                backgroundColor: const Color.fromARGB(
+                                  255,
+                                  216,
+                                  213,
+                                  57,
+                                ),// ajustar depois 
+                                foregroundColor: const Color.fromARGB(
+                                  255,
+                                  0,
+                                  0,
+                                  0,
+                                ),// ajustar depois 
                               ),
                               onPressed: () {
                                 providerRead.marcarPresenca(

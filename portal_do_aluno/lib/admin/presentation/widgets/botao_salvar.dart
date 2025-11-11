@@ -24,8 +24,10 @@ class _BotaoSalvarState extends State<BotaoSalvar> {
                   strokeWidth: 2,
                 ),
               )
-            : const Icon(Icons.save),
-        label: isLoading ? const Text('Salvando...') : const Text('Salvar'),
+            : const Icon(Icons.save, color: Colors.white),
+        label: isLoading
+            ? const Text('Salvando...')
+            : const Text('Salvar', style: TextStyle(color: Colors.white)),
         style: Theme.of(context).elevatedButtonTheme.style,
         onPressed: isLoading
             ? null

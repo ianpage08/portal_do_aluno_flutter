@@ -287,14 +287,14 @@ class _ComunicacaoInstitucionalPageState
               child: ElevatedButton(
                 style: Theme.of(context).elevatedButtonTheme.style,
                 onPressed: _enviarMenssagem,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.send, color: Colors.white, size: 20),
                     SizedBox(width: 12),
                     Text(
                       'Enviar Comunicado',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),

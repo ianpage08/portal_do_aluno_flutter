@@ -13,7 +13,6 @@ Ranking de alunos
 
 Exportar PDF/Excel*/
 
-
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_tamanho_where.dart';
@@ -33,7 +32,11 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Relatórios Gerenciais'),
+      appBar: AppBar(
+        title: const Text('Relatórios Gerenciais'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

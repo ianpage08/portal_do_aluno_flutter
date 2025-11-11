@@ -41,7 +41,9 @@ class _FixedDropState extends State<FixedDrop> {
         ),
         style: Theme.of(context).textButtonTheme.style!.copyWith(
           backgroundColor: WidgetStatePropertyAll(
-            widget.habilitado ? AppColors.darkPrimary : Colors.grey[300],
+            widget.habilitado
+                ? Theme.of(context).primaryColor
+                : Colors.grey[300],
           ),
         ),
         onPressed: widget.habilitado

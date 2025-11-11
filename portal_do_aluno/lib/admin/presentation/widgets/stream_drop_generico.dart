@@ -63,10 +63,12 @@ class _StreamDropGenericoState extends State<StreamDropGenerico> {
               ),
             ),
             style: TextButton.styleFrom(
-              backgroundColor: widget.habilitado ? Colors.blue : Colors.grey[300],
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: widget.habilitado
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey[300],
+              padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(30),
               ),
             ),
             onPressed: widget.habilitado
@@ -88,16 +90,22 @@ class _StreamDropGenericoState extends State<StreamDropGenerico> {
                               }
                               break;
                             case 'aluno':
-                              if (widget.camposNome != null && widget.camposNome!.isNotEmpty) {
+                              if (widget.camposNome != null &&
+                                  widget.camposNome!.isNotEmpty) {
                                 final nivel1 = widget.camposNome!.keys.first;
                                 final nivel2 = widget.camposNome!.values.first;
-                                nome = (data[nivel1]?[nivel2] ?? 'Aluno sem nome').toString();
+                                nome =
+                                    (data[nivel1]?[nivel2] ?? 'Aluno sem nome')
+                                        .toString();
                               } else {
                                 nome = data['nome'] ?? 'Aluno sem nome';
                               }
                               break;
                             case 'disciplina':
-                              nome = data['nome'] ?? data['titulo'] ?? 'Disciplina sem nome';
+                              nome =
+                                  data['nome'] ??
+                                  data['titulo'] ??
+                                  'Disciplina sem nome';
                               break;
                             default:
                               nome = 'Sem nome';

@@ -41,14 +41,14 @@ class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
 
                 label: Text(
                   value ?? 'Selecione Uma Turma',
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
-                icon: const Icon(Icons.class_),
+                icon: const Icon(Icons.class_, color: Colors.white),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
 
-                    backgroundColor: const Color.fromARGB(242, 255, 255, 255),
+                    backgroundColor: const Color.fromARGB(238, 46, 46, 46),
                     builder: (context) {
                       return ListView.builder(
                         itemCount: docTurmas.length,
