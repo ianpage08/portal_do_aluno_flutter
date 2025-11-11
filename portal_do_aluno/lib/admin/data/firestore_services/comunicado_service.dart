@@ -134,20 +134,28 @@ class ComunicadoService {
   }
   // vai me retorna as vizualizações em tempo real
 
-  Stream<int> contadorDeVizualizacoesVista() {
-    final queryDoc = _firestore
+  Stream<int> contadorDeVisualizacoesVistas() {
+    return _firestore
         .collectionGroup('visualizacoes')
         .where('visualizado', isEqualTo: true)
-        .snapshots();
-
-    return queryDoc.map((snapshot) => snapshot.docs.length);
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 
-  Stream<int> contadorDeVizalizacoesNaoVistas() {
-    final query = _firestore
+  Stream<int> contadorDeVisualizacoesNaoVistas() {
+    return _firestore
         .collectionGroup('visualizacoes')
         .where('visualizado', isEqualTo: false)
-        .snapshots();
-    return query.map((snapshot) => snapshot.docs.length);
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
+  Stream<int> contadorDeVisualizacoesNaoVistasPorId(String userId) {
+    return _firestore
+        .collectionGroup('visualizacoes')
+        .where('userId', isEqualTo: userId)
+        .where('visualizado', isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 }

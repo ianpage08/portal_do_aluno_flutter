@@ -335,7 +335,7 @@ class _ComunicacaoInstitucionalPageState
           },
         ),
         StreamBuilder<int>(
-          stream: _comunicadoService.contadorDeVizualizacoesVista(),
+          stream: _comunicadoService.contadorDeVisualizacoesVistas(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
