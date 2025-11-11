@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/app_constants/colors.dart';
+
 
 class FixedDrop extends StatefulWidget {
   final List<String> itens;

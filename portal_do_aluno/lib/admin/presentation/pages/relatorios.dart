@@ -16,7 +16,7 @@ Exportar PDF/Excel*/
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/frequencia_service.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_tamanho_where.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+
 
 class RelatoriosGerenciais extends StatefulWidget {
   const RelatoriosGerenciais({super.key});

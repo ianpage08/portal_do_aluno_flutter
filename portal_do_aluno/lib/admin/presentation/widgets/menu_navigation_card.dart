@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/app_constants/colors.dart';
+
 
 class MenuNavigationCard extends StatelessWidget {
   final BuildContext context;
