@@ -25,7 +25,8 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       final argumentos =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (argumentos != null && argumentos['user'] != null) {
-        final userId = Provider.of<UserProvider>(context, listen: false).userId;
+        final userId = argumentos['user']['id'];
+        Provider.of<UserProvider>(context, listen: false).setUserId(userId);
       }
     });
   }

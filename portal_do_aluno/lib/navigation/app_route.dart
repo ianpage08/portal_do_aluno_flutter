@@ -9,7 +9,7 @@ import 'package:portal_do_aluno/teacher/presentation/pages/conteudo_dado.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/frequencia_alunos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/configuracao.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/configuracao_page.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';

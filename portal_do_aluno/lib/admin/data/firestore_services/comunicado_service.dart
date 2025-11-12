@@ -27,7 +27,7 @@ class ComunicadoService {
     await docRef.set(novoComunicado.toJson());
 
     final usuariosSnapshot = await buscarUsuariosPorTipo(
-      novoComunicado.destinatario.toString(),
+      novoComunicado.destinatario.name,
     );
     final batch = _firestore.batch();
 
@@ -38,11 +38,7 @@ class ComunicadoService {
           .doc(userId)
           .collection('visualizacoes')
           .doc(docRef.id);
-      debugPrint('🧾 Adicionando comunicado para usuário: $userId');
-      debugPrint(userId);
-      debugPrint(docRef.id);
-      debugPrint(document.toString());
-
+      
       batch.set(document, {
         'id': docRef.id,
         'userId': userId,
@@ -54,7 +50,9 @@ class ComunicadoService {
       });
     }
     await batch.commit();
-    debugPrint(' Comunicado enviado e subcoleções criadas com sucesso!');
+    debugPrint(
+      ' Comunicado enviado e subcoleções criadas com sucesso! $usuariosSnapshot',
+    );
   }
 
   Future<void> excluirComunicado(String comunicadoId) async {
@@ -67,29 +65,31 @@ class ComunicadoService {
   }
 
   Future<QuerySnapshot> buscarUsuariosPorTipo(String destinatario) {
+    destinatario = destinatario.toLowerCase();
     switch (destinatario) {
-      case 'Todos':
+      case 'todos':
         return _firestore.collection('usuarios').get();
 
-      case 'Alunos':
+      case 'alunos':
         return _firestore
             .collection('usuarios')
-            .where('type', isEqualTo: 'aluno')
+            .where('type', isEqualTo: 'student')
             .get();
 
-      case 'Professores':
+      case 'professores':
         return _firestore
             .collection('usuarios')
             .where('type', isEqualTo: 'teacher')
             .get();
 
-      case 'Responsáveis':
+      case 'responsáveis':
         return _firestore
             .collection('usuarios')
             .where('type', isEqualTo: 'responsavel')
             .get();
 
       default:
+        debugPrint('⚠️ Destinatário desconhecido: $destinatario');
         return _firestore.collection('usuarios').get();
     }
   }
@@ -134,18 +134,10 @@ class ComunicadoService {
   }
   // vai me retorna as vizualizações em tempo real
 
-  Stream<int> contadorDeVisualizacoesVistas() {
+  Stream<int> contadorDeVisualizacoesTotalVistas() {
     return _firestore
         .collectionGroup('visualizacoes')
         .where('visualizado', isEqualTo: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.length);
-  }
-
-  Stream<int> contadorDeVisualizacoesNaoVistas() {
-    return _firestore
-        .collectionGroup('visualizacoes')
-        .where('visualizado', isEqualTo: false)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
