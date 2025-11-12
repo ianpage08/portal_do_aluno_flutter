@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:provider/provider.dart';
 
 class NotificationPoup extends StatefulWidget {
   final String? userId;
@@ -15,12 +17,14 @@ class NotificationPoup extends StatefulWidget {
 class _NotificationPoupState extends State<NotificationPoup> {
   @override
   Widget build(BuildContext context) {
-    if (widget.userId == null) {
-      return const SizedBox();
+    final userId = Provider.of<UserProvider>(context).userId;
+    if (userId == null) {
+      return const Icon(CupertinoIcons.bell, size: 25);
     }
+    
     return StreamBuilder<int>(
       stream: ComunicadoService().contadorDeVisualizacoesNaoVistasPorId(
-        widget.userId!,
+        userId,
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

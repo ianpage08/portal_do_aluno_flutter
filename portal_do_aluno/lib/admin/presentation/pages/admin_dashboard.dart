@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/tokens_service.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_referencia_id.dart';
 
@@ -8,6 +9,7 @@ import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:provider/provider.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -18,6 +20,20 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   bool _updateToken = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final argumentos =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (argumentos != null && argumentos['user'] != null) {
+        final userId = argumentos['user']['id'];
+        Provider.of<UserProvider>(context, listen: false).setUserId(userId);
+      }
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -34,19 +50,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final argumentos =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (argumentos == null || argumentos['user'] == null) {
-      return const Scaffold(
-        body: Center(child: Text('Dados do ussuário não encontrados')),
-      );
+    final usuarioId = Provider.of<UserProvider>(context).userId;
+    if (usuarioId == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final Map<String, dynamic> usuarioMap = argumentos['user'];
-    final usuario = Usuario.fromJson(usuarioMap);
-
     return Scaffold(
-      appBar: CustomAppBar(title: 'Administrador', userId: usuario.id),
+      appBar: const CustomAppBar(title: 'Administrador'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -59,7 +69,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     Expanded(
                       child: MeuStreamBuilder(
                         collectionPath: 'usuarios',
-                        documentId: usuario.id,
+                        documentId: usuarioId,
                         builder: (context, snapshot) {
                           final data = snapshot.data!.data()!;
 

@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:portal_do_aluno/admin/data/models/usuario_provider.dart';
+
 import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/core/notifications/notification_service_remote.dart';
 import 'package:portal_do_aluno/core/theme/dark_theme.dart';
 import 'package:portal_do_aluno/core/theme/light_theme.dart';
@@ -26,7 +27,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UsuarioProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PresencaProvider()),
         ChangeNotifierProvider(create: (_) => SelectedProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),

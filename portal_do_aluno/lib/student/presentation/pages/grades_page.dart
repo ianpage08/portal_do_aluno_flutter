@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/user/user.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
+
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:provider/provider.dart';
 
 class BoletimPage extends StatefulWidget {
   const BoletimPage({super.key});
@@ -11,42 +13,46 @@ class BoletimPage extends StatefulWidget {
 }
 
 class _BoletimPageState extends State<BoletimPage> {
-  Usuario? usuario;
   String? alunoId;
+  String? turmaId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-   
-    if (usuario == null) {
-      final argumentos =
-          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-      if (argumentos != null && argumentos['user'] != null) {
-        final userMap = argumentos['user'] as Map<String, dynamic>;
-        usuario = Usuario.fromJson(userMap);
-
-        
-
-        
-        alunoId = usuario!.alunoId?.isNotEmpty == true
-            ? usuario!.alunoId
-            : usuario!.id;
-
-        
-      } else {
-        
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userId = Provider.of<UserProvider>(context, listen: false).userId;
+      if (userId == null) {
+        return;
       }
-    }
+      final alunoRef = await _getAlunoIdFromUsuario(userId);
+      if (mounted && alunoRef != null) {
+        setState(() {
+          alunoId = alunoRef;
+        });
+      } else {
+        debugPrint('❌ Error: Aluno não encontrado');
+      }
+    });
   }
 
-  
   Stream<DocumentSnapshot<Map<String, dynamic>>> getBoletim(String alunoId) {
     return FirebaseFirestore.instance
         .collection('boletim')
         .doc(alunoId)
         .snapshots();
+  }
+
+  Future<String?> _getAlunoIdFromUsuario(String usuarioId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc(usuarioId)
+        .get();
+
+    if (snapshot.exists) {
+      //  AQUI: pega o campo 'alunoId' salvo no Firestore
+      return snapshot.data()?['alunoId'];
+    }
+    return null;
   }
 
   Widget _buildStreamNotasView() {
@@ -66,9 +72,6 @@ class _BoletimPageState extends State<BoletimPage> {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: getBoletim(alunoId!),
       builder: (context, snapshot) {
-        
-        
-        
         if (snapshot.hasError) debugPrint('❌ Error: ${snapshot.error}');
         if (snapshot.hasData && snapshot.data!.exists) {
           debugPrint('📄 Data: ${snapshot.data!.data()}');
@@ -83,12 +86,16 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          
           return _buildCriarBoletimAutomaticamente();
         }
 
-        final data = snapshot.data!.data()!;
-        final disciplinas = data['disciplinas'] as List<dynamic>? ?? [];
+        final data = snapshot.data!.data()! as Map<String, dynamic>?;
+        if (data == null || !data.containsKey('disciplinas')) {
+          return _buildCriarBoletimAutomaticamente();
+        }
+        final disciplinas = List<Map<String, dynamic>>.from(
+          data['disciplinas'],
+        );
 
         if (disciplinas.isEmpty) {
           return const Center(
@@ -214,6 +221,9 @@ class _BoletimPageState extends State<BoletimPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (alunoId == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Boletim Escolar',
