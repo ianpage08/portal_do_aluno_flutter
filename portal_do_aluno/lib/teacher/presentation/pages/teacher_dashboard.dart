@@ -41,6 +41,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       appBar: const CustomAppBar(
         title: 'Area do Professor',
         backGround: AppColors.teacher,
+        nameRoute: RouteNames.comunicadosProfessor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

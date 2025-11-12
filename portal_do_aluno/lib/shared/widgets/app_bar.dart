@@ -9,12 +9,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Color? backGround;
   final String? userId;
+  final String? nameRoute;
 
   const CustomAppBar({
     super.key,
     required this.title,
     this.backGround,
     this.userId,
+    this.nameRoute,
   });
 
   @override
@@ -36,7 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
         ),
 
-        NotificationPoup(userId: userId),
+        NotificationPoup(userId: userId, route: nameRoute,),
         IconButton(
           onPressed: () {
             NavigatorService.navigateTo(RouteNames.login);

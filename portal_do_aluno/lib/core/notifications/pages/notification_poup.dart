@@ -1,15 +1,17 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
-import 'package:portal_do_aluno/navigation/route_names.dart';
+
 import 'package:provider/provider.dart';
 
 class NotificationPoup extends StatefulWidget {
   final String? userId;
-  const NotificationPoup({super.key, required this.userId});
+  final VoidCallback? onPressed;
+  final String? route;
+
+  const NotificationPoup({super.key, required this.userId, this.onPressed, this.route});
 
   @override
   State<NotificationPoup> createState() => _NotificationPoupState();
@@ -40,10 +42,14 @@ class _NotificationPoupState extends State<NotificationPoup> {
           clipBehavior: Clip.none,
           children: [
             IconButton(
-              onPressed: () {
-                ComunicadoService().atualizarVisualizacao(userId);
-                NavigatorService.navigateTo(RouteNames.notification);
-              },
+              onPressed:
+                  () {
+                    ComunicadoService().atualizarVisualizacao(userId);
+                    if (widget.route != null) {
+                      NavigatorService.navigateTo(widget.route!);
+                    }
+                    
+                  },
               icon: const Icon(CupertinoIcons.bell, size: 25),
             ),
             Positioned(

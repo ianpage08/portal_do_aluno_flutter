@@ -37,7 +37,10 @@ class _StudentDashboardState extends State<StudentDashboard> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: const CustomAppBar(title: 'DashboardAluno'),
+      appBar: const CustomAppBar(
+        title: 'DashboardAluno',
+        nameRoute: RouteNames.studentComunicados,
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(8),
