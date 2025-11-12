@@ -1,28 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
+import 'package:portal_do_aluno/admin/presentation/widgets/stream_referencia_id.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/frequencia_alunos.dart';
+import 'package:provider/provider.dart';
 
-class TeacherDashboard extends StatelessWidget {
+class TeacherDashboard extends StatefulWidget {
   const TeacherDashboard({super.key});
 
   @override
+  State<TeacherDashboard> createState() => _TeacherDashboardState();
+}
+
+class _TeacherDashboardState extends State<TeacherDashboard> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final argumentos =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (argumentos != null && argumentos['user'] != null) {
+        final userId = Provider.of<UserProvider>(context, listen: false).userId;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final argumentos =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (argumentos == null || argumentos['user'] == null) {
-      return const Scaffold(
-        body: Center(child: Text('Dados do ussuário não encontrados')),
-      );
+    final usuarioId = Provider.of<UserProvider>(context).userId;
+    if (usuarioId == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-
-    final Map<String, dynamic> usuarioMap = argumentos['user'];
-    final usuario = Usuario.fromJson(usuarioMap);
-
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Area do Professor',
@@ -37,25 +50,53 @@ class TeacherDashboard extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: AppColors.teacher,
-                      child: Icon(Icons.person, size: 30, color: Colors.white),
-                    ),
-                    const SizedBox(width: 16),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Professor: ${usuario.name} ',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Text('Escola: Associação Educacional'),
-                        ],
+                      child: MeuStreamBuilder(
+                        collectionPath: 'usuarios',
+                        documentId: usuarioId,
+                        builder: (context, snapshot) {
+                          final data = snapshot.data!.data()!;
+
+                          final dadosUsuario = Usuario.fromJson(data);
+                          return Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Color.fromARGB(
+                                  255,
+                                  88,
+                                  70,
+                                  20,
+                                ),
+                                child: Icon(
+                                  Icons.person,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Admin: ${dadosUsuario.name}',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                    Text(
+                                      'Escola: AEEC',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],

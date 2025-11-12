@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service.dart';
@@ -18,14 +19,12 @@ class _NotificationPoupState extends State<NotificationPoup> {
   @override
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context).userId;
-    if (userId == null) {
+    if (userId == null || userId.isEmpty) {
       return const Icon(CupertinoIcons.bell, size: 25);
     }
-    
+
     return StreamBuilder<int>(
-      stream: ComunicadoService().contadorDeVisualizacoesNaoVistasPorId(
-        userId,
-      ),
+      stream: ComunicadoService().contadorDeVisualizacoesNaoVistasPorId(userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox(
@@ -34,16 +33,15 @@ class _NotificationPoupState extends State<NotificationPoup> {
             child: CircularProgressIndicator(strokeWidth: 2),
           );
         }
-        if (snapshot.data == 0) {
-          return const Text('0');
-        }
-        // quantidade de notificações não visualizadas
-        final total = snapshot.data ?? 0;
+
+        // quantidade de not  ificações não visualizadas
+        final total = snapshot.data ?? 5;
         return Stack(
           clipBehavior: Clip.none,
           children: [
             IconButton(
               onPressed: () {
+                ComunicadoService().atualizarVisualizacao(userId);
                 NavigatorService.navigateTo(RouteNames.notification);
               },
               icon: const Icon(CupertinoIcons.bell, size: 25),

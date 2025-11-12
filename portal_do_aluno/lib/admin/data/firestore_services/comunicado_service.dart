@@ -152,10 +152,31 @@ class ComunicadoService {
 
   Stream<int> contadorDeVisualizacoesNaoVistasPorId(String userId) {
     return _firestore
-        .collectionGroup('visualizacoes')
-        .where('userId', isEqualTo: userId)
+        .collection('usuarios')
+        .doc(userId)
+        .collection('visualizacoes')
         .where('visualizado', isEqualTo: false)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
+  }
+
+  Future<void> atualizarVisualizacao(String userID) async {
+    final docRef = await _firestore
+        .collection('usuarios')
+        .doc(userID)
+        .collection('visualizacoes')
+        .where('visualizado', isEqualTo: false)
+        .get();
+
+    WriteBatch batch = _firestore.batch();
+
+    for (var usuario in docRef.docs) {
+      batch.update(usuario.reference, {
+        'visualizado': true,
+
+        'dataVisualizacao': FieldValue.serverTimestamp(),
+      });
+    }
+    await batch.commit();
   }
 }
