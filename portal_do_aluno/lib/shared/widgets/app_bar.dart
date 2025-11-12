@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/notifications/pages/notification_poup.dart';
 import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
@@ -7,8 +8,14 @@ import 'package:provider/provider.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Color? backGround;
+  final String? userId;
 
-  const CustomAppBar({super.key, required this.title, this.backGround});
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.backGround,
+    this.userId,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -28,19 +35,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             themeProvider.setTheme(value);
           },
         ),
-        
-        IconButton(
-          onPressed: () {
-            NavigatorService.navigateTo(RouteNames.notification);
-          },
-          icon: const Icon(Icons.notifications),
-        ),
+
+        NotificationPoup(userId: userId),
         IconButton(
           onPressed: () {
             NavigatorService.navigateTo(RouteNames.login);
           },
-          icon: const Icon(Icons.logout, ),
-          
+          icon: const Icon(Icons.logout),
         ),
       ],
     );

@@ -46,7 +46,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final usuario = Usuario.fromJson(usuarioMap);
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Administrador'),
+      appBar: CustomAppBar(title: 'Administrador', userId: usuario.id),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
