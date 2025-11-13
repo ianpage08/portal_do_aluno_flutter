@@ -150,6 +150,16 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
                     MenuNavigationCard(
                       context: context,
+                      icon: Icons.note_add,
+                      title: 'Exercicios',
+                      onTap: () {
+                        NavigatorService.navigateTo(
+                          RouteNames.teacherExercicios,
+                        );
+                      },
+                    ),
+                    MenuNavigationCard(
+                      context: context,
                       icon: Icons.event,
                       title: 'calendario Escolar',
                       onTap: () {

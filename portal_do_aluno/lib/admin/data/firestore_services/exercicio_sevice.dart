@@ -9,7 +9,7 @@ class ExercicioSevice {
     return _firestore.collection('exercicios').snapshots();
   }
 
-  Future<void> cadastrarNovoExercicio(Exercicios exercicios) async {
+  Future<void> cadastrarNovoExercicio(Exercicios exercicios, String turmaId) async {
     final docRef = _firestore.collection('exercicios').doc();
     final novoExercicio = exercicios.copyWith(id: docRef.id);
 
@@ -17,8 +17,10 @@ class ExercicioSevice {
 
     final alunosSnapshot = await _firestore
         .collection('usuarios')
-        .where('turmaId', isEqualTo: exercicios.turmaId)
+        .where('turmaId', isEqualTo: turmaId)
         .get();
+
+    debugPrint('total de Alunos encontrados : ${alunosSnapshot.docs.length.toString()}');
 
     final batch = _firestore.batch();
     for (var aluno in alunosSnapshot.docs) {
