@@ -10,6 +10,6 @@ class EnviarExercicio extends StatefulWidget {
 class _EnviarExercicioState extends State<EnviarExercicio> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold();
   }
 }

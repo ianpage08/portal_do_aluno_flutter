@@ -38,7 +38,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.notification: (context) => const NotificationPage(),
   RouteNames.adminMatriculaCadastro: (context) => const MatriculaCadastro(),
   RouteNames.adminDashboard: (context) => const AdminDashboard(),
-  RouteNames.adminReports: (context) => const LoginPage(),
+  
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
   RouteNames.adminGeracaoDocumentos: (context) => const RelatoriosDocumentosPage(),
@@ -92,14 +92,9 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.comunicadosProfessor: (context) => const ComunicadosProfessor(),
   // rotas do Responsável
   RouteNames.parentDashboard: (context) => const LoginPage(),
-  RouteNames.parentChildren: (context) => const LoginPage(),
-  RouteNames.parentGrades: (context) => const LoginPage(),
-  RouteNames.parentAttendance: (context) => const LoginPage(),
-  RouteNames.parentCalendar: (context) => const LoginPage(),
-  RouteNames.parentSettings: (context) => const LoginPage(),
-  // rotas do Administrador
-  RouteNames.adminUsers: (context) => const LoginPage(),
-  RouteNames.adminSettings: (context) => const LoginPage(),
+  
+  
+  
 };
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {

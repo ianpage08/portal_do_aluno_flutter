@@ -214,33 +214,7 @@ class NavigatorService {
     return navigateTo(RouteNames.parentDashboard);
   }
 
-  static Future<void> navigateToParentChildren() {
-    _validateUserType(UserType.parent);
-    return navigateTo(
-      RouteNames.parentChildren,
-      arguments: {'parentId': _currentUser!.id.toString()},
-    );
-  }
-
-  static Future<void> navigateToParentGrades() {
-    _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.parentGrades);
-  }
-
-  static Future<void> navigateToParentAttendance() {
-    _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.parentAttendance);
-  }
-
-  static Future<void> navigateToParentCalendar() {
-    _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.parentCalendar);
-  }
-
-  static Future<void> navigateToParentSettings() {
-    _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.parentSettings);
-  }
+  
 
   // Navegar para notas de um filho específico
   static Future<void> navigateToChildGrades({
@@ -264,20 +238,7 @@ class NavigatorService {
     return navigateTo(RouteNames.adminDashboard);
   }
 
-  static Future<void> navigateToAdminUsers() {
-    _validateUserType(UserType.admin);
-    return navigateTo(RouteNames.adminUsers);
-  }
-
-  static Future<void> navigateToAdminReports() {
-    _validateUserType(UserType.admin);
-    return navigateTo(RouteNames.adminReports);
-  }
-
-  static Future<void> navigateToAdminSettings() {
-    _validateUserType(UserType.admin);
-    return navigateTo(RouteNames.adminSettings);
-  }
+  
 
   // === NAVEGAÇÃO PARA PÁGINAS COMPARTILHADAS ===
   // Configurações (disponível para todos os tipos)
@@ -296,10 +257,10 @@ class NavigatorService {
         route = RouteNames.teacherSettings;
         break;
       case UserType.parent:
-        route = RouteNames.parentSettings;
+        route = RouteNames.login;
         break;
       case UserType.admin:
-        route = RouteNames.adminSettings;
+        route = RouteNames.login;
         break;
     }
 

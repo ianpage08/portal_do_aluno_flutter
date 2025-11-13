@@ -26,18 +26,11 @@ class RouteNames {
   static const String teacherCalendar = '/teacher_calendar';
   static const String teacherSettings = '/teacher_settings';
 
-  // Funcionalidades do Responsável
-  static const String parentChildren = '/parent_children';
-  static const String parentGrades = '/parent_grades';
-  static const String parentAttendance = '/parent_attendance';
-  static const String parentCalendar = '/parent_calendar';
-  static const String parentSettings = '/parent_settings';
+  
 
   // Funcionalidades do Administrador
   static const String adminFrequencia = '/admin_frequencia';
-  static const String adminUsers = '/admin_users';
-  static const String adminReports = '/admin_reports';
-  static const String adminSettings = '/admin_settings';
+  
   static const String adminGestao = '/admin_gestao';
   static const String adminGestaoEscolar = '/admin_gestao_escolar';
   static const String adminGeracaoDocumentos = '/admin_geracao_documentos';
