@@ -17,7 +17,8 @@ class RouteNames {
   static const String studentSettings = '/student_settings';
   static const String studentHelp = '/student_help';
   static const String studentBoletim = '/student_boletim';
-
+  static const String studentExercicios = '/student_exercicios';
+  
 
   // Funcionalidades do Professor
   static const String teacherClasses = '/teacher_classes';

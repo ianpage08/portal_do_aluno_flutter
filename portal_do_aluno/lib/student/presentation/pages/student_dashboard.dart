@@ -37,10 +37,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'DashboardAluno',
-        nameRoute: RouteNames.studentComunicados,
-      ),
+      appBar: const CustomAppBar(title: 'DashboardAluno', nameRoute: RouteNames.studentComunicados,),
 
       body: Padding(
         padding: const EdgeInsets.all(8),
@@ -132,7 +129,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     icon: Icons.assignment,
                     title: 'Tarefas',
                     onTap: () {
-                      NavigatorService.navigateTo(RouteNames.studentTasks);
+                      NavigatorService.navigateTo(RouteNames.studentExercicios);
                     },
                   ),
                   MenuNavigationCard(

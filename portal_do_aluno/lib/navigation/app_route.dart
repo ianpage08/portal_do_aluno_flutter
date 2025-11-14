@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/exercicios_aluno_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastro_turma.dart';
@@ -78,6 +79,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.studentAttendance: (context) => const AttendancePage(),
   RouteNames.studentComunicados: (context) => const NoticesPage(),
   RouteNames.studentBoletim: (context) => const BoletimPage(),
+  RouteNames.studentExercicios: (context) => const ExerciciosAlunoPage(),
   // rotas de detalhes
   RouteNames.taskDetails: (context) => const LoginPage(),
   RouteNames.addTask: (context) => const LoginPage(),
