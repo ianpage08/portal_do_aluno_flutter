@@ -272,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             _buildTestUser(
                               'admin',
-                              '853.523.495-00',
+                              '853.523.000-00',
                               '@Maciel2003',
                             ),
                           ],
@@ -297,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Expanded(
             child: Text(
-              '$tipo: $cpf / $senha', 
+              '$tipo: $cpf / $senha',
               style: const TextStyle(fontSize: 12, color: Colors.white),
             ),
           ),
@@ -313,7 +313,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  
   /*Future<void> _simularLogin() async {
     if (!_formKey.currentState!.validate()) return;
 

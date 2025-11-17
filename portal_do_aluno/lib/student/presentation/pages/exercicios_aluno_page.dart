@@ -39,6 +39,7 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
   @override
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context).userId;
+    
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Exercícios',
