@@ -115,9 +115,14 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+            const Text(
+              'Cadastro de Exercicios',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(height: 20),
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(12),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -129,7 +134,6 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                       ),
                       const SizedBox(height: 6),
                       BotaoSelecionarTurma(
-                        
                         turmaSelecionada: _mapValueNotifier['turmaNome']!,
                         onTurmaSelecionada: (id, turmaNome) {
                           _mapValueNotifier['turmaId']!.value = id;
@@ -137,20 +141,35 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      Text(
+                        'Titulo',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 6),
                       TextFormFieldPersonalizado(
                         prefixIcon: const Icon(Icons.title),
                         controller: _mapController['titulo']!,
-                        label: 'Titulo',
+
                         hintText: 'Ex: Atividade Para casa',
                       ),
                       const SizedBox(height: 16),
+                      Text(
+                        'Conteudo',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 6),
                       TextFormFieldPersonalizado(
                         prefixIcon: const Icon(Icons.notes),
                         controller: _mapController['conteudo']!,
-                        label: 'Conteudo',
+
                         hintText: 'Atividade da pagina 10  á 20 ',
                       ),
                       const SizedBox(height: 16),
+                      Text(
+                        'Data de Entrega',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 6),
                       DataPickerCalendario(
                         isSelecionada: dataSelecionada,
                         onDate: (data) {

@@ -22,9 +22,10 @@ ThemeData get lightTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        backgroundColor: AppColors.lightPrimary,
-        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: const Color.fromARGB(36, 172, 160, 228),
+        foregroundColor: const Color.fromARGB(255, 41, 41, 41),
+        side: const BorderSide(color: Color.fromARGB(150, 58, 110, 165)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -32,7 +33,7 @@ ThemeData get lightTheme {
         backgroundColor: AppColors.lightPrimary,
         foregroundColor: AppColors.lightTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
 

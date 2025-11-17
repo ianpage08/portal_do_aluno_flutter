@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class TextFormFieldPersonalizado extends StatelessWidget {
   final TextEditingController controller;
-  final String label;
+  final String? label;
   final String? hintText;
   final Icon? prefixIcon;
   final Widget? suffixIcon;
@@ -22,7 +22,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
   const TextFormFieldPersonalizado({
     super.key,
     required this.controller,
-    required this.label,
+    this.label,
     this.hintText,
     this.prefixIcon,
     this.suffixIcon,
