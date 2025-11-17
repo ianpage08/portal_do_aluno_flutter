@@ -4,7 +4,7 @@ import 'package:portal_do_aluno/admin/data/models/disciplinas/diciplinas.dart';
 import 'package:portal_do_aluno/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_limpar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 

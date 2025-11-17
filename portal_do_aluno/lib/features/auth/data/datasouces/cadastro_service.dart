@@ -6,7 +6,7 @@ import 'package:portal_do_aluno/core/user/user.dart';
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class CadastroService {
-  /// Cadastra um usuário no Firestore
+  // Cadastra um usuário no Firestore
   Future<String> cadastroUsuario(Usuario usuario) async {
     // Hash da senha
     final senhaHash = BCrypt.hashpw(usuario.password, BCrypt.gensalt());

@@ -149,10 +149,7 @@ class NavigatorService {
     return navigateTo(RouteNames.studentCalendar);
   }
 
-  static Future<void> navigateToAttendance() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentAttendance);
-  }
+ 
 
   static Future<void> navigateToGrade() {
     _validateUserType(UserType.student);
@@ -188,15 +185,9 @@ class NavigatorService {
     );
   }
 
-  static Future<void> navigateToTeacherAssignments() {
-    _validateUserType(UserType.teacher);
-    return navigateTo(RouteNames.teacherAssignments);
-  }
+  
 
-  static Future<void> navigateToTeacherAttendance() {
-    _validateUserType(UserType.teacher);
-    return navigateTo(RouteNames.teacherAttendance);
-  }
+  
 
   static Future<void> navigateToTeacherCalendar() {
     _validateUserType(UserType.teacher);
@@ -267,40 +258,9 @@ class NavigatorService {
     return navigateTo(route);
   }
 
-  // === NAVEGAÇÃO PARA PÁGINAS DE DETALHES (COM ARGUMENTOS) ===
-  static Future<void> navigateToTaskDetails(String taskId) {
-    return navigateTo(RouteNames.taskDetails, arguments: {'taskId': taskId});
-  }
+  
 
-  static Future<void> navigateToMessageDetails(String messageId) {
-    return navigateTo(
-      RouteNames.messageDetails,
-      arguments: {'messageId': messageId},
-    );
-  }
-
-  static Future<void> navigateToGradeDetails({
-    required String gradeId,
-    required String studentId,
-  }) {
-    // Validar se o usuário pode ver essas notas
-    if (_currentUser == null) {
-      showErrorDialog('Usuário não autenticado');
-      return Future.value();
-    }
-
-    // Aluno só pode ver suas próprias notas
-    if (_currentUser!.type == UserType.student &&
-        _currentUser!.id.toString() != studentId) {
-      showErrorDialog('Você não tem permissão para ver essas notas');
-      return Future.value();
-    }
-
-    return navigateTo(
-      RouteNames.gradeDetails,
-      arguments: {'gradeId': gradeId, 'studentId': studentId},
-    );
-  }
+  
 
   // === NAVEGAÇÃO PARA PÁGINAS DE FORMULÁRIO ===
   static Future<void> navigateToEditProfile() {
@@ -315,9 +275,7 @@ class NavigatorService {
     return navigateTo(RouteNames.contactSupport);
   }
 
-  static Future<void> navigateToAddTask() {
-    return navigateTo(RouteNames.addTask);
-  }
+  
 
   // === NAVEGAÇÃO PARA PÁGINAS DE ERRO ===
   static Future<void> navigateToNotFound() {

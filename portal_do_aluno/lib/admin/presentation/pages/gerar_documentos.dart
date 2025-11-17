@@ -6,7 +6,7 @@ import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:printing/printing.dart';
 import 'package:portal_do_aluno/admin/data/models/aluno.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 
 class GerarDocumentosPage extends StatefulWidget {
   const GerarDocumentosPage({super.key});

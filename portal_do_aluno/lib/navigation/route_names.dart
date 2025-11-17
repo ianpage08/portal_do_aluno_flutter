@@ -10,7 +10,7 @@ class RouteNames {
 
   // Funcionalidades do Aluno
   static const String studentGrades = '/student_grades';
-  static const String studentAttendance = '/student_attendance';
+  
   static const String studentTasks = '/student_tasks';
   static const String studentComunicados = '/student_comunicados';
   static const String studentCalendar = '/student_calendar';
@@ -22,8 +22,8 @@ class RouteNames {
 
   // Funcionalidades do Professor
   static const String teacherClasses = '/teacher_classes';
-  static const String teacherAssignments = '/teacher_assignments';
-  static const String teacherAttendance = '/teacher_attendance';
+  
+  
   static const String teacherCalendar = '/teacher_calendar';
   static const String teacherSettings = '/teacher_settings';
   static const String teacherExercicios = '/teacher_exercicios';
@@ -59,15 +59,14 @@ class RouteNames {
 
   static const String comunicadosProfessor = '/comunicados_professor';
   // paginas de detalhes
-  static const String taskDetails = '/task_details';
-  static const String messageDetails = '/message_details';
+  
   static const String gradeDetails = '/grade_details';
   static const String addOqueFoiDado = '/add_oque_foi_dado';
   // paginas de formulario
   static const String editProfile = '/edit_profile';
   static const String changePassword = '/change_password';
   static const String contactSupport = '/contact_support';
-  static const String addTask = '/add_task';
+  
 
   //paginas de Erro
   static const String notFound = '/not_found';

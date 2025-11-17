@@ -22,7 +22,7 @@ class NotificationService {
       settings,
       onDidReceiveNotificationResponse: (details) {
         debugPrint('Usuario Clicou na notificação: $details');
-        // Handle notification tap here
+        
       },
     );
     final androidImplementation = _notificationServiceLocalPlugin

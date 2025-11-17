@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
@@ -97,7 +97,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     super.dispose();
   }
 
-  /// Exibe modal para seleção do tipo de usuário
+  // Exibe modal para seleção do tipo de usuário
   void showtipoPerfilModal() {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
@@ -120,7 +120,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     );
   }
 
-  /// Limpa os campos e variáveis selecionadas no formulário
+  // Limpa os campos e variáveis selecionadas no formulário
   void _limparCampos() {
     setState(() {
       isSelectedTipo = null;
@@ -140,8 +140,8 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     });
   }
 
-  /// Widget para campos de cadastro do professor
-  /// O parâmetro [enabled] controla se os campos podem ser editados ou não
+  // Widget para campos de cadastro do professor
+  // O parâmetro [enabled] controla se os campos podem ser editados ou não
   Widget _professorcadastro({required bool enabled}) {
     return Column(
       children: [
@@ -183,8 +183,8 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     );
   }
 
-  /// Widget para campos de cadastro do administrador
-  /// Similar ao professor, com controle de habilitação [enabled]
+  // Widget para campos de cadastro do administrador
+  // Similar ao professor, com controle de habilitação [enabled]
   Widget _administradorcadastro({required bool enabled}) {
     return Column(
       children: [
@@ -226,8 +226,8 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
     );
   }
 
-  /// Método para adicionar um usuário ao banco de dados
-  /// Faz validações e interage com o serviço de cadastro
+  // Método para adicionar um usuário ao banco de dados
+  // Faz validações e interage com o serviço de cadastro
   void _adicionarUsuario() async {
     if (FormHelper.isFormValid(
       formKey: _formKey,

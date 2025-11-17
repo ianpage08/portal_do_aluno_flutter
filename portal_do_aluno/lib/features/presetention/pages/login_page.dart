@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:portal_do_aluno/admin/presentation/widgets/scaffold_messeger.dart';
+import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
 
@@ -313,7 +313,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // ✅ MÉTODO DE LOGIN DENTRO DA CLASSE
+  
   /*Future<void> _simularLogin() async {
     if (!_formKey.currentState!.validate()) return;
 

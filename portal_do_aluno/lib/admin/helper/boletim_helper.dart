@@ -29,7 +29,7 @@ class BoletimHelper {
     // Parse da unidade
     int unidades;
     try {
-      unidades = int.parse(unidade.split(' ')[1]); // "Unidade 1" -> 1
+      unidades = int.parse(unidade.split(' ')[1]); 
     } catch (_) {
       throw ArgumentError('Unidade inválida: $unidade');
     }

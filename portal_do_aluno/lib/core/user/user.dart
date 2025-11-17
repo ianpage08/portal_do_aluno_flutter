@@ -20,7 +20,7 @@ class Usuario {
     this.alunoId,
   });
 
-  //Converte objeto Usuario em Map (dicionário)
+  
   //Para que: Enviar dados para API, salvar no banco
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -31,7 +31,7 @@ class Usuario {
     'turmaId': turmaId,
     'alunoId': alunoId,
   };
-  /*factory = Construtor especial que pode retornar instância existente
+  /*factory = Construtor  que pode retornar instância existente
   Converte Map em objeto Usuario
   Para que: Receber dados da API, carregar do banco
   UserType.values.byName() = Converte string em enum*/

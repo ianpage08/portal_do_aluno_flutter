@@ -24,7 +24,7 @@ import 'package:portal_do_aluno/admin/presentation/pages/relatorios.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
-import 'package:portal_do_aluno/student/presentation/pages/attendace_page.dart';
+
 import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
 
@@ -60,44 +60,36 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminCadastrarDisciplina: (context) => const CadastrarDisciplina(),
   RouteNames.adminSegurancaEPermissoes: (context) =>
       const SegurancaEPermissoes(),
-  RouteNames.changePassword: (context) => const LoginPage(),
-  RouteNames.contactSupport: (context) => const LoginPage(),
-  RouteNames.editProfile: (context) => const LoginPage(),
-  RouteNames.internalServerError: (context) => const LoginPage(),
+  
+  
+  
   RouteNames.addOqueFoiDado: (context) => const OqueFoiDado(),
 
-  //rotas de erro
-  RouteNames.notFound: (context) => const LoginPage(),
-  RouteNames.error: (context) => const LoginPage(),
+  
   // rotas do Aluno
   RouteNames.studentDashboard: (context) => const StudentDashboard(),
-  RouteNames.studentGrades: (context) => const LoginPage(),
+  
   RouteNames.studentHelp: (context) => const NoticesPage(),
   RouteNames.studentSettings: (context) => const ConfiguracaoPage(),
-  RouteNames.studentTasks: (context) => const AttendancePage(),
+  
   RouteNames.studentCalendar: (context) => const CalendarPage(),
-  RouteNames.studentAttendance: (context) => const AttendancePage(),
+
   RouteNames.studentComunicados: (context) => const NoticesPage(),
   RouteNames.studentBoletim: (context) => const BoletimPage(),
   RouteNames.studentExercicios: (context) => const ExerciciosAlunoPage(),
   // rotas de detalhes
-  RouteNames.taskDetails: (context) => const LoginPage(),
-  RouteNames.addTask: (context) => const LoginPage(),
-  RouteNames.messageDetails: (context) => const LoginPage(),
-  RouteNames.gradeDetails: (context) => const LoginPage(),
+  
+
   // rotas do Professor
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
   
-  RouteNames.teacherAttendance: (context) => const AttendancePage(),
+  
   RouteNames.teacherCalendar: (context) => const CalendarPage(),
-  RouteNames.teacherSettings: (context) => const LoginPage(),
   RouteNames.teacherClasses: (context) => ClassPage(),
   RouteNames.comunicadosProfessor: (context) => const ComunicadosProfessor(),
   RouteNames.teacherExercicios: (context) => const CadastroExercicio(),
   
   
-  // rotas do Responsável
-  RouteNames.parentDashboard: (context) => const LoginPage(),
   
   
   
