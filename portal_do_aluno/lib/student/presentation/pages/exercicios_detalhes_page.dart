@@ -15,7 +15,7 @@ class ExerciciosDetalhesPage extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: Padding(
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,

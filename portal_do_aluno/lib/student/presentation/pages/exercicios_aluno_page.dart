@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
+
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:portal_do_aluno/student/presentation/pages/exercicios_detalhes_page.dart';

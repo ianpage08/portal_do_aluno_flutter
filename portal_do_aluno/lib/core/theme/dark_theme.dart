@@ -24,7 +24,7 @@ ThemeData get darkTheme {
         padding: const EdgeInsets.symmetric(vertical: 12),
         backgroundColor: AppColors.darkPrimary,
         foregroundColor: const Color.fromARGB(255, 245, 241, 212),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(

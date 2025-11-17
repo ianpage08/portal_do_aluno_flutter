@@ -9,7 +9,7 @@ Future<String?> getAlunoIdFromFirestore() async {
   final user = FirebaseAuth.instance.currentUser;
 
   if (user == null) {
-    debugPrint('❌ Usuário não logado');
+    debugPrint(' Usuário não logado');
     return null;
   }
 
@@ -21,18 +21,20 @@ Future<String?> getAlunoIdFromFirestore() async {
         .get();
 
     if (!userDoc.exists) {
-      debugPrint('❌ Documento do usuário não encontrado em "usuarios"');
+      debugPrint(' Documento do usuário não encontrado em "usuarios"');
       return null;
     }
 
     final data = userDoc.data()!;
     final cpf = data['cpf'] as String?;
     if (cpf == null || cpf.isEmpty) {
-      debugPrint('❌ Campo "cpf" não encontrado ou vazio no documento do usuário');
+      debugPrint(
+        ' Campo "cpf" não encontrado ou vazio no documento do usuário',
+      );
       return null;
     }
 
-    debugPrint('🔍 Buscando matrícula para CPF: $cpf');
+    debugPrint(' Buscando matrícula para CPF: $cpf');
 
     // 2. Buscar a matrícula usando o CPF (único)
     final matriculaQuery = await FirebaseFirestore.instance
@@ -42,17 +44,16 @@ Future<String?> getAlunoIdFromFirestore() async {
         .get();
 
     if (matriculaQuery.docs.isEmpty) {
-      debugPrint('❌ Nenhuma matrícula encontrada para o CPF: $cpf');
+      debugPrint(' Nenhuma matrícula encontrada para o CPF: $cpf');
       return null;
     }
 
     // 3. Retornar o ID da matrícula (que é o alunoId)
     final matriculaId = matriculaQuery.docs.first.id;
-    debugPrint('✅ AlunoId (ID da matrícula) encontrado: $matriculaId');
+    debugPrint(' AlunoId (ID da matrícula) encontrado: $matriculaId');
     return matriculaId;
-
   } catch (e) {
-    debugPrint('❌ Erro ao buscar alunoId por CPF: $e');
+    debugPrint(' Erro ao buscar alunoId por CPF: $e');
     return null;
   }
 }
@@ -66,9 +67,9 @@ Future<void> adicionarCpfAoUsuario(String cpf) async {
           .collection('usuarios')
           .doc(user.uid)
           .update({'cpf': cpf});
-      debugPrint('✅ CPF adicionado ao usuário');
+      debugPrint(' CPF adicionado ao usuário');
     } catch (e) {
-      debugPrint('❌ Erro ao adicionar CPF: $e');
+      debugPrint(' Erro ao adicionar CPF: $e');
     }
   }
 }

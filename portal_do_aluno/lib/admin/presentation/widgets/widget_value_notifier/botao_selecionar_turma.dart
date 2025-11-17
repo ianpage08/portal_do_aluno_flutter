@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BotaoSelecionarTurma extends StatefulWidget {
@@ -15,6 +16,8 @@ class BotaoSelecionarTurma extends StatefulWidget {
 }
 
 class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
+  final ValueNotifier<bool> _aberto = ValueNotifier<bool>(false);
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -36,16 +39,41 @@ class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
               width: double.infinity,
               curve: Curves.easeInOut,
               duration: const Duration(milliseconds: 300),
-              child: TextButton.icon(
+              child: TextButton(
                 style: Theme.of(context).textButtonTheme.style,
 
-                label: Text(
-                  value ?? 'Selecione Uma Turma',
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          Text(
+                            value ?? 'Selecione uma turma',
+                            style: const TextStyle(fontSize: 18),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          ValueListenableBuilder(
+                            valueListenable: _aberto,
+                            builder: (context, aberto, child) {
+                              return AnimatedRotation(
+                                curve: Curves.easeInOut,
+                                turns: aberto ? 0.25 : 0,
+                                duration: const Duration(milliseconds: 300),
+                                child: const Icon(CupertinoIcons.chevron_right),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                icon: const Icon(Icons.class_, color: Colors.white),
-                onPressed: () {
-                  showModalBottomSheet(
+                onPressed: () async {
+                  _aberto.value = true;
+                  await showModalBottomSheet(
                     context: context,
 
                     backgroundColor: const Color.fromARGB(238, 46, 46, 46),
@@ -80,6 +108,7 @@ class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
                       );
                     },
                   );
+                  _aberto.value = false;
                 },
               ),
             );

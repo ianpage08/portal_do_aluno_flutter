@@ -121,8 +121,15 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        'Turma',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 6),
                       BotaoSelecionarTurma(
+                        
                         turmaSelecionada: _mapValueNotifier['turmaNome']!,
                         onTurmaSelecionada: (id, turmaNome) {
                           _mapValueNotifier['turmaId']!.value = id;

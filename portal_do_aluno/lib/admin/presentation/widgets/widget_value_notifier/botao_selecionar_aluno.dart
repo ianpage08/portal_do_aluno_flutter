@@ -54,7 +54,7 @@ class _BotaoSelecionarAlunoState extends State<BotaoSelecionarAluno> {
               width: double.infinity,
               duration: const Duration(seconds: 1),
               curve: Curves.bounceIn,
-              child: TextButton.icon(
+              child: TextButton(
                 style: Theme.of(context).textButtonTheme.style,
                 onPressed: () => showModalBottomSheet(
                   context: context,
@@ -88,11 +88,12 @@ class _BotaoSelecionarAlunoState extends State<BotaoSelecionarAluno> {
                     );
                   },
                 ),
-                label: Text(
-                  value ?? 'Selecione um Aluno',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                icon: const Icon(CupertinoIcons.person),
+                child: Row(children: [
+                  Text(value ?? 'Selecione um aluno', style: const TextStyle(fontSize: 18), overflow: TextOverflow.ellipsis,),
+                  const Icon(CupertinoIcons.chevron_down)
+                  
+                ],),
+                
               ),
             );
           },
