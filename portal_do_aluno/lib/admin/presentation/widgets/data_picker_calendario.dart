@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/app_constants/colors.dart';
 
 class DataPickerCalendario extends StatefulWidget {
   final DateTime? isSelecionada;
@@ -26,7 +27,15 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        style: Theme.of(context).elevatedButtonTheme.style!,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromARGB(36, 172, 160, 228),
+          shadowColor: Colors.transparent,
+          foregroundColor: AppColors.lightTextPrimary,
+
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
         onPressed: () async {
           final DateTime? data = await showDatePicker(
             context: context,
@@ -41,20 +50,24 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
             widget.onDate(dataSelecionada); //avisa o pai tipo um callback
           }
         },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.calendar_today, color: Colors.white),
-            const SizedBox(width: 10),
-            Text(
-              dataSelecionada != null
-                  ? '${dataSelecionada!.day}/${dataSelecionada!.month}/${dataSelecionada!.year}'
-                  : 'Selecionar Data',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium!.copyWith(color: Colors.white),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.calendar_today,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                dataSelecionada != null
+                    ? '${dataSelecionada!.day}/${dataSelecionada!.month}/${dataSelecionada!.year}'
+                    : 'Selecionar Data',
+                style: Theme.of(context).textTheme.titleMedium!,
+              ),
+            ],
+          ),
         ),
       ),
     );

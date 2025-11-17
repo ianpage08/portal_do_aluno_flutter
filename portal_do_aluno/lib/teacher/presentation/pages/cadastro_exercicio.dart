@@ -159,10 +159,11 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                       ),
                       const SizedBox(height: 6),
                       TextFormFieldPersonalizado(
+                        maxLines: 3,
                         prefixIcon: const Icon(Icons.notes),
                         controller: _mapController['conteudo']!,
 
-                        hintText: 'Atividade da pagina 10  á 20 ',
+                        hintText: 'Ex: Atividade da pagina 10  á 20 ',
                       ),
                       const SizedBox(height: 16),
                       Text(

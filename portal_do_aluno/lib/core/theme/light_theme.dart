@@ -24,15 +24,16 @@ ThemeData get lightTheme {
         padding: const EdgeInsets.symmetric(vertical: 12),
         backgroundColor: const Color.fromARGB(36, 172, 160, 228),
         foregroundColor: const Color.fromARGB(255, 41, 41, 41),
-        side: const BorderSide(color: Color.fromARGB(150, 58, 110, 165)),
+        side: const BorderSide(color: AppColors.lightIcon),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.lightPrimary,
+        backgroundColor: const Color.fromARGB(137, 43, 72, 201),
         foregroundColor: AppColors.lightTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
+        shadowColor: const Color.fromARGB(255, 0, 0, 0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
