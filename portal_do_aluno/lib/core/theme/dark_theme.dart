@@ -22,9 +22,12 @@ ThemeData get darkTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        backgroundColor: AppColors.darkPrimary,
         foregroundColor: const Color.fromARGB(255, 245, 241, 212),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: const Color.fromARGB(45, 172, 160, 228),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: AppColors.darkIcon),
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -32,7 +35,7 @@ ThemeData get darkTheme {
         backgroundColor: AppColors.darkPrimary,
         foregroundColor: AppColors.darkTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
 
@@ -41,6 +44,7 @@ ThemeData get darkTheme {
       fillColor: Color.fromARGB(255, 172, 160, 228),
       iconColor: AppColors.darkIcon,
       border: OutlineInputBorder(borderSide: BorderSide.none),
+
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromARGB(255, 176, 170, 204),
