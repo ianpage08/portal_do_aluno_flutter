@@ -18,11 +18,7 @@ class ExerciciosAlunoPage extends StatefulWidget {
 }
 
 class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
-  
   String? turmaId;
-  
-  
-  
 
   @override
   void didChangeDependencies() {
@@ -125,7 +121,9 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                           );
                         },
                       ),
-                    );
+                    ).then((_) {
+                      setState(() {});
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(5),
@@ -237,5 +235,4 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
       },
     );
   }
-  
 }

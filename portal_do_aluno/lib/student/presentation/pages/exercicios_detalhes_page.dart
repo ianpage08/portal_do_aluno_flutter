@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/entrega_exercicio_service.dart';
 import 'package:portal_do_aluno/admin/data/models/entrega_de_atividade.dart';
 import 'package:portal_do_aluno/admin/helper/anexo_helper.dart';
@@ -18,7 +21,7 @@ class ExerciciosDetalhesPage extends StatefulWidget {
 }
 
 class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
-  bool _isuploading = false;
+  bool _isUploading = false;
   final List<XFile> imgSelected = [];
   final EntregaExercicioService _entregaExercicioService =
       EntregaExercicioService();
@@ -83,147 +86,195 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
   @override
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context, listen: false).userId;
-    return Scaffold(
-      body: Center(
-        child: Hero(
-          tag: widget.exercicios.id,
-          child: Material(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                height: MediaQuery.of(context).size.height * 0.7,
-
+    return Stack(
+      children: [
+        Scaffold(
+          body: Center(
+            child: Hero(
+              tag: widget.exercicios.id,
+              child: Material(
+                color: Colors.transparent,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                    vertical: 50,
+                    horizontal: 30,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Detalhes do Exercício',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(Icons.close, size: 30),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        widget.exercicios['titulo'],
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Text(widget.exercicios['conteudoDoExercicio']),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2F5DFF),
-                              ),
-                              onPressed: () async {
-                                final imagens = await getImage();
-                                if (imagens.isEmpty) {
-                                  return;
-                                }
-                                imgSelected.clear();
-                                imgSelected.addAll(imagens);
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    height: MediaQuery.of(context).size.height * 0.7,
 
-                                if (mounted) {
-                                  snackBarPersonalizado(
-                                    context: context,
-                                    mensagem:
-                                        '${imagens.length} imagem(ns) selecionada(s)',
-                                    cor: Colors.green,
-                                  );
-                                }
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(CupertinoIcons.link),
-                                    SizedBox(width: 10),
-                                    Text('Anexo'),
-                                  ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Detalhes do Exercício',
+                                style: TextStyle(fontSize: 24),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(Icons.close, size: 30),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.exercicios['titulo'],
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Text(
+                                widget.exercicios['conteudoDoExercicio'],
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2F5DFF),
+                                  ),
+                                  onPressed: () async {
+                                    final imagens = await getImage();
+                                    if (imagens.isEmpty) {
+                                      return;
+                                    }
+                                    imgSelected.clear();
+                                    imgSelected.addAll(imagens);
+
+                                    if (mounted) {
+                                      snackBarPersonalizado(
+                                        context: context,
+                                        mensagem:
+                                            '${imagens.length} imagem(ns) selecionada(s)',
+                                        cor: Colors.green,
+                                      );
+                                    }
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(CupertinoIcons.link),
+                                        SizedBox(width: 10),
+                                        Text('Anexo'),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                if (imgSelected.isEmpty) {
-                                  snackBarPersonalizado(
-                                    context: context,
-                                    mensagem: 'Nenhuma imagem selecionada',
-                                    cor: Colors.orange,
-                                  );
-                                  return;
-                                }
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    if (imgSelected.isEmpty) {
+                                      snackBarPersonalizado(
+                                        context: context,
+                                        mensagem: 'Nenhuma imagem selecionada',
+                                        cor: Colors.orange,
+                                      );
+                                      return;
+                                    }
+                                    setState(() {
+                                      _isUploading = true;
+                                    });
+                                    try {
+                                      final alunoId = await getAlunoId(userId!);
+                                      final exerciciosId = widget.exercicios.id;
 
-                                final alunoId = await getAlunoId(userId!);
-                                final exerciciosId = widget.exercicios.id;
+                                      final urls = await uploadImagensExercicio(
+                                        imgSelected,
+                                        exerciciosId,
+                                        alunoId,
+                                      );
+                                      await enviarAtividade(
+                                        alunoId,
+                                        exerciciosId,
+                                        urls,
+                                      );
+                                      await atualizarStatus(
+                                        userId,
+                                        exerciciosId,
+                                      );
 
-                                final urls = await uploadImagensExercicio(
-                                  imgSelected,
-                                  exerciciosId,
-                                  alunoId,
-                                );
-                                await enviarAtividade(
-                                  alunoId,
-                                  exerciciosId,
-                                  urls,
-                                );
-                                await atualizarStatus(userId, exerciciosId);
-
-                                Navigator.pop(context);
-                              },
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(CupertinoIcons.paperplane),
-                                  SizedBox(width: 10),
-                                  Text('Enviar'),
-                                ],
+                                      Navigator.pop(context);
+                                    } finally {
+                                      setState(() {
+                                        _isUploading = false;
+                                      });
+                                    }
+                                  },
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(CupertinoIcons.paperplane),
+                                      SizedBox(width: 10),
+                                      Text('Enviar'),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+        if (_isUploading) buildLoadingOverlay(),
+      ],
     );
   }
 
   Widget buildLoadingOverlay() {
-    return Overlay();
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(color: const Color.fromARGB(120, 0, 0, 0)),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Lottie.asset(
+                    'assets/lottie/loading_40 _ paperplane.json',
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
