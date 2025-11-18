@@ -86,13 +86,14 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                 final exercicio = data?[index];
                 final titulo = exercicio?['titulo'];
                 final conteudoDoExercicio = exercicio?['conteudoDoExercicio'];
+                final nomeProfessor = exercicio?['nomeDoProfessor'];
 
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 400),
+                        transitionDuration: const Duration(milliseconds: 500),
                         pageBuilder: (context, animation, secundaryAnimation) {
                           return SlideTransition(
                             position: Tween<Offset>(
@@ -130,6 +131,7 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                                 child: cardExecicio(
                                   titulo,
                                   conteudoDoExercicio,
+                                  nomeProfessor,
                                 ),
                               ),
                             ),
@@ -147,14 +149,15 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
     );
   }
 
-  Widget cardExecicio(String titulo, String conteudo) {
+  Widget cardExecicio(String titulo, String conteudo, String nomeProfessor) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
+        border: Border.all(color: const Color.fromARGB(55, 88, 87, 87)),
         borderRadius: BorderRadius.circular(12),
-        color: const Color.fromARGB(255, 109, 87, 116),
+        color: Theme.of(context).cardTheme.color,
       ),
-      height: 70,
+      height: 82,
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,13 +173,14 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                     'Exercicio de: $titulo',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Text(limitarTexto(conteudo, 50)),
+                  Text(limitarTexto(conteudo, 40)),
+                  Text('Professor: $nomeProfessor'),
                 ],
               ),
             ),
           ),
           Container(
-            height: 70,
+            height: 100,
             width: 50,
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -186,7 +190,11 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
               color: Color.fromARGB(255, 26, 110, 236),
             ),
 
-            child: const Icon(CupertinoIcons.arrow_right, size: 20),
+            child: const Icon(
+              CupertinoIcons.arrow_right,
+              size: 20,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
