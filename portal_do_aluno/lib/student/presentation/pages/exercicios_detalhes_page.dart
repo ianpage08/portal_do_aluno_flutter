@@ -1,18 +1,54 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/entrega_exercicio_service.dart';
+import 'package:portal_do_aluno/admin/data/models/entrega_de_atividade.dart';
 import 'package:portal_do_aluno/admin/helper/anexo_helper.dart';
+import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
-class ExerciciosDetalhesPage extends StatelessWidget {
+class ExerciciosDetalhesPage extends StatefulWidget {
   final QueryDocumentSnapshot exercicios;
   const ExerciciosDetalhesPage({super.key, required this.exercicios});
+
+  @override
+  State<ExerciciosDetalhesPage> createState() => _ExerciciosDetalhesPageState();
+}
+
+class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
+  final EntregaExercicioService _entregaExercicioService =
+      EntregaExercicioService();
+  Future<void> getAlunoId() async {
+    final userId = Provider.of<UserProvider>(context).userId;
+    final snapshot = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc(userId)
+        .get();
+    return snapshot.data()!['alunoId'];
+  }
+
+  Future<void> enviarAtividade(String alunoId, String exerciciosId) async {
+    final entrega = EntregaDeAtividade(
+      alunoId: alunoId,
+      exercicioId: exerciciosId,
+      dataEntrega: Timestamp.now(),
+      anexos: []
+      );
+    await _entregaExercicioService.entregarExercicio(
+      exerciciosId:  exerciciosId,
+      alunoId:  alunoId,
+      entrega: entrega,
+    
+
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Hero(
-          tag: exercicios.id,
+          tag: widget.exercicios.id,
           child: Material(
             color: Colors.transparent,
             child: Padding(
@@ -50,13 +86,13 @@ class ExerciciosDetalhesPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        exercicios['titulo'],
+                        widget.exercicios['titulo'],
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),
                       Expanded(
                         child: SingleChildScrollView(
-                          child: Text(exercicios['conteudoDoExercicio']),
+                          child: Text(widget.exercicios['conteudoDoExercicio']),
                         ),
                       ),
                       Row(

@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -28,4 +33,27 @@ Future<List<XFile>> getImage() async {
     _pickerAtivo = false;
   }
   return [];
+}
+
+Future<List<String>> uploadImagensExercicio(
+  List<XFile> imagens,
+  String exerciciosId,
+  String alunoId,
+) async {
+  List<String> urls = [];
+
+  if (imagens.isEmpty) return [];
+  for (var imagem in imagens) {
+    final file = File(imagem.path);
+    // caminho para o Firebase Store
+    final ref = FirebaseStorage.instance.ref().child(
+      'exercicios/$exerciciosId/$alunoId/${imagem.name}',
+    );
+    // upload de imagem 
+    final uploadTask = await ref.putFile(file);
+    final url = await uploadTask.ref.getDownloadURL();
+    urls.add(url);
+
+  }
+  return urls;
 }

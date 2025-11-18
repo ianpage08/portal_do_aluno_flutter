@@ -5,9 +5,9 @@ final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class EntregaExercicioService {
   Future<void> entregarExercicio(
-    String exerciciosId,
-    String alunoId,
-    EntregaDeAtividade entrega,
+    { required String exerciciosId,
+    required String alunoId,
+    required EntregaDeAtividade entrega,}
   ) async {
     final docRef = _firestore
         .collection('exercicios')
