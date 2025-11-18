@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,13 +45,12 @@ Future<List<String>> uploadImagensExercicio(
     final file = File(imagem.path);
     // caminho para o Firebase Store
     final ref = FirebaseStorage.instance.ref().child(
-      'exercicios/$exerciciosId/$alunoId/${imagem.name}',
+      'exercicios/$exerciciosId/$alunoId/${DateTime.now().millisecondsSinceEpoch}.jpg',
     );
-    // upload de imagem 
+    // upload de imagem
     final uploadTask = await ref.putFile(file);
     final url = await uploadTask.ref.getDownloadURL();
     urls.add(url);
-
   }
   return urls;
 }

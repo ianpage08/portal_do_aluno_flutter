@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/entrega_exercicio_service.dart';
 import 'package:portal_do_aluno/admin/data/models/entrega_de_atividade.dart';
 import 'package:portal_do_aluno/admin/helper/anexo_helper.dart';
+import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,10 +18,11 @@ class ExerciciosDetalhesPage extends StatefulWidget {
 }
 
 class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
+  bool _isuploading = false;
+  final List<XFile> imgSelected = [];
   final EntregaExercicioService _entregaExercicioService =
       EntregaExercicioService();
-  Future<void> getAlunoId() async {
-    final userId = Provider.of<UserProvider>(context).userId;
+  Future<String> getAlunoId(String userId) async {
     final snapshot = await FirebaseFirestore.instance
         .collection('usuarios')
         .doc(userId)
@@ -27,24 +30,59 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
     return snapshot.data()!['alunoId'];
   }
 
-  Future<void> enviarAtividade(String alunoId, String exerciciosId) async {
+  Future<void> atualizarStatus(String userId, String exerciciosId) async {
+    final statusFeito = FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc(userId)
+        .collection('exercicios_status')
+        .doc(exerciciosId);
+
+    await statusFeito.update({
+      'status': true,
+      'dataDeEntrega': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> enviarAtividade(
+    String alunoId,
+    String exerciciosId,
+    List<String> urls,
+  ) async {
     final entrega = EntregaDeAtividade(
       alunoId: alunoId,
       exercicioId: exerciciosId,
       dataEntrega: Timestamp.now(),
-      anexos: []
-      );
-    await _entregaExercicioService.entregarExercicio(
-      exerciciosId:  exerciciosId,
-      alunoId:  alunoId,
-      entrega: entrega,
-    
-
+      anexos: urls,
     );
+    try {
+      if (urls.isEmpty && mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Selecione a imagem do exercicios para enviar',
+          cor: Colors.orange,
+        );
+        return;
+      }
+      await _entregaExercicioService.entregarExercicio(
+        exerciciosId: exerciciosId,
+        alunoId: alunoId,
+        entrega: entrega,
+      );
+      imgSelected.clear();
+    } catch (e) {
+      if (mounted) {
+        snackBarPersonalizado(
+          context: context,
+          mensagem: 'Erro ao Enviar',
+          cor: Colors.red,
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final userId = Provider.of<UserProvider>(context, listen: false).userId;
     return Scaffold(
       body: Center(
         child: Hero(
@@ -99,8 +137,25 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
                         children: [
                           Expanded(
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF2F5DFF),
+                              ),
                               onPressed: () async {
-                                await getImage();
+                                final imagens = await getImage();
+                                if (imagens.isEmpty) {
+                                  return;
+                                }
+                                imgSelected.clear();
+                                imgSelected.addAll(imagens);
+
+                                if (mounted) {
+                                  snackBarPersonalizado(
+                                    context: context,
+                                    mensagem:
+                                        '${imagens.length} imagem(ns) selecionada(s)',
+                                    cor: Colors.green,
+                                  );
+                                }
                               },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8),
@@ -118,7 +173,33 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                if (imgSelected.isEmpty) {
+                                  snackBarPersonalizado(
+                                    context: context,
+                                    mensagem: 'Nenhuma imagem selecionada',
+                                    cor: Colors.orange,
+                                  );
+                                  return;
+                                }
+
+                                final alunoId = await getAlunoId(userId!);
+                                final exerciciosId = widget.exercicios.id;
+
+                                final urls = await uploadImagensExercicio(
+                                  imgSelected,
+                                  exerciciosId,
+                                  alunoId,
+                                );
+                                await enviarAtividade(
+                                  alunoId,
+                                  exerciciosId,
+                                  urls,
+                                );
+                                await atualizarStatus(userId, exerciciosId);
+
+                                Navigator.pop(context);
+                              },
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -140,5 +221,9 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
         ),
       ),
     );
+  }
+
+  Widget buildLoadingOverlay() {
+    return Overlay();
   }
 }

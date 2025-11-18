@@ -18,8 +18,11 @@ class ExerciciosAlunoPage extends StatefulWidget {
 }
 
 class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
+  
   String? turmaId;
-  bool showModal = false;
+  
+  
+  
 
   @override
   void didChangeDependencies() {
@@ -34,6 +37,20 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
         .collection('exercicios')
         .where('turmaId', isEqualTo: turmaId)
         .snapshots();
+  }
+
+  Future<bool> getStatusEntregue(String userId, String exerciciosId) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc(userId)
+        .collection('exercicios_status')
+        .doc(exerciciosId)
+        .get();
+    if (!doc.exists) {
+      return false;
+    }
+
+    return doc.data()?['status'] == true;
   }
 
   void buscarAlunoPorTurma() async {
@@ -62,6 +79,7 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userId = Provider.of<UserProvider>(context).userId;
     if (turmaId == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -132,6 +150,8 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                                   titulo,
                                   conteudoDoExercicio,
                                   nomeProfessor,
+                                  userId!,
+                                  exercicio.id,
                                 ),
                               ),
                             ),
@@ -149,55 +169,73 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
     );
   }
 
-  Widget cardExecicio(String titulo, String conteudo, String nomeProfessor) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(55, 88, 87, 87)),
-        borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).cardTheme.color,
-      ),
-      height: 82,
+  Widget cardExecicio(
+    String titulo,
+    String conteudo,
+    String nomeProfessor,
+    String userId,
+    String exerciciosId,
+  ) {
+    return FutureBuilder<bool>(
+      future: getStatusEntregue(userId, exerciciosId),
+      builder: (context, snapshot) {
+        final status = snapshot.data ?? false;
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color.fromARGB(55, 88, 87, 87)),
+            borderRadius: BorderRadius.circular(12),
+            color: Theme.of(context).cardTheme.color,
+          ),
+          height: 82,
 
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Exercicio de: $titulo',
-                    style: Theme.of(context).textTheme.titleMedium,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Exercicio de: $titulo',
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(limitarTexto(conteudo, 40)),
+                      Text('Professor: $nomeProfessor'),
+                    ],
                   ),
-                  Text(limitarTexto(conteudo, 40)),
-                  Text('Professor: $nomeProfessor'),
-                ],
+                ),
               ),
-            ),
-          ),
-          Container(
-            height: 100,
-            width: 50,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(12),
-                bottomRight: Radius.circular(12),
-              ),
-              color: Color.fromARGB(255, 26, 110, 236),
-            ),
+              Container(
+                height: 100,
+                width: 50,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                  color: status == true
+                      ? Colors.green
+                      : const Color.fromARGB(255, 26, 110, 236),
+                ),
 
-            child: const Icon(
-              CupertinoIcons.arrow_right,
-              size: 20,
-              color: Colors.white,
-            ),
+                child: Icon(
+                  status == true
+                      ? CupertinoIcons.check_mark
+                      : CupertinoIcons.arrow_right,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
+  
 }

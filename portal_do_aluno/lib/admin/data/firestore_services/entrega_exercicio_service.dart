@@ -4,17 +4,16 @@ import 'package:portal_do_aluno/admin/data/models/entrega_de_atividade.dart';
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class EntregaExercicioService {
-  Future<void> entregarExercicio(
-    { required String exerciciosId,
+  Future<void> entregarExercicio({
+    required String exerciciosId,
     required String alunoId,
-    required EntregaDeAtividade entrega,}
-  ) async {
+    required EntregaDeAtividade entrega,
+  }) async {
     final docRef = _firestore
         .collection('exercicios')
         .doc(exerciciosId)
         .collection('entregas')
-        .doc(alunoId)
-        ;
+        .doc(alunoId);
 
     return docRef.set(entrega.toJson());
   }

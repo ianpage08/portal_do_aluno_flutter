@@ -28,7 +28,7 @@ class ExercicioSevice {
       final documenteRef = aluno.reference
           .collection('exercicios_status')
           .doc(docRef.id);
-      batch.set(documenteRef, {'id': docRef.id, 'status': false});
+      batch.set(documenteRef, {'id': docRef.id, 'status': false });
     }
 
     await batch.commit();
