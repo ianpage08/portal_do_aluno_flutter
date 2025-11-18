@@ -178,16 +178,16 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                           debugPrint(dataSelecionada.toString());
                         },
                       ),
+                      const SizedBox(height: 20),
+                      BotaoSalvar(
+                        salvarconteudo: () async {
+                          await _cadastrarExercicio(professorId);
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            BotaoSalvar(
-              salvarconteudo: () async {
-                await _cadastrarExercicio(professorId);
-              },
             ),
           ],
         ),

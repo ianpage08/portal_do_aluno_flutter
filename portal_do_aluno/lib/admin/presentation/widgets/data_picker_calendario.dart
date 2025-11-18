@@ -62,7 +62,7 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
               const SizedBox(width: 10),
               Text(
                 dataSelecionada != null
-                    ? '${dataSelecionada!.day}/${dataSelecionada!.month}/${dataSelecionada!.year}'
+                    ? '${dataSelecionada!.day} / ${dataSelecionada!.month} / ${dataSelecionada!.year}'
                     : 'Selecionar Data',
                 style: Theme.of(context).textTheme.titleMedium!,
               ),

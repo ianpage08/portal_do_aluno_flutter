@@ -30,7 +30,7 @@ ThemeData get lightTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(137, 43, 72, 201),
+        backgroundColor: AppColors.lightButton,
         foregroundColor: AppColors.lightTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shadowColor: const Color.fromARGB(255, 0, 0, 0),

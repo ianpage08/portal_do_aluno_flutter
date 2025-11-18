@@ -4,11 +4,12 @@ import 'package:flutter/services.dart';
 class AppColors {
   // Dark Theme Colors
   static const Color darkBackground = Color(0xFF0E0B1F); // Fundo principal
-  static const Color darkCard = Color(0xFF1F1536); // Containers / Cards
+  static const Color darkCard = Color(0xFF1E1B2E); // Containers / Cards
   static const Color darkPrimary = Color(0xFF7C3AED); // Roxo principal
   static const Color darkSecondary = Color(0xFF8B5CF6); // Roxo secundário
   static const Color darkTextPrimary = Color(0xFFEDE9FE); // Texto principal
   static const Color darkTextSecondary = Color(0xFFA78BFA); // Texto secundário
+  static const Color darkButton = Color(0xFF1E88E5);
   static const Color darkIcon = Color(0xFFC4B5FD); // Ícones
   static const Color darkError = Color(0xFFF43F5E); // Erro
   static const Color darkSuccess = Color(0xFF10B981); // Sucesso
@@ -45,7 +46,7 @@ class AppColors {
   static const Color lightInputFill = Color(
     0xFFF2F3F6,
   ); // Campos de texto em cinza bem claro
-  static const Color lightButton = Color(0xFF3A6EA5); // Botões no tom principal
+  static const Color lightButton = Color(0xFF007BFF); // Botões no tom principal
   static const Color lightSuccess = Color(0xFF34C759); // Verde iOS
   static const Color lighTerror = Color(0xFFFF3B30); // Vermelho iOS
   static const Color lighThint = Color(0xFF8E8E93); // Placeholders e dicas
