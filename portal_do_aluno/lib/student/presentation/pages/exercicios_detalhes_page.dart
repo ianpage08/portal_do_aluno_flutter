@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/helper/anexo_helper.dart';
 
 class ExerciciosDetalhesPage extends StatelessWidget {
   final QueryDocumentSnapshot exercicios;
@@ -62,7 +63,9 @@ class ExerciciosDetalhesPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                await getImage();
+                              },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8),
                                 child: Row(
