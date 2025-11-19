@@ -198,11 +198,10 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Exercicio de: $titulo',
+                        limitarTexto('Exercicio de: $titulo', 30),
                         style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                      Text(limitarTexto(conteudo, 40)),
+                      Text(limitarTexto(conteudo, 30)),
                       Text('Professor: $nomeProfessor'),
                     ],
                   ),
