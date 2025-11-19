@@ -70,7 +70,7 @@ ThemeData get lightTheme {
     colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(162, 170, 170, 170),
 
-      secondary: AppColors.student,
+      secondary: AppColors.lightButton,
       tertiary: AppColors.teacher,
     ),
   );

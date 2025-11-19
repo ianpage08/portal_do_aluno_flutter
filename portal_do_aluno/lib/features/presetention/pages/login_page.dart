@@ -19,12 +19,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>(); // ✅ Com underscore
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool isLoading = false; // ✅ Com underscore
-  bool _obscurePassword = true; // ✅ Com underscore
+  bool isLoading = false;
+  bool _obscurePassword = true; //  Com underscore
 
   @override
   void dispose() {
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 100,
                         width: 100,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.secondary,
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: const Icon(
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                           size: 50,
                         ),
                       ),
-                      const SizedBox(height: 24), // ✅ Espaçamento
+                      const SizedBox(height: 24),
                       // Título
                       Text(
                         AppConstants.nameApp,
@@ -198,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                 },
                           child:
-                              isLoading // ✅ Loading melhorado
+                              isLoading //  Loading melhorado
                               ? const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 5),
 
                       // Link Esqueci Senha
                       SizedBox(
@@ -231,10 +231,24 @@ class _LoginPageState extends State<LoginPage> {
                         height: 50,
                         child: TextButton(
                           onPressed: isLoading ? null : _handleForgotPassword,
-                          style: Theme.of(context).textButtonTheme.style,
+                          style: TextButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              0,
+                              172,
+                              160,
+                              228,
+                            ),
+                            side: const BorderSide(
+                              color: Color.fromARGB(0, 0, 123, 255),
+                            ),
+                          ),
+
                           child: const Text(
-                            'Esqueci minha senha',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            'Esqueci Minha Senha',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 151, 151, 151),
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),

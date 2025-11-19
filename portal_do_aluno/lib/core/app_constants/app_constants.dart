@@ -1,7 +1,5 @@
-
-
 class AppConstants {
-  static const String nameApp = 'Portal do Aluno'; //Nome do app
+  static const String nameApp = 'Portal Academico'; //Nome do app
   static const String versionApp = '1.0.0'; //Versão do app
   static const String userKey =
       'user_data'; //Chave para armazenar dados do usuário
@@ -14,5 +12,5 @@ class AppConstants {
     'teacher': 'Professor',
     'parent': 'Responsável',
     'admin': 'Administrador',
-  }; 
+  };
 }
