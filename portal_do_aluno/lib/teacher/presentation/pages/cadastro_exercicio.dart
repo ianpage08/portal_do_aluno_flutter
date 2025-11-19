@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/exercicio_sevice.dart';
 import 'package:portal_do_aluno/admin/data/models/exercicios.dart';
 import 'package:portal_do_aluno/admin/helper/form_helper.dart';
+import 'package:portal_do_aluno/admin/helper/limitar_tamango_texto.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +23,7 @@ class CadastroExercicio extends StatefulWidget {
 }
 
 class _CadastroExercicioState extends State<CadastroExercicio> {
+  final ComunicadoService _comunicadoService = ComunicadoService();
   final Map<String, TextEditingController> _mapController = {
     'titulo': TextEditingController(),
     'conteudo': TextEditingController(),
@@ -32,6 +36,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
   List<TextEditingController> get _allControllers =>
       _mapController.values.toList();
   DateTime? dataSelecionada;
+
   final ValueNotifier<DateTime?> dataDeEntrega = ValueNotifier<DateTime?>(null);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ExercicioSevice _exercicioSevice = ExercicioSevice();
@@ -43,6 +48,12 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
   }
 
   Future<void> _cadastrarExercicio(String professorId) async {
+    final dataNormalizada = DateTime(
+      dataSelecionada!.year,
+      dataSelecionada!.month,
+      dataSelecionada!.day,
+      12
+    );
     if (!FormHelper.isFormValid(
       formKey: _formKey,
       listControllers: _allControllers,
@@ -77,10 +88,10 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
         turmaId: turmaId!,
         dataDeEnvio: Timestamp.now(),
         dataDeEntrega: Timestamp.fromDate(
-          dataSelecionada!.add(const Duration(hours: 3)),
+          dataNormalizada,
         ),
         dataDeExpiracao: Timestamp.fromDate(
-          dataSelecionada!.add(const Duration(days: 7)),
+          dataNormalizada.add(const Duration(days: 7)),
         ),
       );
 
@@ -103,6 +114,19 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
           cor: Colors.red,
         );
       }
+    }
+  }
+
+  Future<void> notificationAluno() async {
+    final token = await _comunicadoService.getTokensDestinatario('alunos');
+    final String conteudo = _mapController['conteudo']!.text;
+
+    for (var tokenAluno in token) {
+      enviarNotification(
+        tokenAluno,
+        'Novo Exercicio',
+        limitarCampo(conteudo, 30),
+      );
     }
   }
 
