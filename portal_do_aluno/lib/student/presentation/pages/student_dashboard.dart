@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/tokens_service.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/menu_navigation_card.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_referencia_id.dart';
@@ -17,6 +18,8 @@ class StudentDashboard extends StatefulWidget {
 }
 
 class _StudentDashboardState extends State<StudentDashboard> {
+  bool _updateToken = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +33,20 @@ class _StudentDashboardState extends State<StudentDashboard> {
     });
   }
 
+  // remover depois  did ou init
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_updateToken) {
+      final argumentos =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (argumentos != null && argumentos['user'] != null) {
+        final userId = argumentos['user']['id'];
+        TokensService().gerarToken(userId);
+        _updateToken = true;
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final usuarioId = Provider.of<UserProvider>(context).userId;

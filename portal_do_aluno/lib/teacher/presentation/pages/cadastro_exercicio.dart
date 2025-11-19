@@ -52,7 +52,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
       dataSelecionada!.year,
       dataSelecionada!.month,
       dataSelecionada!.day,
-      12
+      12,
     );
     if (!FormHelper.isFormValid(
       formKey: _formKey,
@@ -87,9 +87,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
         nomeDoProfessor: profNome,
         turmaId: turmaId!,
         dataDeEnvio: Timestamp.now(),
-        dataDeEntrega: Timestamp.fromDate(
-          dataNormalizada,
-        ),
+        dataDeEntrega: Timestamp.fromDate(dataNormalizada),
         dataDeExpiracao: Timestamp.fromDate(
           dataNormalizada.add(const Duration(days: 7)),
         ),
@@ -119,14 +117,11 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
 
   Future<void> notificationAluno() async {
     final token = await _comunicadoService.getTokensDestinatario('alunos');
-    final String conteudo = _mapController['conteudo']!.text;
+    final String conteudo = limitarCampo(_mapController['conteudo']!.text, 30);
+    debugPrint(token.toString());
 
     for (var tokenAluno in token) {
-      enviarNotification(
-        tokenAluno,
-        'Novo Exercicio',
-        limitarCampo(conteudo, 30),
-      );
+      enviarNotification(tokenAluno, 'Novo Exercicio', conteudo);
     }
   }
 
@@ -211,6 +206,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                       BotaoSalvar(
                         salvarconteudo: () async {
                           await _cadastrarExercicio(professorId);
+                          await notificationAluno();
                         },
                       ),
                     ],
