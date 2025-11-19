@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 
@@ -103,15 +104,134 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
 
-        return ExpansionPanelList.radio(
+        // ignore: avoid_unnecessary_containers
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 255, 255, 255),
+            borderRadius: BorderRadius.circular(12),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFFFFF), Color.fromARGB(255, 240, 240, 240)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromARGB(44, 0, 0, 0),
+                offset: Offset(0, 5),
+                blurRadius: 5,
+              ),
+            ],
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.15),
+              width: 1.2,
+            ),
+          ),
+
+          child: Column(
+            children: disciplinas.map((materia) {
+              final notas = materia['notas'] as Map<String, dynamic>? ?? {};
+              return Theme(
+                data: Theme.of(
+                  context,
+                ).copyWith(dividerColor: const Color.fromARGB(0, 0, 0, 0)),
+                child: ExpansionTile(
+                  
+                  leading: const Icon(CupertinoIcons.book),
+                  iconColor: const Color.fromARGB(255, 0, 0, 0),
+                  collapsedIconColor: const Color.fromARGB(255, 139, 139, 139),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            materia['nomeDisciplina'] ?? 'Disciplina sem nome',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Text(
+                            'Média Geral: ${materia['mediageral'] ?? 0.0}',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Status: ${materia['situacao'] ?? 'Indefinido'}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+
+                  children: notas.entries.map((nota) {
+                    
+                    final unidade = nota.key;
+                    final valores = nota.value as Map<String, dynamic>? ?? {};
+                    return ListTile(
+                      title: Text('Unidade $unidade'),
+                      subtitle: Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              item(
+                                'Teste: ${valores['teste'] ?? '---'}',
+                                CupertinoIcons.checkmark_alt_circle,
+                              ),
+
+                              item(
+                                'Trabalho: ${valores['trabalho'] ?? '---'}',
+                                CupertinoIcons.briefcase,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              item(
+                                'Prova: ${valores['prova'] ?? '---'}',
+                                CupertinoIcons.doc_text_search,
+                              ),
+                              item(
+                                'Extra: ${valores['extra'] ?? '---'}',
+                                CupertinoIcons.star_circle,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+
+        /*ExpansionPanelList.radio(
           children: disciplinas.map((disc) {
             final nomeDisc = disc['nomeDisciplina'] ?? 'Disciplina sem nome';
             final notas = disc['notas'] as Map<String, dynamic>? ?? {};
 
-            return ExpansionPanelRadio(
+            return 
+            ExpansionPanelRadio(
               value: disc['id'] ?? disc['disciplinaId'],
               headerBuilder: (context, isExpanded) {
-                return ListTile(title: Text(nomeDisc.toUpperCase()));
+                return Column(
+                  children: [
+                  
+                    Row(
+                      children: [
+                        Text(nomeDisc.toUpperCase()),
+                        const Text('Média Final: 8.2'),
+                      ],
+                    ),
+                  ],
+                );
               },
               body: Column(
                 children: notas.entries.map((entry) {
@@ -131,7 +251,7 @@ class _BoletimPageState extends State<BoletimPage> {
               ),
             );
           }).toList(),
-        );
+        );*/
       },
     );
   }
@@ -171,54 +291,6 @@ class _BoletimPageState extends State<BoletimPage> {
     debugPrint('✅ Boletim vazio criado para alunoId: $alunoId');
   }
 
-  Widget _buildMediaEStatus() {
-    if (alunoId == null) return const SizedBox();
-
-    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: getBoletim(alunoId!),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const SizedBox();
-        }
-
-        final data = snapshot.data!.data()!;
-        final mediaGeral = data['mediageral'] ?? 0.0;
-        final status = data['situacao'] ?? 'Indefinido';
-
-        return SizedBox(
-          width: double.infinity,
-          height: 75,
-          child: Card(
-            elevation: 6,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Média Geral: ${mediaGeral.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Status: $status',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: status == 'Aprovado' ? Colors.green : Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (alunoId == null) {
@@ -234,13 +306,23 @@ class _BoletimPageState extends State<BoletimPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Text(
+                'Boletim do Aluno',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 20),
               _buildStreamNotasView(),
               const SizedBox(height: 20),
-              _buildMediaEStatus(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget item(String titulo, IconData icone) {
+    return Row(
+      children: [Icon(icone, size: 16), const SizedBox(width: 8), Text(titulo)],
     );
   }
 }

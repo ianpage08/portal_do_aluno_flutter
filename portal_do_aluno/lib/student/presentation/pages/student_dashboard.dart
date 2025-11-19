@@ -47,6 +47,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final usuarioId = Provider.of<UserProvider>(context).userId;
@@ -54,15 +55,18 @@ class _StudentDashboardState extends State<StudentDashboard> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: const CustomAppBar(title: 'DashboardAluno', nameRoute: RouteNames.studentComunicados,),
+      appBar: const CustomAppBar(
+        title: 'DashboardAluno',
+        nameRoute: RouteNames.studentComunicados,
+      ),
 
       body: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
                     Expanded(

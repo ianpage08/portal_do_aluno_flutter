@@ -26,7 +26,7 @@ import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 
 import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
-import 'package:portal_do_aluno/student/presentation/pages/grades_page.dart';
+import 'package:portal_do_aluno/student/presentation/pages/boletim_page_aluno.dart';
 
 import 'package:portal_do_aluno/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
