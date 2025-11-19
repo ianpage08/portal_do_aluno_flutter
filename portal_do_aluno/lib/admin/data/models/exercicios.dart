@@ -9,6 +9,7 @@ class Exercicios {
   final String conteudoDoExercicio;
   final Timestamp dataDeEnvio;
   final Timestamp dataDeEntrega;
+  final Timestamp dataDeExpiracao;
 
   Exercicios({
     required this.id,
@@ -19,6 +20,7 @@ class Exercicios {
     required this.conteudoDoExercicio,
     required this.dataDeEnvio,
     required this.dataDeEntrega,
+    required this.dataDeExpiracao,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,6 +32,7 @@ class Exercicios {
     'conteudoDoExercicio': conteudoDoExercicio,
     'dataDeEnvio': dataDeEnvio,
     'dataDeEntrega': dataDeEntrega,
+    'dataDeExpiracao': dataDeExpiracao,
   };
 
   factory Exercicios.fromJson(Map<String, dynamic> json) => Exercicios(
@@ -41,6 +44,7 @@ class Exercicios {
     conteudoDoExercicio: json['conteudoDoExercicio'] as String,
     dataDeEnvio: json['dataDeEnvio'] as Timestamp,
     dataDeEntrega: json['dataDeEntrega'] as Timestamp,
+    dataDeExpiracao: json['dataDeExpiracao'] as Timestamp,
   );
 
   Exercicios copyWith({
@@ -52,16 +56,18 @@ class Exercicios {
     String? conteudoDoExercicio,
     Timestamp? dataDeEnvio,
     Timestamp? dataDeEntrega,
+    Timestamp? dataDeExpiracao,
   }) {
     return Exercicios(
       id: id ?? this.id,
       titulo: titulo ?? this.titulo,
       professorId: professorId ?? this.professorId,
-      nomeDoProfessor: nomeDoProfessor?? this.nomeDoProfessor,
+      nomeDoProfessor: nomeDoProfessor ?? this.nomeDoProfessor,
       turmaId: turmaId ?? this.turmaId,
       conteudoDoExercicio: conteudoDoExercicio ?? this.conteudoDoExercicio,
       dataDeEnvio: dataDeEnvio ?? this.dataDeEnvio,
       dataDeEntrega: dataDeEntrega ?? this.dataDeEntrega,
+      dataDeExpiracao: dataDeExpiracao ?? this.dataDeExpiracao,
     );
   }
 }

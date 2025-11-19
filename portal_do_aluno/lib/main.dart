@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:portal_do_aluno/admin/data/firestore_services/exercicio_sevice.dart';
 
 import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
@@ -23,6 +24,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationServiceRemote().init();
   await NotificationService().init();
+  
+  ExercicioSevice().excluirPorDataexpiracao();
 
   runApp(
     MultiProvider(

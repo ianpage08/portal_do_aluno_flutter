@@ -76,7 +76,12 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
         nomeDoProfessor: profNome,
         turmaId: turmaId!,
         dataDeEnvio: Timestamp.now(),
-        dataDeEntrega: Timestamp.fromDate(dataSelecionada!),
+        dataDeEntrega: Timestamp.fromDate(
+          dataSelecionada!.add(const Duration(hours: 3)),
+        ),
+        dataDeExpiracao: Timestamp.fromDate(
+          dataSelecionada!.add(const Duration(days: 7)),
+        ),
       );
 
       await _exercicioSevice.cadastrarNovoExercicio(exercicio, turmaId);
@@ -94,7 +99,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
       if (mounted) {
         snackBarPersonalizado(
           context: context,
-          mensagem: 'erro ao cadastrar exercicio',
+          mensagem: 'erro ao cadastrar exercicio $e',
           cor: Colors.red,
         );
       }
