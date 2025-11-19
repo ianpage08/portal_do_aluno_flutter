@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/data/firestore_services/calendario_service.dart';
+
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -82,7 +83,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  shadowColor: Colors.deepPurpleAccent[100],
+                  shadowColor: const Color.fromARGB(85, 112, 112, 112),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: TableCalendar(
@@ -101,68 +102,46 @@ class _CalendarPageState extends State<CalendarPage> {
                         return _getEventosDoDia(day);
                       },
 
-                      calendarStyle: const CalendarStyle(
-                        todayDecoration: BoxDecoration(
+                      calendarStyle: CalendarStyle(
+                        todayDecoration: const BoxDecoration(
                           color: Colors.deepPurple,
                           shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.deepPurple,
-                              blurRadius: 2,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
                         ),
-                        todayTextStyle: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.deepPurpleAccent,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.deepPurpleAccent,
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        selectedTextStyle: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        markerDecoration: BoxDecoration(
-                          color: Colors.deepPurpleAccent,
+
+                        selectedDecoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 59, 105, 155),
                           shape: BoxShape.circle,
                         ),
+
                         markersAlignment: Alignment.bottomCenter,
                         markersMaxCount: 3,
                         markerSizeScale: 0.25,
                         defaultTextStyle: TextStyle(
                           fontWeight: FontWeight.w500,
-                          color: Colors.black87,
+                          color: Theme.of(context).textTheme.titleMedium!.color,
                         ),
                         weekendTextStyle: TextStyle(
                           fontWeight: FontWeight.w500,
-                          color: Colors.deepPurple,
+                          color: Theme.of(context).textTheme.titleMedium!.color,
                         ),
                       ),
-                      headerStyle: const HeaderStyle(
+                      headerStyle: HeaderStyle(
                         formatButtonVisible: false,
                         titleCentered: true,
                         titleTextStyle: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple,
+                          color: Theme.of(context).textTheme.titleLarge!.color,
                         ),
                         leftChevronIcon: Icon(
                           Icons.chevron_left,
-                          color: Colors.deepPurple,
+                          //consertar para tema
+                          color: Theme.of(context).primaryColor,
                         ),
                         rightChevronIcon: Icon(
                           Icons.chevron_right,
-                          color: Colors.deepPurple,
+                          //consertar para tema
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
@@ -179,9 +158,8 @@ class _CalendarPageState extends State<CalendarPage> {
                             'Nenhum evento neste dia 😴',
                             style: TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.w300,
+                              fontWeight: FontWeight.w600,
                               color: Colors.grey,
-                              fontStyle: FontStyle.italic,
                             ),
                           ),
                         )
@@ -198,11 +176,16 @@ class _CalendarPageState extends State<CalendarPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              shadowColor: Colors.deepPurpleAccent[200],
+                              shadowColor: const Color.fromARGB(
+                                85,
+                                114,
+                                114,
+                                114,
+                              ),
                               child: ListTile(
                                 leading: Icon(
                                   Icons.event,
-                                  color: Colors.deepPurpleAccent[200],
+                                  color: const Color.fromARGB(255, 88, 87, 88),
                                 ),
                                 title: Text(titulo),
                                 subtitle: Text(descricao),
