@@ -28,11 +28,14 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
 
   final DisciplinaService cadastrarNovaDisciplina = DisciplinaService();
   void _limparCampos() {
-    FormHelper.limparControllers(controllers:_allControllers);
+    FormHelper.limparControllers(controllers: _allControllers);
   }
 
   Future<void> _cadastrarMateria() async {
-    if (!FormHelper.isFormValid(formKey: _formKey, listControllers: _allControllers)) {
+    if (!FormHelper.isFormValid(
+      formKey: _formKey,
+      listControllers: _allControllers,
+    )) {
       snackBarPersonalizado(
         context: context,
         mensagem: 'Por favor, preencha todos os campos corretamente.',
@@ -105,9 +108,8 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
                             controller: _mapController['aulasPrevistas']!,
-                            prefixIcon: 
-                              Icons.calendar_month_outlined,
-                            
+                            prefixIcon: Icons.calendar_month_outlined,
+
                             label: 'Quantidade de Aulas Previstas',
                             hintText: 'ex: 20 ',
                             keyboardType: TextInputType.number,
@@ -123,7 +125,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
                             controller: _mapController['nomeProfessor']!,
-                            prefixIcon:Icons.person,
+                            prefixIcon: Icons.person,
                             label: 'Nome do Professor',
                             hintText: 'ex: Paulo José',
                             keyboardType: TextInputType.text,

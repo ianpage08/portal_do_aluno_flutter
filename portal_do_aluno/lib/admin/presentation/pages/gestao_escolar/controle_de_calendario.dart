@@ -43,7 +43,11 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
   }
 
   Future<void> _salvarEvento() async {
-    if (FormHelper.isFormValid(formKey: _formKey, listControllers: _allControllers) && dataSelecionada != null) {
+    if (FormHelper.isFormValid(
+          formKey: _formKey,
+          listControllers: _allControllers,
+        ) &&
+        dataSelecionada != null) {
       final novoEvento = Calendario(
         id: '',
         titulo: _mapController['titulo']!.text,
@@ -62,7 +66,11 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
 
       setState(() => dataSelecionada = null);
     } else {
-      snackBarPersonalizado(context: context, mensagem: 'Por favor, preencha todos os campos corretamente.', cor: Colors.red);
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Por favor, preencha todos os campos corretamente.',
+        cor: Colors.red,
+      );
     }
   }
 
@@ -88,29 +96,43 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Text(
+                        'Dados do Evento',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
                       TextFormFieldPersonalizado(
                         controller: _mapController['titulo']!,
                         keyboardType: TextInputType.text,
                         label: 'Título',
                         hintText: 'Ex: Feriado de Natal',
-                        prefixIcon: 
-                          Icons.event,
-                          
+                        prefixIcon: Icons.event,
+
                         validator: (value) =>
                             value!.isEmpty ? 'Informe um título' : null,
                       ),
 
                       const SizedBox(height: 12),
+                      const Text(
+                        'Descrição de Evento',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
                       TextFormFieldPersonalizado(
                         maxLines: 5,
                         controller: _mapController['descricao']!,
-                        keyboardType: TextInputType.text, 
+                        keyboardType: TextInputType.text,
                         label: 'Descrição',
                         hintText: 'Ex: Evento escolar de comemoração do Natal',
-                        prefixIcon: 
-                          Icons.description,
-                         
+                        prefixIcon: Icons.description,
                       ),
                     ],
                   ),
