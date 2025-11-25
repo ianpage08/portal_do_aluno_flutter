@@ -1,46 +1,99 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
-/*O que é GlobalKey<NavigatorState>: Chave única que dá acesso ao Navigator de qualquer lugar do app. 
-NavigatorState: Estado interno do Navigator (pilha de rotas)
- */
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class NavigatorService {
-  //tipo de usuario logado
+  // Usuário logado (opcional)
   static Usuario? _currentUser;
 
   static BuildContext? get context => navigatorKey.currentContext;
 
-  //pegar o usuario atual
   static void setCurrentUser(Usuario user) {
     _currentUser = user;
   }
 
-  //Get usuario atual
   static Usuario? get currentUser => _currentUser;
 
-  //limpar usuario atual
   static void clearUser() {
     _currentUser = null;
   }
 
-  /*Navegação basica */
+  // ---------- Util helpers ----------
+  static NavigatorState? get _navigatorState => navigatorKey.currentState;
 
-  //navegar para uma nova rota
-  static Future<T?> navigateTo<T>(String routeName, {Object? arguments}) {
-    return navigatorKey.currentState!.pushNamed(
-      routeName,
-      arguments: arguments,
-    );
+  static bool get isNavigatorReady => _navigatorState != null;
+
+  /// Tenta esperar o navigator por até [timeout] antes de prosseguir.
+  /// Útil se você quiser garantir navegação logo após init do app.
+  static Future<bool> ensureInitializedBeforeNavigation({
+    Duration timeout = const Duration(seconds: 3),
+    Duration pollInterval = const Duration(milliseconds: 50),
+  }) async {
+    final completer = Completer<bool>();
+    final stopwatch = Stopwatch()..start();
+
+    Timer.periodic(pollInterval, (t) {
+      if (isNavigatorReady) {
+        t.cancel();
+        completer.complete(true);
+      } else if (stopwatch.elapsed > timeout) {
+        t.cancel();
+        completer.complete(false);
+      }
+    });
+
+    return completer.future;
   }
 
-  static Future<T?> navigateToWithAnimation<T>(
+  // ---------- Navegação segura ----------
+
+  /// Navega para rota nomeada de forma segura.
+  /// Retorna null se o navigator ainda não estiver pronto.
+  static Future<T?>? navigateTo<T>(String routeName, {Object? arguments}) {
+    final state = _navigatorState;
+    if (state == null) {
+      debugPrint(
+          'NavigatorService.navigateTo: navigator não pronto para $routeName');
+      return null;
+    }
+    return state.pushNamed<T>(routeName, arguments: arguments);
+  }
+
+  /// Versão que tenta usar navigatorKey, e se não estiver pronta, tenta usar
+  /// o context (se disponível). Não lança.
+  static Future<T?>? tryNavigateTo<T>(String routeName,
+      {Object? arguments}) {
+    final state = _navigatorState;
+    if (state != null) {
+      return state.pushNamed<T>(routeName, arguments: arguments);
+    }
+
+    final ctx = navigatorKey.currentContext;
+    if (ctx != null) {
+      debugPrint(
+          'NavigatorService.tryNavigateTo: fallback para Navigator.of(context) -> $routeName');
+      return Navigator.of(ctx).pushNamed<T>(routeName, arguments: arguments);
+    }
+
+    debugPrint(
+        'NavigatorService.tryNavigateTo: impossível navegar agora -> $routeName');
+    return null;
+  }
+
+  static Future<T?>? navigateToWithAnimation<T>(
     Widget page, {
     RouteTransitionsBuilder transitionsBuilder = _defaultTransition,
   }) {
-    return navigatorKey.currentState!.push(
+    final state = _navigatorState;
+    if (state == null) {
+      debugPrint('navigateToWithAnimation: navigator não pronto');
+      return null;
+    }
+    return state.push<T>(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: transitionsBuilder,
@@ -54,13 +107,17 @@ class NavigatorService {
     Animation<double> a,
     Animation<double> sa,
     Widget child,
-  ) => FadeTransition(opacity: a, child: child);
+  ) =>
+      FadeTransition(opacity: a, child: child);
 
   static void showSnackBar(String message) {
-    final context = navigatorKey.currentContext;
-    if (context == null) return;
+    final contextLocal = navigatorKey.currentContext;
+    if (contextLocal == null) {
+      debugPrint('showSnackBar: context nulo -> $message');
+      return;
+    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(contextLocal).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.redAccent,
@@ -69,47 +126,69 @@ class NavigatorService {
     );
   }
 
-  //remover todas as rotas anteriores e ir para a nova rota
-  static Future<T?> navigateReplaceWith<T, TO>(
+  static Future<T?>? navigateReplaceWith<T, TO>(
     String routeName, {
     TO? result,
     Object? arguments,
   }) {
-    return navigatorKey.currentState!.pushReplacementNamed(
+    final state = _navigatorState;
+    if (state == null) {
+      debugPrint('navigateReplaceWith: navigator não pronto para $routeName');
+      return null;
+    }
+    return state.pushReplacementNamed<T, TO>(
       routeName,
       result: result,
       arguments: arguments,
     );
   }
 
-  //remover todas as rotas e ir para a nova rota
-  static Future<T?> navigateAndRemoveUntil<T>(
+  static Future<T?>? navigateAndRemoveUntil<T>(
     String routeName, {
     Object? arguments,
   }) {
-    return navigatorKey.currentState!.pushNamedAndRemoveUntil(
+    final state = _navigatorState;
+    if (state == null) {
+      debugPrint('navigateAndRemoveUntil: navigator não pronto para $routeName');
+      return null;
+    }
+    return state.pushNamedAndRemoveUntil<T>(
       routeName,
       (route) => false,
       arguments: arguments,
     );
   }
 
-  // Voltar para tela anterior
   static void goBack<T>([T? result]) {
-    return navigatorKey.currentState!.pop<T>(result);
+    final state = _navigatorState;
+    if (state == null) {
+      debugPrint('goBack: navigator não pronto');
+      // fallback para context Navigator (se disponível)
+      final ctx = navigatorKey.currentContext;
+      if (ctx != null && Navigator.of(ctx).canPop()) {
+        Navigator.of(ctx).pop<T>(result);
+      }
+      return;
+    }
+    if (state.canPop()) {
+      state.pop<T>(result);
+    } else {
+      debugPrint('goBack: não era possível dar pop, canPop == false');
+    }
   }
 
-  // Verificar se pode voltar
   static bool canGoBack() {
-    return navigatorKey.currentState!.canPop();
+    final state = _navigatorState;
+    if (state == null) return false;
+    return state.canPop();
   }
 
-  // NAVEGAÇÃO ESPECÍFICA POR TIPO DE USUÁRIO
+  // ---------- Rotas específicas ----------
 
   static Future<void> navigateToDashboard([Usuario? user]) {
     final userToUse = user ?? _currentUser;
     if (userToUse == null) {
-      return navigateAndRemoveUntil(RouteNames.login);
+      return navigateAndRemoveUntil(RouteNames.login) ?? Future.value();
     }
     String route;
 
@@ -128,226 +207,33 @@ class NavigatorService {
         break;
     }
     return navigateAndRemoveUntil(
-      route,
-      arguments: {'user': userToUse.toJsonSafe()},
-    );
+          route,
+          arguments: {'user': userToUse.toJsonSafe()},
+        ) ??
+        Future.value();
   }
 
   static Future<void> logout() {
     clearUser();
-    return navigateAndRemoveUntil(RouteNames.login);
+    return navigateAndRemoveUntil(RouteNames.login) ?? Future.value();
   }
 
-  // === NAVEGAÇÃO PARA FUNCIONALIDADES DO ALUNO ===
-  static Future<void> navigateToStudentDashboard() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentDashboard);
-  }
+  // ---------- Diálogos / util ----------
 
-  static Future<void> navigateToCalendar() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentCalendar);
-  }
-
- 
-
-  static Future<void> navigateToGrade() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentGrades);
-  }
-
-  static Future<void> navigateToTask() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentTasks);
-  }
-
-  static Future<void> navigateToStudentSettings() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentSettings);
-  }
-
-  static Future<void> navigateToStudentHelp() {
-    _validateUserType(UserType.student);
-    return navigateTo(RouteNames.studentHelp);
-  }
-
-  // === NAVEGAÇÃO PARA FUNCIONALIDADES DO PROFESSOR ===
-  static Future<void> navigateToTeacherDashboard() {
-    _validateUserType(UserType.teacher);
-    return navigateTo(RouteNames.teacherDashboard);
-  }
-
-  static Future<void> navigateToTeacherClasses() {
-    _validateUserType(UserType.teacher);
-    return navigateTo(
-      RouteNames.teacherClasses,
-      arguments: {'teacherId': _currentUser!.id.toString()},
-    );
-  }
-
-  
-
-  
-
-  static Future<void> navigateToTeacherCalendar() {
-    _validateUserType(UserType.teacher);
-    return navigateTo(RouteNames.teacherCalendar);
-  }
-
-  static Future<void> navigateToTeacherSettings() {
-    _validateUserType(UserType.teacher);
-    return navigateTo(RouteNames.teacherSettings);
-  }
-
-  // === NAVEGAÇÃO PARA FUNCIONALIDADES DO RESPONSÁVEL ===
-  static Future<void> navigateToParentDashboard() {
-    _validateUserType(UserType.parent);
-    return navigateTo(RouteNames.parentDashboard);
-  }
-
-  
-
-  // Navegar para notas de um filho específico
-  static Future<void> navigateToChildGrades({
-    required String childId,
-    required String childName,
-  }) {
-    _validateUserType(UserType.parent);
-    return navigateTo(
-      RouteNames.studentGrades,
-      arguments: {
-        'studentId': childId,
-        'studentName': childName,
-        'isParentView': true,
-      },
-    );
-  }
-
-  // === NAVEGAÇÃO PARA FUNCIONALIDADES DO ADMIN ===
-  static Future<void> navigateToAdminDashboard() {
-    _validateUserType(UserType.admin);
-    return navigateTo(RouteNames.adminDashboard);
-  }
-
-  
-
-  // === NAVEGAÇÃO PARA PÁGINAS COMPARTILHADAS ===
-  // Configurações (disponível para todos os tipos)
-  static Future<void> navigateToSettings() {
-    if (_currentUser == null) {
-      showErrorDialog('Usuário não autenticado');
-      return Future.value();
-    }
-
-    String route;
-    switch (_currentUser!.type) {
-      case UserType.student:
-        route = RouteNames.studentSettings;
-        break;
-      case UserType.teacher:
-        route = RouteNames.teacherSettings;
-        break;
-      case UserType.parent:
-        route = RouteNames.login;
-        break;
-      case UserType.admin:
-        route = RouteNames.login;
-        break;
-    }
-
-    return navigateTo(route);
-  }
-
-  
-
-  
-
-  // === NAVEGAÇÃO PARA PÁGINAS DE FORMULÁRIO ===
-  static Future<void> navigateToEditProfile() {
-    return navigateTo(RouteNames.editProfile);
-  }
-
-  static Future<void> navigateToChangePassword() {
-    return navigateTo(RouteNames.changePassword);
-  }
-
-  static Future<void> navigateToContactSupport() {
-    return navigateTo(RouteNames.contactSupport);
-  }
-
-  
-
-  // === NAVEGAÇÃO PARA PÁGINAS DE ERRO ===
-  static Future<void> navigateToNotFound() {
-    return navigateTo(RouteNames.notFound);
-  }
-
-  static Future<void> navigateToInternalServerError() {
-    return navigateTo(RouteNames.internalServerError);
-  }
-
-  static Future<void> navigateToError(String errorMessage) {
-    return navigateTo(
-      RouteNames.error,
-      arguments: {'errorMessage': errorMessage},
-    );
-  }
-
-  // === MÉTODOS AUXILIARES ===
-
-  // Validar se o usuário atual tem o tipo correto
-  static void _validateUserType(UserType requiredUserType) {
-    if (_currentUser == null) {
-      showErrorDialog('Usuário não autenticado');
-      logout();
-      return;
-    }
-
-    if (_currentUser!.type != requiredUserType) {
-      showErrorDialog(
-        'Você não tem permissão para acessar esta funcionalidade',
-      );
-      navigateToDashboard();
-      return;
-    }
-  }
-
-  // Verificar se o usuário tem permissão para uma funcionalidade
-  static bool hasPermission(List<UserType> allowedTypes) {
-    if (_currentUser == null) return false;
-    return allowedTypes.contains(_currentUser!.type);
-  }
-
-  // === UTILITÁRIOS ===
-  static void showErrorDialog(String mensagem) {
-    if (context != null) {
-      showDialog(
-        context: context!,
-        builder: (context) => AlertDialog(
-          title: const Text('Erro'),
-          content: Text(mensagem),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  // Mostrar diálogo de confirmação
   static Future<bool> showConfirmDialog({
     required String title,
     required String message,
     String confirmText = 'Confirmar',
     String cancelText = 'Cancelar',
   }) async {
-    if (context == null) return false;
+    final ctx = navigatorKey.currentContext;
+    if (ctx == null) {
+      debugPrint('showConfirmDialog: context nulo');
+      return false;
+    }
 
     final result = await showDialog<bool>(
-      context: context!,
+      context: ctx,
       builder: (context) => AlertDialog(
         title: Text(title),
         content: Text(message),
@@ -367,7 +253,6 @@ class NavigatorService {
     return result ?? false;
   }
 
-  // Mostrar diálogo de confirmação de logout
   static Future<void> showLogoutConfirmation() async {
     final shouldLogout = await showConfirmDialog(
       title: 'Confirmar Logout',
@@ -379,5 +264,22 @@ class NavigatorService {
     if (shouldLogout) {
       await logout();
     }
+  }
+
+  // Rotas de erro
+  static Future<void> navigateToNotFound() {
+    return navigateTo(RouteNames.notFound) ?? Future.value();
+  }
+
+  static Future<void> navigateToInternalServerError() {
+    return navigateTo(RouteNames.internalServerError) ?? Future.value();
+  }
+
+  static Future<void> navigateToError(String errorMessage) {
+    return navigateTo(
+          RouteNames.error,
+          arguments: {'errorMessage': errorMessage},
+        ) ??
+        Future.value();
   }
 }

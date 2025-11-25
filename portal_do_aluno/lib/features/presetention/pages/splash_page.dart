@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
 class SplashPage extends StatefulWidget {
@@ -39,7 +39,9 @@ class _SplashPageState extends State<SplashPage>
 
     // Timer para navegação
     Future.delayed(const Duration(seconds: 2), () {
-      NavigatorService.navigateTo(RouteNames.login);
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(RouteNames.login);
+      }
     });
   }
 
