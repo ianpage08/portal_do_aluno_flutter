@@ -70,18 +70,32 @@ class ExercicioSevice {
   }
 
   Future<void> excluirPorDataexpiracao() async {
-    final agora = Timestamp.now();
-    final exerciciosSnapshot = await _firestore
-        .collection('exercicios')
-        .where('dataDeExpiracao', isLessThanOrEqualTo: agora)
-        .get();
+    try {
+      final agora = Timestamp.now();
 
-    for (var exercicio in exerciciosSnapshot.docs) {
-      if(exercicio.exists){
-        await exercicio.reference.delete();
+      final exerciciosSnapshot = await _firestore
+          .collection('exercicios')
+          .where('dataDeExpiracao', isLessThanOrEqualTo: agora)
+          .get();
+
+      if (exerciciosSnapshot.docs.isEmpty) {
+        debugPrint('Nenhum exercício expirado encontrado.');
+        return;
       }
-      
+
+      WriteBatch batch = _firestore.batch();
+
+      for (var exercicio in exerciciosSnapshot.docs) {
+        batch.delete(exercicio.reference);
+      }
+
+      await batch.commit();
+
+      debugPrint(
+        'Exercícios expirados removidos: ${exerciciosSnapshot.docs.length}',
+      );
+    } catch (e) {
+      debugPrint('Erro ao excluir exercícios expirados: $e');
     }
-    debugPrint('Exercício excluído com sucesso!');
   }
 }

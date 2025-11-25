@@ -6,7 +6,6 @@ import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.d
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
-
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:portal_do_aluno/teacher/presentation/providers/presenca_provider.dart';
@@ -23,10 +22,6 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
   final FrequenciaService _frequenciaService = FrequenciaService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final minhaStream = FirebaseFirestore.instance
-      .collection('turmas')
-      .snapshots();
-
   final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
   String? turmaId;
   DateTime? dataSelecionada;
@@ -42,6 +37,138 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
         .snapshots();
   }
 
+  Widget alunoCard({
+    required String id,
+    required String nome,
+    required Presenca? status,
+    required Function(Presenca) onSelect,
+  }) {
+    Color corStatus = Colors.grey.shade300;
+
+    if (status == Presenca.presente) corStatus = const Color(0xFF2ECC71);
+    if (status == Presenca.falta) corStatus = const Color(0xFFE53935);
+    if (status == Presenca.justificativa) corStatus = const Color(0xFF3498DB);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      margin: const EdgeInsets.only(bottom: 14),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(40, 0, 0, 0),
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Barra lateral com cor do status
+          Container(
+            width: 10,
+            height: 95,
+            decoration: BoxDecoration(
+              color: corStatus,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                bottomLeft: Radius.circular(12),
+              ),
+            ),
+          ),
+
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nome,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      statusChip(
+                        text: "Presente",
+                        selected: status == Presenca.presente,
+                        color: const Color(0xFF2ECC71),
+                        onTap: () => onSelect(Presenca.presente),
+                        icon: Icons.check_circle,
+                      ),
+                      statusChip(
+                        text: "Falta",
+                        selected: status == Presenca.falta,
+                        color: const Color(0xFFE53935),
+                        onTap: () => onSelect(Presenca.falta),
+                        icon: Icons.close,
+                      ),
+                      statusChip(
+                        text: "Justificar",
+                        selected: status == Presenca.justificativa,
+                        color: const Color(0xFF3498DB),
+                        onTap: () => onSelect(Presenca.justificativa),
+                        icon: Icons.note_alt_outlined,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget statusChip({
+    required String text,
+    required bool selected,
+    required Color color,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected
+              ? color.withAlpha((0.2 * 255).toInt())
+              : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? color : Colors.grey.shade400,
+            width: 1.3,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: selected ? color : Colors.black54),
+            const SizedBox(width: 6),
+            Text(
+              text,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: selected ? color : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget listAluno() {
     final providerRead = context.read<PresencaProvider>();
 
@@ -53,11 +180,8 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('Nenhum aluno encontrado'));
-        }
 
-        final docs = snapshot.data!.docs;
+        final docs = snapshot.data?.docs ?? [];
 
         return Consumer<PresencaProvider>(
           builder: (context, provider, _) {
@@ -69,126 +193,15 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                 final aluno = docs[index];
                 final nome = aluno['dadosAluno']['nome'];
                 final alunoId = aluno.id;
-                final presencaAtual = provider.presencas[alunoId];
+                final status = provider.presencas[alunoId];
 
-                Color cardColor;
-                switch (presencaAtual) {
-                  case Presenca.presente:
-                    cardColor = Colors.green.shade100;
-                    break;
-                  case Presenca.falta:
-                    cardColor = Colors.red.shade100;
-                    break;
-                  case Presenca.justificativa:
-                    cardColor = Colors.yellow.shade100;
-                    break;
-                  default:
-                    cardColor = Colors.white;
-                }
-
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromARGB(80, 158, 158, 158),
-                        offset: Offset(0, 2),
-                        blurRadius: 2,
-                      ),
-                    ],
-                    color: cardColor,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: ListTile(
-                    title: Text(
-                      'Aluno: $nome',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Wrap(
-                        spacing: 8,
-                        children: [
-                          SizedBox(
-                            width: (MediaQuery.of(context).size.width / 2) - 45,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.check, size: 18),
-                              label: const Text('Presente'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: const Color.fromARGB(
-                                  255,
-                                  0,
-                                  0,
-                                  0,
-                                ), // ajustar depois
-                              ),
-                              onPressed: () {
-                                providerRead.marcarPresenca(
-                                  alunoId,
-                                  Presenca.presente,
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: (MediaQuery.of(context).size.width / 2) - 45,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.block, size: 18),
-                              label: const Text('Falta'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: const Color.fromARGB(
-                                  255,
-                                  0,
-                                  0,
-                                  0,
-                                ), // ajustar depois
-                              ),
-                              onPressed: () {
-                                providerRead.marcarPresenca(
-                                  alunoId,
-                                  Presenca.falta,
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.note, size: 18),
-                              label: const Text('Justificativa'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(
-                                  255,
-                                  216,
-                                  213,
-                                  57,
-                                ), // ajustar depois
-                                foregroundColor: const Color.fromARGB(
-                                  255,
-                                  0,
-                                  0,
-                                  0,
-                                ), // ajustar depois
-                              ),
-                              onPressed: () {
-                                providerRead.marcarPresenca(
-                                  alunoId,
-                                  Presenca.justificativa,
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                return alunoCard(
+                  id: alunoId,
+                  nome: nome,
+                  status: status,
+                  onSelect: (presenca) {
+                    providerRead.marcarPresenca(alunoId, presenca);
+                  },
                 );
               },
             );
@@ -207,42 +220,21 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
 
     final frequenciaProvider = context.read<PresencaProvider>();
     final presencas = frequenciaProvider.presencas;
-
-    if (dataSelecionada == null || turmaId == null) {
-      snackBarPersonalizado(
-        context: context,
-        mensagem: 'Selecione uma turma e uma data!',
-        cor: Colors.orange,
-      );
-      setState(() {
-        _isSaving = false;
-      });
-      return;
-    }
-
-    final alunosSnapshot = await _firestore
-        .collection('matriculas')
-        .where('dadosAcademicos.classId', isEqualTo: turmaId)
-        .get();
-    final totalAlunos = alunosSnapshot.docs.length;
-
-    if (presencas.keys.length != totalAlunos && mounted) {
-      snackBarPersonalizado(
-        context: context,
-        mensagem: 'Marque a presença de todos os alunos antes de salvar!',
-        cor: Colors.orange,
-      );
-      setState(() {
-        _isSaving = false;
-      });
-      return;
-    }
-
-    final dataCorreta = DateTime.utc(
+    final dataFormatada = DateTime.utc(
       dataSelecionada!.year,
       dataSelecionada!.month,
       dataSelecionada!.day,
     );
+
+    if (dataSelecionada == null || turmaId == null) {
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Selecione turma e data.',
+        cor: Colors.orange,
+      );
+      setState(() => _isSaving = false);
+      return;
+    }
 
     try {
       for (var pre in presencas.entries) {
@@ -250,7 +242,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
           id: '',
           alunoId: pre.key,
           classId: turmaId!,
-          data: dataCorreta,
+          data: dataFormatada,
           presenca: pre.value,
         );
 
@@ -263,7 +255,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       if (mounted) {
         snackBarPersonalizado(
           context: context,
-          mensagem: 'Presenças salvas com sucesso!',
+          mensagem: 'Presenças salvas!',
           cor: Colors.green,
         );
       }
@@ -276,54 +268,42 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       if (mounted) {
         snackBarPersonalizado(
           context: context,
-          mensagem: 'Erro ao salvar: $e',
+          mensagem: 'Erro ao salvar.',
           cor: Colors.red,
         );
       }
     } finally {
-      setState(() {
-        _isSaving = false;
-      });
+      setState(() => _isSaving = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Frequência por Aluno'),
+      appBar: const CustomAppBar(title: 'Registro de Presença'),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
         child: BotaoSalvar(salvarconteudo: salvarFrequencia),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
           children: [
             BotaoSelecionarTurma(
               turmaSelecionada: turmaSelecionada,
-
-              onTurmaSelecionada: (id, nomeCompleto) {
-                setState(() {
-                  turmaId = id;
-                });
-                turmaSelecionada.value = nomeCompleto;
+              onTurmaSelecionada: (id, nome) {
+                setState(() => turmaId = id);
+                turmaSelecionada.value = nome;
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
             DataPickerCalendario(
-              onDate: (data) {
-                setState(() {
-                  dataSelecionada = data;
-                });
-              },
+              onDate: (data) => setState(() => dataSelecionada = data),
             ),
             const SizedBox(height: 20),
             turmaSelecionada.value != null
-                ? SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.65,
-                    child: listAluno(),
-                  )
-                : const Text('Selecione uma turma para ver os alunos'),
+                ? listAluno()
+                : const Text('Selecione uma turma acima'),
           ],
         ),
       ),
