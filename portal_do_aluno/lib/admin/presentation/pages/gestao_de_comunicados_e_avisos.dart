@@ -150,7 +150,13 @@ class _ComunicacaoInstitucionalPageState
             Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text(
+                    'Titulo',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
                   TextFormFieldPersonalizado(
                     controller: _tituloController,
 
@@ -159,8 +165,13 @@ class _ComunicacaoInstitucionalPageState
                     hintText: 'Reunião de Pais - 3º Bimestre',
                   ),
                   const SizedBox(height: 12),
+                  const Text(
+                    'Destinatário',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
                   SizedBox(
-                    height: 60,
+                    height: 50,
 
                     width: double.infinity,
                     child: ElevatedButton.icon(
@@ -221,12 +232,20 @@ class _ComunicacaoInstitucionalPageState
                       },
                       label: Text(
                         _isSelectedDestinatario ?? 'Selecione o Destinatário',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
                       ),
-                      icon: const Icon(Icons.person),
+                      icon: const Icon(Icons.person, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 12),
+                  const Text(
+                    'Mensagem',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
                   TextFormFieldPersonalizado(
                     controller: _mensagemController,
                     maxLines: 4,
@@ -282,7 +301,7 @@ class _ComunicacaoInstitucionalPageState
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              height: 60,
+              height: 50,
 
               child: ElevatedButton(
                 style: Theme.of(context).elevatedButtonTheme.style,
@@ -294,7 +313,10 @@ class _ComunicacaoInstitucionalPageState
                     const SizedBox(width: 12),
                     Text(
                       'Enviar Comunicado',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
