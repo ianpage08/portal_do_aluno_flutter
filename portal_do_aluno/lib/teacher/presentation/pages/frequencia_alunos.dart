@@ -89,6 +89,13 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(80, 158, 158, 158),
+                        offset: Offset(0, 2),
+                        blurRadius: 2,
+                      ),
+                    ],
                     color: cardColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -119,7 +126,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                                   0,
                                   0,
                                   0,
-                                ),// ajustar depois 
+                                ), // ajustar depois
                               ),
                               onPressed: () {
                                 providerRead.marcarPresenca(
@@ -141,7 +148,7 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                                   0,
                                   0,
                                   0,
-                                ),// ajustar depois 
+                                ), // ajustar depois
                               ),
                               onPressed: () {
                                 providerRead.marcarPresenca(
@@ -162,13 +169,13 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
                                   216,
                                   213,
                                   57,
-                                ),// ajustar depois 
+                                ), // ajustar depois
                                 foregroundColor: const Color.fromARGB(
                                   255,
                                   0,
                                   0,
                                   0,
-                                ),// ajustar depois 
+                                ), // ajustar depois
                               ),
                               onPressed: () {
                                 providerRead.marcarPresenca(
