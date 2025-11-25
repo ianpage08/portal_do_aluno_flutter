@@ -1,6 +1,7 @@
 class RouteNames {
   static const String login = '/login';
-  static const  String notification = '/notification';
+  static const String notification = '/notification';
+  static const String slashScreen = '/slashScreen';
 
   //Dashboard
   static const String studentDashboard = '/student_dashboard';
@@ -10,7 +11,7 @@ class RouteNames {
 
   // Funcionalidades do Aluno
   static const String studentGrades = '/student_grades';
-  
+
   static const String studentTasks = '/student_tasks';
   static const String studentComunicados = '/student_comunicados';
   static const String studentCalendar = '/student_calendar';
@@ -18,20 +19,17 @@ class RouteNames {
   static const String studentHelp = '/student_help';
   static const String studentBoletim = '/student_boletim';
   static const String studentExercicios = '/student_exercicios';
-  
 
   // Funcionalidades do Professor
   static const String teacherClasses = '/teacher_classes';
-  
-  
+
   static const String teacherCalendar = '/teacher_calendar';
   static const String teacherSettings = '/teacher_settings';
   static const String teacherExercicios = '/teacher_exercicios';
-  
 
   // Funcionalidades do Administrador
   static const String adminFrequencia = '/admin_frequencia';
-  
+
   static const String adminGestao = '/admin_gestao';
   static const String adminGestaoEscolar = '/admin_gestao_escolar';
   static const String adminGeracaoDocumentos = '/admin_geracao_documentos';
@@ -55,18 +53,15 @@ class RouteNames {
   static const String adminMatriculaCadastro = '/admin_matricula_cadastro';
   static const String adminCalendar = '/admin_calendar';
 
-
-
   static const String comunicadosProfessor = '/comunicados_professor';
   // paginas de detalhes
-  
+
   static const String gradeDetails = '/grade_details';
   static const String addOqueFoiDado = '/add_oque_foi_dado';
   // paginas de formulario
   static const String editProfile = '/edit_profile';
   static const String changePassword = '/change_password';
   static const String contactSupport = '/contact_support';
-  
 
   //paginas de Erro
   static const String notFound = '/not_found';

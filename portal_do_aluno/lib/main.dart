@@ -24,7 +24,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationServiceRemote().init();
   await NotificationService().init();
-  
+
   ExercicioSevice().excluirPorDataexpiracao();
 
   runApp(
@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
 
-      initialRoute: RouteNames.login,
+      initialRoute: RouteNames.slashScreen,
       routes: routes,
       onGenerateRoute: onGenerateRoute,
 

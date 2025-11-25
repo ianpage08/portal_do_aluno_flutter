@@ -78,6 +78,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/lottie/
+    - assets/logo.png
   uses-material-design: true
 
   

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart';
+import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/exercicios_aluno_page.dart';
 import 'package:portal_do_aluno/teacher/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
@@ -36,14 +37,16 @@ import 'package:portal_do_aluno/teacher/presentation/pages/professor_comunicados
 import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
 
 Map<String, WidgetBuilder> get routes => {
+  RouteNames.slashScreen: (context) => const SplashPage(),
   RouteNames.login: (context) => const LoginPage(),
   RouteNames.notification: (context) => const NotificationPage(),
   RouteNames.adminMatriculaCadastro: (context) => const MatriculaCadastro(),
   RouteNames.adminDashboard: (context) => const AdminDashboard(),
-  
+
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
-  RouteNames.adminGeracaoDocumentos: (context) => const RelatoriosDocumentosPage(),
+  RouteNames.adminGeracaoDocumentos: (context) =>
+      const RelatoriosDocumentosPage(),
   RouteNames.adminListaDeUsuarios: (context) => const ListaDeUsuariosPage(),
   RouteNames.adminFrequencia: (context) => const FrequenciaAdmin(),
   RouteNames.adminComunicacaoInstiticional: (context) =>
@@ -60,39 +63,29 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminCadastrarDisciplina: (context) => const CadastrarDisciplina(),
   RouteNames.adminSegurancaEPermissoes: (context) =>
       const SegurancaEPermissoes(),
-  
-  
-  
+
   RouteNames.addOqueFoiDado: (context) => const OqueFoiDado(),
 
-  
   // rotas do Aluno
   RouteNames.studentDashboard: (context) => const StudentDashboard(),
-  
+
   RouteNames.studentHelp: (context) => const NoticesPage(),
   RouteNames.studentSettings: (context) => const ConfiguracaoPage(),
-  
+
   RouteNames.studentCalendar: (context) => const CalendarPage(),
 
   RouteNames.studentComunicados: (context) => const NoticesPage(),
   RouteNames.studentBoletim: (context) => const BoletimPage(),
   RouteNames.studentExercicios: (context) => const ExerciciosAlunoPage(),
   // rotas de detalhes
-  
 
   // rotas do Professor
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
-  
-  
+
   RouteNames.teacherCalendar: (context) => const CalendarPage(),
   RouteNames.teacherClasses: (context) => ClassPage(),
   RouteNames.comunicadosProfessor: (context) => const ComunicadosProfessor(),
   RouteNames.teacherExercicios: (context) => const CadastroExercicio(),
-  
-  
-  
-  
-  
 };
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
