@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         label: 'CPF',
 
-                        prefixIcon: const Icon(Icons.person),
+                        prefixIcon: Icons.person,
                         hintText: '000.000.000-00',
 
                         validator: (value) {
@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         label: 'Senha',
                         hintText: 'Digite sua senha',
-                        prefixIcon: const Icon(Icons.lock),
+                        prefixIcon: Icons.lock,
 
                         suffixIcon: IconButton(
                           onPressed: () {

@@ -94,10 +94,9 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
                         keyboardType: TextInputType.text,
                         label: 'Título',
                         hintText: 'Ex: Feriado de Natal',
-                        prefixIcon: const Icon(
+                        prefixIcon: 
                           Icons.event,
-                          color: Colors.deepPurple,
-                        ),
+                          
                         validator: (value) =>
                             value!.isEmpty ? 'Informe um título' : null,
                       ),
@@ -109,10 +108,9 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
                         keyboardType: TextInputType.text, 
                         label: 'Descrição',
                         hintText: 'Ex: Evento escolar de comemoração do Natal',
-                        prefixIcon: const Icon(
+                        prefixIcon: 
                           Icons.description,
-                          color: Colors.deepPurple,
-                        ),
+                         
                       ),
                     ],
                   ),

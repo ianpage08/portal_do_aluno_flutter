@@ -154,7 +154,7 @@ class _ComunicacaoInstitucionalPageState
                   TextFormFieldPersonalizado(
                     controller: _tituloController,
 
-                    prefixIcon: const Icon(Icons.title),
+                    prefixIcon: Icons.title,
                     label: 'Título',
                     hintText: 'Reunião de Pais - 3º Bimestre',
                   ),
@@ -230,7 +230,7 @@ class _ComunicacaoInstitucionalPageState
                   TextFormFieldPersonalizado(
                     controller: _mensagemController,
                     maxLines: 4,
-                    prefixIcon: const Icon(Icons.message),
+                    prefixIcon: Icons.message,
                     label: 'Mensagem',
                   ),
                   const SizedBox(height: 12),

@@ -97,7 +97,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
                             controller: _mapController['nomeDisciplina']!,
-                            prefixIcon: const Icon(Icons.book),
+                            prefixIcon: Icons.book,
                             label: 'Nome da Disciplina',
                             hintText: 'ex: Matemática',
                             keyboardType: TextInputType.text,
@@ -105,9 +105,9 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
                             controller: _mapController['aulasPrevistas']!,
-                            prefixIcon: const Icon(
+                            prefixIcon: 
                               Icons.calendar_month_outlined,
-                            ),
+                            
                             label: 'Quantidade de Aulas Previstas',
                             hintText: 'ex: 20 ',
                             keyboardType: TextInputType.number,
@@ -115,7 +115,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
                             controller: _mapController['cargaHoraria']!,
-                            prefixIcon: const Icon(Icons.lock_clock_outlined),
+                            prefixIcon: Icons.lock_clock_outlined,
                             label: 'Carga Horaria',
                             hintText: 'ex: 180',
                             keyboardType: TextInputType.number,
@@ -123,7 +123,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           const SizedBox(height: 16),
                           TextFormFieldPersonalizado(
                             controller: _mapController['nomeProfessor']!,
-                            prefixIcon: const Icon(Icons.person),
+                            prefixIcon:Icons.person,
                             label: 'Nome do Professor',
                             hintText: 'ex: Paulo José',
                             keyboardType: TextInputType.text,

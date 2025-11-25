@@ -1,17 +1,22 @@
+// mexer no UI completo da pagina de boletim 
+// Estou sentido que está muito poluido 
+
+
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/admin/helper/boletim_helper.dart';
+import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_desativado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_limpar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/fixed_drop.dart';
-import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/stream_drop_generico.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
-
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class BoletimAddNotaPage extends StatefulWidget {
@@ -26,19 +31,21 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _notaController = TextEditingController();
 
-  // IDs e nomes selecionados
-  final Map<String, String?> _mapSelectedValues = {
+  final BoletimHelper _boletimHelper = BoletimHelper();
+
+  // VALUE NOTIFIERS
+  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
+  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
+
+  // MAP de valores selecionados
+  final Map<String, String?> selected = {
     'turmaId': null,
     'alunoId': null,
     'disciplinaId': null,
     'disciplinaNome': null,
-    'unidadeSelecionada': null,
-    'tipoDeNota': null,
+    'unidade': null,
+    'tipoAvaliacao': null,
   };
-
-  final ValueNotifier<String?> alunoSelecionado = ValueNotifier<String?>(null);
-
-  final BoletimHelper _boletimHelper = BoletimHelper();
 
   final List<String> unidades = [
     'Unidade 1',
@@ -46,59 +53,49 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
     'Unidade 3',
     'Unidade 4',
   ];
-
-  final List<String> tiposDeAvaliacao = [
-    'Teste',
-    'Prova',
-    'Trabalho',
-    'Nota Extra',
-  ];
-
-  final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
+  final List<String> avaliacao = ['Teste', 'Prova', 'Trabalho', 'Nota Extra'];
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() =>
       _firestore.collection('disciplinas').snapshots();
 
   void limparCampos() {
     setState(() {
-      _mapSelectedValues['alunoId'] = null;
-
-      _mapSelectedValues['disciplinaId'] = null;
-      _mapSelectedValues['disciplinaNome'] = null;
-      _mapSelectedValues['unidadeSelecionada'] = null;
-      _mapSelectedValues['tipoDeNota'] = null;
+      selected['alunoId'] = null;
+      alunoSelecionado.value = null;
+      selected['disciplinaId'] = null;
+      selected['disciplinaNome'] = null;
+      selected['unidade'] = null;
+      selected['tipoAvaliacao'] = null;
       _notaController.clear();
     });
   }
 
   Future<void> salvarNota() async {
     if (!_formKey.currentState!.validate()) return;
+
     try {
       await _boletimHelper.salvarNota(
-        alunoId: _mapSelectedValues['alunoId']!,
-        turmaId: _mapSelectedValues['turmaId']!,
-        disciplinaNome: _mapSelectedValues['disciplinaNome']!,
-        disciplinaId: _mapSelectedValues['disciplinaId']!,
-        unidade: _mapSelectedValues['unidadeSelecionada']!,
-        tipoDeNota: _mapSelectedValues['tipoDeNota']!,
-        nota: double.parse(_notaController.text),
+        alunoId: selected['alunoId']!,
+        turmaId: selected['turmaId']!,
+        disciplinaNome: selected['disciplinaNome']!,
+        disciplinaId: selected['disciplinaId']!,
+        unidade: selected['unidade']!,
+        tipoDeNota: selected['tipoAvaliacao']!,
+        nota: double.parse(_notaController.text.replaceAll(',', '.')),
       );
-      if (mounted) {
-        snackBarPersonalizado(
-          context: context,
-          mensagem: 'Nota salva com sucesso!',
-          cor: Colors.green,
-        );
-      }
-      _notaController.clear();
+
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Nota salva com sucesso!',
+        cor: Colors.green,
+      );
+      limparCampos();
     } catch (e) {
-      if (mounted) {
-        snackBarPersonalizado(
-          context: context,
-          mensagem: 'Erro ao salvar nota.',
-          cor: Colors.red,
-        );
-      }
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Erro ao salvar nota!',
+        cor: Colors.red,
+      );
     }
   }
 
@@ -118,103 +115,142 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 🔹 Turma
+                        //------------------ TURMA ------------------
+                        const Text(
+                          'Turma',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         BotaoSelecionarTurma(
                           turmaSelecionada: turmaSelecionada,
                           onTurmaSelecionada: (id, turmaNome) {
                             setState(() {
-                              _mapSelectedValues['turmaId'] = id;
+                              selected['turmaId'] = id;
                               limparCampos();
                             });
-                            debugPrint(
-                              '✅ Turma selecionada: $turmaNome (ID: ${_mapSelectedValues['turmaId']})',
-                            );
                           },
                         ),
 
                         const SizedBox(height: 16),
 
-                        // 🔹 Aluno
-                        _mapSelectedValues['turmaId'] != null
+                        //------------------ ALUNO ------------------
+                        const Text(
+                          'Aluno',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        selected['turmaId'] != null
                             ? BotaoSelecionarAluno(
                                 alunoSelecionado: alunoSelecionado,
-                                turmaId: _mapSelectedValues['turmaId'],
-                                onAlunoSelecionado: (id, nomeCompleto, cpf) {
-                                  setState(() {
-                                    _mapSelectedValues['alunoId'] = id;
-                                  });
+                                turmaId: selected['turmaId'],
+                                onAlunoSelecionado: (id, nome, cpf) {
+                                  setState(() => selected['alunoId'] = id);
                                 },
                               )
                             : const BotaoDesativado(
-                                label: 'Selecione uma Aluno',
+                                label: 'Selecione um Aluno',
                                 icon: CupertinoIcons.person_fill,
                               ),
 
                         const SizedBox(height: 16),
 
-                        // 🔹 Disciplina
+                        //------------------ DISCIPLINA ------------------
+                        const Text(
+                          'Disciplina',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         StreamDropGenerico(
                           tipo: 'disciplina',
                           titulo: 'Selecione uma Disciplina',
                           stream: getDisciplinas(),
-                          selecionado: _mapSelectedValues['disciplinaNome'],
+                          selecionado: selected['disciplinaNome'],
                           icon: Icons.book,
+                          habilitado: selected['alunoId'] != null,
                           onSelected: (id, nome) {
                             setState(() {
-                              _mapSelectedValues['disciplinaId'] = id;
-                              _mapSelectedValues['disciplinaNome'] = nome;
+                              selected['disciplinaId'] = id;
+                              selected['disciplinaNome'] = nome;
                             });
                           },
-                          habilitado: _mapSelectedValues['alunoId'] != null,
                         ),
+
                         const SizedBox(height: 16),
 
-                        // 🔹 Unidade
+                        //------------------ UNIDADE ------------------
+                        const Text(
+                          'Unidade',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         FixedDrop(
                           itens: unidades,
-                          selecionado: _mapSelectedValues['unidadeSelecionada'],
+                          selecionado: selected['unidade'],
                           titulo: 'Selecione uma Unidade',
                           icon: Icons.note_alt,
                           onSelected: (valor) {
-                            setState(() {
-                              _mapSelectedValues['unidadeSelecionada'] = valor;
-                            });
+                            setState(() => selected['unidade'] = valor);
                           },
-                          habilitado:
-                              _mapSelectedValues['disciplinaId'] != null,
+                          habilitado: selected['disciplinaId'] != null,
                         ),
+
                         const SizedBox(height: 16),
 
-                        // 🔹 Tipo de Avaliação
+                        //------------------ TIPO AVALIAÇÃO ------------------
+                        const Text(
+                          'Tipo de Avaliação',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         FixedDrop(
-                          itens: tiposDeAvaliacao,
-                          selecionado: _mapSelectedValues['tipoDeNota'],
+                          itens: avaliacao,
+                          selecionado: selected['tipoAvaliacao'],
                           titulo: 'Selecione um Tipo de Avaliação',
                           icon: Icons.assignment,
                           onSelected: (valor) {
-                            setState(() {
-                              _mapSelectedValues['tipoDeNota'] = valor;
-                            });
+                            setState(() => selected['tipoAvaliacao'] = valor);
                           },
-                          habilitado:
-                              _mapSelectedValues['unidadeSelecionada'] != null,
+                          habilitado: selected['unidade'] != null,
                         ),
+
                         const SizedBox(height: 16),
 
-                        TextFormFieldPersonalizado(
-                          prefixIcon: const Icon(
-                            CupertinoIcons.pencil_ellipsis_rectangle,
+                        //------------------ NOTA ------------------
+                        const Text(
+                          'Nota',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
                           ),
+                        ),
+                        const SizedBox(height: 6),
+                        TextFormFieldPersonalizado(
                           controller: _notaController,
-                          label: 'Nota',
                           hintText: 'Ex: 8.5',
+                          prefixIcon: CupertinoIcons.pencil,
                           keyboardType: TextInputType.number,
-                          enable: _mapSelectedValues['tipoDeNota'] != null,
-                          validator: (value) => value == null || value.isEmpty
+                          enable: selected['tipoAvaliacao'] != null,
+                          validator: (value) => (value == null || value.isEmpty)
                               ? 'Digite a nota'
                               : null,
-                          fillColor: _mapSelectedValues['tipoDeNota'] != null
+                          fillColor: selected['tipoAvaliacao'] != null
                               ? Colors.white
                               : Colors.grey[200],
                         ),
@@ -222,20 +258,17 @@ class _BoletimAddNotaPageState extends State<BoletimAddNotaPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
 
-                // 🔹 Botão Salvar
-                BotaoSalvar(
-                  salvarconteudo: () async {
-                    salvarNota();
-                  },
-                ),
-                const SizedBox(height: 8),
-                // 🔹 Botão Limpar
+                const SizedBox(height: 20),
+
+                //------------------ BOTÕES ------------------
+                BotaoSalvar(salvarconteudo: salvarNota),
+                const SizedBox(height: 10),
                 BotaoLimpar(
                   limparconteudo: () async {
                     setState(() {
-                      _mapSelectedValues['turmaId'] = null;
+                      turmaSelecionada.value = null;
+                      selected['turmaId'] = null;
                       limparCampos();
                     });
                   },

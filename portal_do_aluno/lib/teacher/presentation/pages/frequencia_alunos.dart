@@ -288,7 +288,10 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('Turma', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 5),
             BotaoSelecionarTurma(
               turmaSelecionada: turmaSelecionada,
               onTurmaSelecionada: (id, nome) {
@@ -297,6 +300,8 @@ class _FrequenciaAdminState extends State<FrequenciaAdmin> {
               },
             ),
             const SizedBox(height: 18),
+            Text('Data', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 5),
             DataPickerCalendario(
               onDate: (data) => setState(() => dataSelecionada = data),
             ),

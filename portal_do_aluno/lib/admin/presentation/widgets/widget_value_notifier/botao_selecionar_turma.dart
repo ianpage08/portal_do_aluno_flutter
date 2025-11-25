@@ -137,7 +137,7 @@ class _BotaoSelecionarTurmaState extends State<BotaoSelecionarTurma> {
                       children: [
                         Row(
                           children: [
-                            const Icon(CupertinoIcons.person_2, size: 22),
+                            const Icon(Icons.school, size: 22),
                             const SizedBox(width: 12),
                             Text(
                               value ?? "Selecionar turma",

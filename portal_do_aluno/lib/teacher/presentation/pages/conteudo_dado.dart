@@ -151,7 +151,7 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
                         child: Column(
                           children: [
                             TextFormFieldPersonalizado(
-                              prefixIcon: const Icon(CupertinoIcons.book),
+                              prefixIcon: CupertinoIcons.book,
                               maxLines: 5,
                               controller: _conteudoMinistradoController,
                               label: 'Conteúdo Ministrado em Aula',
@@ -161,9 +161,9 @@ class _OqueFoiDadoState extends State<OqueFoiDado> {
 
                             const SizedBox(height: 20),
                             TextFormFieldPersonalizado(
-                              prefixIcon: const Icon(
+                              prefixIcon: 
                                 CupertinoIcons.doc_on_clipboard,
-                              ),
+                              
                               controller: _observacoesController,
                               label: 'Observações',
                               hintText:

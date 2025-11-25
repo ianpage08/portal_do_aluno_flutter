@@ -247,12 +247,12 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Nome Completo do Aluno',
         controller: _mapController['nomeAluno']!,
-        prefixIcon: const Icon(CupertinoIcons.person_fill),
+        prefixIcon: CupertinoIcons.person_fill,
       ),
       TextFormFieldPersonalizado(
         label: 'CPF',
         controller: _mapController['cpfAluno']!,
-        prefixIcon: const Icon(CupertinoIcons.number),
+        prefixIcon: CupertinoIcons.number,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(11),
@@ -262,7 +262,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Naturalidade',
         controller: _mapController['naturalidade']!,
-        prefixIcon: const Icon(CupertinoIcons.location_solid),
+        prefixIcon: CupertinoIcons.location_solid,
       ),
       ValueListenableBuilder<String?>(
         valueListenable: _mapValueNotifier['sexoSelecionado']!,
@@ -292,32 +292,32 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'CEP',
         controller: _mapController['cep']!,
-        prefixIcon: const Icon(CupertinoIcons.map_pin_ellipse),
+        prefixIcon: CupertinoIcons.map_pin_ellipse,
       ),
       TextFormFieldPersonalizado(
         label: 'Rua',
         controller: _mapController['rua']!,
-        prefixIcon: const Icon(CupertinoIcons.location),
+        prefixIcon: CupertinoIcons.location,
       ),
       TextFormFieldPersonalizado(
         label: 'Número',
         controller: _mapController['numero']!,
-        prefixIcon: const Icon(CupertinoIcons.number_square),
+        prefixIcon: CupertinoIcons.number_square,
       ),
       TextFormFieldPersonalizado(
         label: 'Bairro',
         controller: _mapController['bairro']!,
-        prefixIcon: const Icon(CupertinoIcons.map_pin),
+        prefixIcon: CupertinoIcons.map_pin,
       ),
       TextFormFieldPersonalizado(
         label: 'Cidade',
         controller: _mapController['cidade']!,
-        prefixIcon: const Icon(CupertinoIcons.building_2_fill),
+        prefixIcon: CupertinoIcons.building_2_fill,
       ),
       TextFormFieldPersonalizado(
         label: 'Estado',
         controller: _mapController['estado']!,
-        prefixIcon: const Icon(CupertinoIcons.flag),
+        prefixIcon:CupertinoIcons.flag,
       ),
     ],
   );
@@ -328,14 +328,14 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Nome da Mãe',
         controller: _mapController['nomeMae']!,
-        prefixIcon: const Icon(
+        prefixIcon: 
           CupertinoIcons.person_crop_circle_fill_badge_checkmark,
-        ),
+        
       ),
       TextFormFieldPersonalizado(
         label: 'CPF da Mãe',
         controller: _mapController['cpfMae']!,
-        prefixIcon: const Icon(CupertinoIcons.number_circle),
+        prefixIcon: CupertinoIcons.number_circle,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(11),
@@ -345,18 +345,18 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Telefone da Mãe',
         controller: _mapController['telefoneMae']!,
-        prefixIcon: const Icon(CupertinoIcons.phone_fill),
+        prefixIcon: CupertinoIcons.phone_fill,
         maxLength: 11,
       ),
       TextFormFieldPersonalizado(
         label: 'Nome do Pai',
         controller: _mapController['nomePai']!,
-        prefixIcon: const Icon(CupertinoIcons.person_crop_circle_fill),
+        prefixIcon: CupertinoIcons.person_crop_circle_fill,
       ),
       TextFormFieldPersonalizado(
         label: 'CPF do Pai',
         controller: _mapController['cpfPai']!,
-        prefixIcon: const Icon(CupertinoIcons.number_circle_fill),
+        prefixIcon: CupertinoIcons.number_circle_fill,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(11),
@@ -366,7 +366,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Telefone do Pai',
         controller: _mapController['telefonePai']!,
-        prefixIcon: const Icon(CupertinoIcons.phone),
+        prefixIcon:CupertinoIcons.phone,
         maxLength: 11,
       ),
     ],
@@ -378,12 +378,12 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Número da Matrícula',
         controller: _mapController['numeroMatricula']!,
-        prefixIcon: const Icon(CupertinoIcons.doc_text),
+        prefixIcon: CupertinoIcons.doc_text,
       ),
       TextFormFieldPersonalizado(
         label: 'Ano Letivo',
         controller: _mapController['anoLetivo']!,
-        prefixIcon: const Icon(CupertinoIcons.calendar_today),
+        prefixIcon:CupertinoIcons.calendar_today,
       ),
       ValueListenableBuilder<String?>(
         valueListenable: _mapValueNotifier['turnoSelecionado']!,
@@ -415,19 +415,19 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Alergias',
         controller: _mapController['alergias']!,
-        prefixIcon: const Icon(CupertinoIcons.bandage_fill),
+        prefixIcon: CupertinoIcons.bandage_fill,
         obrigatorio: false,
       ),
       TextFormFieldPersonalizado(
         label: 'Medicações',
         controller: _mapController['medicamentos']!,
-        prefixIcon: const Icon(CupertinoIcons.capsule_fill),
+        prefixIcon: CupertinoIcons.capsule_fill,
         obrigatorio: false,
       ),
       TextFormFieldPersonalizado(
         label: 'Observações',
         controller: _mapController['observacoes']!,
-        prefixIcon: const Icon(CupertinoIcons.text_bubble_fill),
+        prefixIcon: CupertinoIcons.text_bubble_fill,
         obrigatorio: false,
       ),
     ],

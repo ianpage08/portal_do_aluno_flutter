@@ -171,7 +171,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                       ),
                       const SizedBox(height: 6),
                       TextFormFieldPersonalizado(
-                        prefixIcon: const Icon(Icons.title),
+                        prefixIcon: Icons.title,
                         controller: _mapController['titulo']!,
 
                         hintText: 'Ex: Atividade Para casa',
@@ -184,7 +184,7 @@ class _CadastroExercicioState extends State<CadastroExercicio> {
                       const SizedBox(height: 6),
                       TextFormFieldPersonalizado(
                         maxLines: 3,
-                        prefixIcon: const Icon(Icons.notes),
+                        prefixIcon: Icons.notes,
                         controller: _mapController['conteudo']!,
 
                         hintText: 'Ex: Atividade da pagina 10  á 20 ',

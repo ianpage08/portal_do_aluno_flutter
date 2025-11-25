@@ -98,7 +98,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                       children: [
                         TextFormFieldPersonalizado(
                           controller: _mapController['professorTitular']!,
-                          prefixIcon: const Icon(Icons.person),
+                          prefixIcon: Icons.person,
                           label: 'Professor titular',
                           hintText: 'ex: Maria Silva',
                           keyboardType: TextInputType.name,
@@ -106,7 +106,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                         const SizedBox(height: 16),
                         TextFormFieldPersonalizado(
                           controller: _mapController['turno']!,
-                          prefixIcon: const Icon(Icons.timer),
+                          prefixIcon: Icons.timer,
                           label: 'Turno',
                           hintText: 'ex: Matutino',
                           keyboardType: TextInputType.text,
@@ -114,7 +114,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                         const SizedBox(height: 16),
                         TextFormFieldPersonalizado(
                           controller: _mapController['serie']!,
-                          prefixIcon: const Icon(Icons.home_work_outlined),
+                          prefixIcon: Icons.home_work_outlined,
                           label: 'Serie',
                           hintText: '9º Ano',
                           keyboardType: TextInputType.text,
@@ -122,7 +122,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                         const SizedBox(height: 16),
                         TextFormFieldPersonalizado(
                           controller: _mapController['qtdAlunos']!,
-                          prefixIcon: const Icon(Icons.group),
+                          prefixIcon: Icons.group,
                           label: 'Quantidade de alunos',
                           hintText: 'ex: 25',
                           keyboardType: TextInputType.number,

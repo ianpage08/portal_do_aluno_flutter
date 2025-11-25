@@ -5,7 +5,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
   final TextEditingController controller;
   final String? label;
   final String? hintText;
-  final Icon? prefixIcon;
+  final IconData? prefixIcon;
   final Widget? suffixIcon;
   final int? maxLength;
   final int? minLines;
@@ -33,7 +33,7 @@ class TextFormFieldPersonalizado extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.enable = true,
-    this.fillColor = const Color.fromARGB(48, 218, 194, 250),
+    this.fillColor,
     this.inputFormatters,
     this.contentPadding = const EdgeInsets.symmetric(
       horizontal: 16,
@@ -44,60 +44,99 @@ class TextFormFieldPersonalizado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: obscureText,
-      controller: controller,
-      maxLength: maxLength,
-      minLines: minLines,
-      maxLines: obscureText ? 1 : (maxLines ?? 1),
-      enabled: enable,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      validator:
-          validator ??
-          (obrigatorio
-              ? (value) => (value == null || value.isEmpty)
+
+    final Color borderColor =
+        Theme.of(context).dividerColor.withOpacity(0.4);
+
+    final Color focusColor =
+        Theme.of(context).colorScheme.primary.withOpacity(0.9);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      margin: const EdgeInsets.only(bottom: 14),
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(20, 0, 0, 0),
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        obscureText: obscureText,
+        controller: controller,
+        maxLength: maxLength,
+        minLines: minLines ?? 1,
+        maxLines: obscureText ? 1 : (maxLines ?? 1),
+        enabled: enable,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+
+        validator: validator ??
+            (obrigatorio
+                ? (value) => (value == null || value.isEmpty)
                     ? 'Campo obrigatório'
                     : null
-              : null),
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hintText,
-        prefixIcon: Icon(
-          prefixIcon?.icon,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        suffixIcon: suffixIcon,
-        iconColor: Theme.of(context).iconTheme.color,
-        filled: true,
-        fillColor: fillColor,
-        contentPadding: contentPadding,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                : null),
 
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Theme.of(
-              context,
-            ).inputDecorationTheme.enabledBorder!.borderSide.color,
+        decoration: InputDecoration(
+          counterText: "",
+          labelText: label,
+          hintText: hintText,
+
+          // ---------- ÍCONES ----------
+          prefixIcon: prefixIcon != null
+              ? Icon(
+                  prefixIcon,
+                  color: Theme.of(context).iconTheme.color,
+                )
+              : null,
+          suffixIcon: suffixIcon,
+
+          // ---------- FILL ----------
+          filled: true,
+          fillColor: fillColor ?? Theme.of(context).cardColor,
+
+          // ---------- PADDING ----------
+          contentPadding: contentPadding,
+
+          // ---------- BORDAS ----------
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Theme.of(
-              context,
-            ).inputDecorationTheme.focusedBorder!.borderSide.color,
-            width: 2,
+
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: borderColor,
+              width: 1.3,
+            ),
           ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
+
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: focusColor,
+              width: 2,
+            ),
+          ),
+
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(
+              color: Colors.red,
+              width: 2,
+            ),
+          ),
+
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(
+              color: Colors.red,
+              width: 2,
+            ),
+          ),
         ),
       ),
     );

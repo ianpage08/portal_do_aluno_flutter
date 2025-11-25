@@ -425,7 +425,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                             controller: _mapController['senha']!,
                             obscureText: !isPasswordVisible,
 
-                            prefixIcon: const Icon(Icons.lock),
+                            prefixIcon: Icons.lock,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -468,7 +468,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                             controller: _mapController['confirmarSenha']!,
                             obscureText: !isPasswordVisible,
 
-                            prefixIcon: const Icon(Icons.lock),
+                            prefixIcon: Icons.lock,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
