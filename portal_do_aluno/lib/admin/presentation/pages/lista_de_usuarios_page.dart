@@ -144,7 +144,14 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
   Widget _menuPontinho(String usuarioId) {
     return PopupMenuButton(
       onSelected: (String valorSelecionado) {
-        if (valorSelecionado == 'detalhes') {
+        switch (valorSelecionado){
+          case 'resetar':
+          Naviga
+
+
+        }
+
+        else if (valorSelecionado == 'detalhes') {
           NavigatorService.navigateTo(RouteNames.adminDetalhesAlunos);
         } else if (valorSelecionado == 'excluir') {
           _cadastroService.deletarUsuario(usuarioId);
@@ -152,6 +159,7 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
       },
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<String>>[
+          const PopupMenuItem(value:'resetar' ,child: Text('Mudar Senha')),
           const PopupMenuItem(value: 'detalhes', child: Text('Detalhes')),
           const PopupMenuItem(value: 'excluir', child: Text('Excluir')),
         ];
