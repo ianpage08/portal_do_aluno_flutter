@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/admin/data/models/disciplinas/nota_disciplina.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
 
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
@@ -133,130 +134,94 @@ class _BoletimPageState extends State<BoletimPage> {
               return Theme(
                 data: Theme.of(
                   context,
-                ).copyWith(dividerColor: const Color.fromARGB(0, 0, 0, 0)),
-                child: ExpansionTile(
-                  
-                  leading: const Icon(CupertinoIcons.book),
-                  iconColor: const Color.fromARGB(255, 0, 0, 0),
-                  collapsedIconColor: const Color.fromARGB(255, 139, 139, 139),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                ).copyWith(dividerColor: Colors.transparent),
+                child: Builder(
+                  builder: (context) {
+                    final disciplina = NotaDisciplina.fromJson(materia);
+
+                    final mediaFinal = disciplina.calcularMediaFinal() ?? 0.0;
+                    final mediasPorUnidade = disciplina
+                        .calcularMediaPorUnidade();
+
+                    return ExpansionTile(
+                      leading: const Icon(CupertinoIcons.book),
+                      title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            materia['nomeDisciplina'] ?? 'Disciplina sem nome',
+                            disciplina.nomeDisciplina,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
-                            'Média Geral: ${materia['mediageral'] ?? 0.0}',
+                            'Média Final: ${mediaFinal.toStringAsFixed(1)}',
                             style: const TextStyle(fontSize: 12),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Status: ${materia['situacao'] ?? 'Indefinido'}',
-                        style: const TextStyle(fontSize: 12),
-                      ),
+                      children: disciplina.notas.entries.map((entry) {
+                        final unidade = entry.key;
+                        final valores = entry.value;
 
-                      const SizedBox(height: 8),
-                    ],
-                  ),
+                        final mediaUnidade = mediasPorUnidade[unidade] ?? 0.0;
 
-                  children: notas.entries.map((nota) {
-                    
-                    final unidade = nota.key;
-                    final valores = nota.value as Map<String, dynamic>? ?? {};
-                    return ListTile(
-                      title: Text('Unidade $unidade'),
-                      subtitle: Column(
-                        children: [
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        return ListTile(
+                          title: Text('Unidade $unidade'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              item(
-                                'Teste: ${valores['teste'] ?? '---'}',
-                                CupertinoIcons.checkmark_alt_circle,
+                              Text(
+                                'Média desta unidade: ${mediaUnidade.toStringAsFixed(1)}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
-
-                              item(
-                                'Trabalho: ${valores['trabalho'] ?? '---'}',
-                                CupertinoIcons.briefcase,
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  item(
+                                    'Teste: ${valores['teste'] ?? '---'}',
+                                    CupertinoIcons.checkmark_alt_circle,
+                                  ),
+                                  item(
+                                    'Trabalho: ${valores['trabalho'] ?? '---'}',
+                                    CupertinoIcons.briefcase,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  item(
+                                    'Prova: ${valores['prova'] ?? '---'}',
+                                    CupertinoIcons.doc_text_search,
+                                  ),
+                                  item(
+                                    'Extra: ${valores['extra'] ?? '---'}',
+                                    CupertinoIcons.star_circle,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              item(
-                                'Prova: ${valores['prova'] ?? '---'}',
-                                CupertinoIcons.doc_text_search,
-                              ),
-                              item(
-                                'Extra: ${valores['extra'] ?? '---'}',
-                                CupertinoIcons.star_circle,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        );
+                      }).toList(),
                     );
-                  }).toList(),
+                  },
                 ),
               );
             }).toList(),
           ),
         );
-
-        /*ExpansionPanelList.radio(
-          children: disciplinas.map((disc) {
-            final nomeDisc = disc['nomeDisciplina'] ?? 'Disciplina sem nome';
-            final notas = disc['notas'] as Map<String, dynamic>? ?? {};
-
-            return 
-            ExpansionPanelRadio(
-              value: disc['id'] ?? disc['disciplinaId'],
-              headerBuilder: (context, isExpanded) {
-                return Column(
-                  children: [
-                  
-                    Row(
-                      children: [
-                        Text(nomeDisc.toUpperCase()),
-                        const Text('Média Final: 8.2'),
-                      ],
-                    ),
-                  ],
-                );
-              },
-              body: Column(
-                children: notas.entries.map((entry) {
-                  final unidade = entry.key;
-                  final valores = entry.value as Map<String, dynamic>? ?? {};
-
-                  return ListTile(
-                    title: Text('Unidade $unidade'),
-                    subtitle: Text(
-                      'Teste: ${valores['teste'] ?? '-'} | '
-                      'Prova: ${valores['prova'] ?? '-'} | '
-                      'Trabalho: ${valores['trabalho'] ?? '-'} | '
-                      'Extra: ${valores['extra'] ?? '-'}',
-                    ),
-                  );
-                }).toList(),
-              ),
-            );
-          }).toList(),
-        );*/
       },
     );
   }
 
-  // ✅ Widget para criar boletim automaticamente se não existir
+  //  Widget para criar boletim automaticamente se não existir
   Widget _buildCriarBoletimAutomaticamente() {
     return Center(
       child: Column(
@@ -276,7 +241,7 @@ class _BoletimPageState extends State<BoletimPage> {
     );
   }
 
-  // ✅ Função para criar boletim vazio
+  //   Função para criar boletim vazio
   Future<void> _criarBoletimVazio() async {
     if (alunoId == null) return;
 

@@ -118,9 +118,22 @@ class BoletimService {
     }
 
     //  Recalcula média geral e situação
-    double mediaGeral = calcularMediaGeral(boletim.disciplinas);
+    final mediaUnidade = boletim.disciplinas
+        .map((d) => d.calcularMediaFinal())
+        .whereType<double>()
+        .toList();
+
+    double mediaGeral =
+        mediaUnidade.reduce((a, b) => a + b) / mediaUnidade.length;
     String situacao = mediaGeral >= 6 ? 'Aprovado' : 'Reprovado';
 
+    /*
+    for (var disc in boletim.disciplinas) {
+      final mediasUnidades = disc.calcularMediaPorUnidade();
+      
+      disc.mediaPorUnidade = mediasUnidades;
+    }
+    */
     //  Salva boletim atualizado
     await docRef.update({
       'disciplinas': boletim.disciplinas.map((d) => d.toJson()).toList(),
@@ -131,14 +144,6 @@ class BoletimService {
   }
 
   // Calcula média geral
-  double calcularMediaGeral(List<NotaDisciplina> disciplinas) {
-    final medias = disciplinas
-        .map((d) => d.calcularMediaFinal())
-        .whereType<double>()
-        .toList();
-    if (medias.isEmpty) return 0.0;
-    return medias.reduce((a, b) => a + b) / medias.length;
-  }
 
   // Busca boletim de um aluno (direto pelo documento)
   Future<Boletim?> buscarBoletimPorAluno(String alunoId) async {

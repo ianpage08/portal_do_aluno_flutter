@@ -53,25 +53,31 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
       'nome': 'Certificado',
       'icon': Icons.school,
       'descricao': 'Certificado de conclusão Escolar',
-      'cor': Colors.blue,
+      'cor': const Color.fromARGB(255, 118, 166, 255),
     },
     {
       'nome': 'Histórico',
       'icon': Icons.edit_document,
       'descricao': 'Historico de notas e carga horaria',
-      'cor': Colors.green,
+      'cor': const Color.fromARGB(255, 118, 166, 255),
     },
     {
       'nome': 'Declaração',
       'icon': Icons.description,
       'descricao': 'Declaração de matrícula',
-      'cor': Colors.deepPurple,
+      'cor': const Color.fromARGB(255, 118, 166, 255),
     },
     {
       'nome': 'Relatorio',
       'icon': Icons.analytics,
       'descricao': 'relatorio de desempenho ',
-      'cor': Colors.orange,
+      'cor': const Color.fromARGB(255, 118, 166, 255),
+    },
+    {
+      'nome': 'Matricula',
+      'icon': Icons.dock,
+      'descricao': 'Contrato de matricula',
+      'cor': const Color.fromARGB(255, 118, 166, 255),
     },
   ];
 
@@ -124,8 +130,8 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
             const SizedBox(height: 16),
 
             Wrap(
-              spacing: 12,
-              runSpacing: 12,
+              spacing: 10,
+              runSpacing: 10,
               children: documentos.map((doc) {
                 return _buildCardDocumento(doc);
               }).toList(),
@@ -143,13 +149,14 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
       onTap: () {
         setState(() {
           tipoDeDocumento = documento['nome'];
+          debugPrint(tipoDeDocumento);
         });
       },
       child: Container(
-        width: 160,
-        height: 160,
+        width: 140,
+        height: 140,
 
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSelected
               ? (documento['cor'] as Color).withAlpha(25)
@@ -188,7 +195,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   Widget _buildCardInfo() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             const Row(
@@ -226,18 +233,6 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                         )
                       : const Text('Selecione uma turma para ver os alunos'),
                   const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: _mapController['nomeAluno']!,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: 'Observações (Opcional)',
-                      prefixIcon: const Icon(Icons.note),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -253,7 +248,51 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: _gerarDocumento,
+            onPressed: () async {
+              switch (tipoDeDocumento) {
+                case 'Certificado':
+                  snackBarPersonalizado(
+                    context: context,
+                    mensagem: 'Certificado gerado com sucesso!',
+                  );
+                  _limparCampos();
+                  break;
+                case 'Histórico':
+                  snackBarPersonalizado(
+                    context: context,
+                    mensagem: 'Histórico gerado com sucesso!',
+                  );
+                  _limparCampos();
+                  break;
+                case 'Declaração':
+                  snackBarPersonalizado(
+                    context: context,
+                    mensagem: 'Declaração gerado com sucesso!',
+                  );
+                  _limparCampos();
+                  break;
+                case 'Relatorio':
+                  snackBarPersonalizado(
+                    context: context,
+                    mensagem: 'Relatorio gerado com sucesso!',
+                  );
+                  _limparCampos();
+                  break;
+                case 'Matricula':
+                  if (_mapValueNotifier['turma']!.value == null ||
+                      _mapValueNotifier['aluno']!.value == null) {
+                    return snackBarPersonalizado(
+                      context: context,
+                      mensagem: 'Selecione um aluno e turma',
+                      cor: Colors.red,
+                    );
+                  }
+                  _gerarContratoMatricula();
+                  _limparCampos();
+                  break;
+                default:
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurpleAccent,
               foregroundColor: Colors.white,
@@ -270,28 +309,11 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
           ),
         ),
         const SizedBox(width: 8),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: _limparCampos,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.clear),
-                SizedBox(width: 8),
-                Text('Limpar Campos'),
-              ],
-            ),
-          ),
-        ),
       ],
     );
   }
 
-  Future<void> _gerarDocumento() async {
+  Future<void> _gerarContratoMatricula() async {
     if (_mapSelectedValues['turmaId'] == null ||
         _mapSelectedValues['alunoId'] == null) {
       snackBarPersonalizado(
@@ -355,16 +377,9 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   }
 
   void _limparCampos() {
-    
     setState(() {
       tipoDeDocumento = null;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Limpo com sucesso!'),
-        backgroundColor: Colors.green,
-      ),
-    );
   }
 
   @override

@@ -11,15 +11,39 @@ class NotaDisciplina {
   }) : notas =
            notas ??
            {
-             1: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
-             2: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
-             3: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
-             4: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
+             1: {
+               'teste': null,
+               'prova': null,
+               'trabalho': null,
+               'extra': null,
+               
+             },
+             2: {
+               'teste': null,
+               'prova': null,
+               'trabalho': null,
+               'extra': null,
+               
+             },
+             3: {
+               'teste': null,
+               'prova': null,
+               'trabalho': null,
+               'extra': null,
+               
+             },
+             4: {
+               'teste': null,
+               'prova': null,
+               'trabalho': null,
+               'extra': null,
+               
+             },
            };
 
   final Map<int, Map<String, double?>> notas;
 
-  double? calcularMediaUnidade(int unidade) {
+  double? calcularMedia(int unidade) {
     final unit = notas[unidade];
     if (unit == null) return null;
 
@@ -30,11 +54,23 @@ class NotaDisciplina {
     return valores.reduce((a, b) => a + b) / valores.length;
   }
 
+  Map<int, double> calcularMediaPorUnidade() {
+    final resuldado = <int, double>{};
+
+    for (var unidade in notas.keys) {
+      final media = calcularMedia(unidade);
+      if (media != null) {
+        resuldado[unidade] = media;
+      }
+    }
+    return resuldado;
+  }
+
   double? calcularMediaFinal() {
-    final medias = List.generate(
-      4,
-      (index) => calcularMediaUnidade(index + 1),
-    ).whereType<double>().toList();
+    final medias = notas.keys
+        .map((unidade) => calcularMedia(unidade))
+        .whereType<double>()
+        .toList();
 
     if (medias.isEmpty) return null;
     return medias.reduce((a, b) => a + b) / medias.length;
