@@ -4,7 +4,6 @@ import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.d
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
-
 class ListaDeUsuariosPage extends StatefulWidget {
   const ListaDeUsuariosPage({super.key});
 
@@ -144,23 +143,24 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
   Widget _menuPontinho(String usuarioId) {
     return PopupMenuButton(
       onSelected: (String valorSelecionado) {
-        switch (valorSelecionado){
+        debugPrint('Valor selecionado: $valorSelecionado e ID: $usuarioId');
+        switch (valorSelecionado) {
           case 'resetar':
-          Naviga
+            NavigatorService.navigateTo(
+              RouteNames.changePassword,
+              arguments: {'usuarioId': usuarioId},
+            );
+            break;
 
-
-        }
-
-        else if (valorSelecionado == 'detalhes') {
-          NavigatorService.navigateTo(RouteNames.adminDetalhesAlunos);
-        } else if (valorSelecionado == 'excluir') {
-          _cadastroService.deletarUsuario(usuarioId);
+          case 'excluir':
+            _cadastroService.deletarUsuario(usuarioId);
+            break;
+          default:
         }
       },
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<String>>[
-          const PopupMenuItem(value:'resetar' ,child: Text('Mudar Senha')),
-          const PopupMenuItem(value: 'detalhes', child: Text('Detalhes')),
+          const PopupMenuItem(value: 'resetar', child: Text('Mudar Senha')),
           const PopupMenuItem(value: 'excluir', child: Text('Excluir')),
         ];
       },

@@ -33,7 +33,6 @@ class CadastroService {
       'type': usuario.type.name,
       'turmaId': usuario.turmaId,
       'alunoId': usuario.alunoId,
-      
     });
 
     return usuarioRef.id;
@@ -41,5 +40,13 @@ class CadastroService {
 
   Future<void> deletarUsuario(String usuarioId) {
     return _firestore.collection('usuarios').doc(usuarioId).delete();
+  }
+
+  Future<void> atualizarSenha(String usuarioId, String novaSenha) async {
+    final senhaHash = BCrypt.hashpw(novaSenha, BCrypt.gensalt());
+
+    final usuarioRef = _firestore.collection('usuarios').doc(usuarioId);
+
+    await usuarioRef.update({'password': senhaHash});
   }
 }

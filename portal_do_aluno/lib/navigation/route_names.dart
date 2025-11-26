@@ -62,6 +62,8 @@ class RouteNames {
   static const String editProfile = '/edit_profile';
   static const String changePassword = '/change_password';
   static const String contactSupport = '/contact_support';
+  static const String sucessResetPassword = '/sucess_reset_password';
+
 
   //paginas de Erro
   static const String notFound = '/not_found';

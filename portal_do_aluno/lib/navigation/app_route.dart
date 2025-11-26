@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/change_password.dart';
+import 'package:portal_do_aluno/admin/presentation/pages/sucess_page.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart';
 import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
 import 'package:portal_do_aluno/student/presentation/pages/exercicios_aluno_page.dart';
@@ -42,6 +44,8 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.notification: (context) => const NotificationPage(),
   RouteNames.adminMatriculaCadastro: (context) => const MatriculaCadastro(),
   RouteNames.adminDashboard: (context) => const AdminDashboard(),
+  RouteNames.changePassword: (context) => const ChangePassword(),
+  RouteNames.sucessResetPassword: (context) => const PasswordChangedSuccessPage(),
 
   RouteNames.adminGestao: (context) => const GestaoDeUsuarios(),
   RouteNames.adminGestaoEscolar: (context) => const GestaAcademica(),
