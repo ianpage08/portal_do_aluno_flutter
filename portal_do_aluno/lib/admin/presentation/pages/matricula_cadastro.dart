@@ -10,7 +10,7 @@ import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
-import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
+import 'package:portal_do_aluno/core/utils/formatters.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class MatriculaCadastro extends StatefulWidget {

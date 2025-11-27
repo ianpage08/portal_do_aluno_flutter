@@ -5,11 +5,11 @@ import 'package:portal_do_aluno/admin/data/firestore_services/exercicio_sevice.d
 
 import 'package:portal_do_aluno/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/core/notifications/notification_service_remote.dart';
+import 'package:portal_do_aluno/core/services/notification_service_remote.dart';
 import 'package:portal_do_aluno/core/theme/dark_theme.dart';
 import 'package:portal_do_aluno/core/theme/light_theme.dart';
 import 'package:portal_do_aluno/core/theme/theme_provider.dart';
-import 'package:portal_do_aluno/firebase_options.dart';
+import 'package:portal_do_aluno/firebase/firebase_options.dart';
 
 import 'package:portal_do_aluno/navigation/app_route.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';

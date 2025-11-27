@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/admin/helper/snack_bar_personalizado.dart';
 import 'package:portal_do_aluno/admin/presentation/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/core/utils/cpf_input_fomatado.dart';
+import 'package:portal_do_aluno/core/utils/formatters.dart';
 
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
