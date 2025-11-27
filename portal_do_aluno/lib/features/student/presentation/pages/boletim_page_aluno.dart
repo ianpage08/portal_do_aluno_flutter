@@ -130,7 +130,6 @@ class _BoletimPageState extends State<BoletimPage> {
 
           child: Column(
             children: disciplinas.map((materia) {
-              final notas = materia['notas'] as Map<String, dynamic>? ?? {};
               return Theme(
                 data: Theme.of(
                   context,
