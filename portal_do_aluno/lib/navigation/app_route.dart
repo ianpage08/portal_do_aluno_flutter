@@ -1,42 +1,42 @@
 import 'package:flutter/material.dart';
 
-import 'package:portal_do_aluno/admin/presentation/pages/admin_dashboard.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/change_password.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/sucess_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/admin_dashboard.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/change_password.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/sucess_page.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart';
 import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
-import 'package:portal_do_aluno/student/presentation/pages/exercicios_aluno_page.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/boletim_page.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/cadastro_turma.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/conteudo_dado.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/cadastro_exercicio.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/frequencia_alunos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/configuracao_page.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/exercicios_aluno_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/boletim_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro_turma.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/conteudo_dado.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/cadastro_exercicio.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/frequencia_alunos.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/configuracao_page.dart';
 
-import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
 
-import 'package:portal_do_aluno/admin/presentation/pages/lista_de_usuarios_page.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/matricula_cadastro.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/relatorios.dart';
-import 'package:portal_do_aluno/admin/presentation/pages/seguranca_e_permissoes.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/lista_de_usuarios_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula_cadastro.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 
-import 'package:portal_do_aluno/student/presentation/pages/calendar_page.dart';
-import 'package:portal_do_aluno/student/presentation/pages/boletim_page_aluno.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/calendar_page.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
 
-import 'package:portal_do_aluno/student/presentation/pages/aluno_comunicados_page.dart';
-import 'package:portal_do_aluno/student/presentation/pages/student_dashboard.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/student_dashboard.dart';
 
-import 'package:portal_do_aluno/teacher/presentation/pages/turma_page.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/professor_comunicados_page.dart';
-import 'package:portal_do_aluno/teacher/presentation/pages/teacher_dashboard.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/turma_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/professor_comunicados_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_dashboard.dart';
 
 Map<String, WidgetBuilder> get routes => {
   RouteNames.slashScreen: (context) => const SplashPage(),

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/admin/data/firestore_services/comunicado_service.dart';
-import 'package:portal_do_aluno/admin/presentation/providers/user_provider.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
+import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 
 import 'package:provider/provider.dart';
