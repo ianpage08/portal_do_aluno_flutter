@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_service.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/turma.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class CadastroTurma extends StatefulWidget {

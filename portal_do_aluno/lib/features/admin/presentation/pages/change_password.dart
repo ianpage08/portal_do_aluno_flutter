@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/conteudo_presenca.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/data_picker_calendario.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/shared/widgets/data_picker_calendario.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/stream_drop.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/stream_drop.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
 

@@ -9,14 +9,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/boletim_helper.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_desativado.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_limpar.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/fixed_drop.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/stream_drop_generico.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_desativado.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_limpar.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/shared/widgets/fixed_drop.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/stream_drop_generico.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_aluno.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class BoletimAddNotaPage extends StatefulWidget {

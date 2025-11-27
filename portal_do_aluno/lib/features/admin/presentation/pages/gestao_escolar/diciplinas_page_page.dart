@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_service.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/popup_menu_botton.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_firestore.dart';
+import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 

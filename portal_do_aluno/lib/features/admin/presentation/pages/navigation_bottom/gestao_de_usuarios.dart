@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/lista_de_usuarios_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/navigation_bottonbar.dart';
+import 'package:portal_do_aluno/shared/widgets/navigation_bottonbar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';

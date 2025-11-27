@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/popup_menu_botton.dart';
+import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 

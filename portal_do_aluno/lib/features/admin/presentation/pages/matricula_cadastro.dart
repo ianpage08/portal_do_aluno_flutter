@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/data_picker_calendario.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/fixed_drop.dart';
+import 'package:portal_do_aluno/shared/widgets/data_picker_calendario.dart';
+import 'package:portal_do_aluno/shared/widgets/fixed_drop.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 

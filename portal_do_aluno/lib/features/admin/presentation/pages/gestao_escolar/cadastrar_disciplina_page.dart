@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_service.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/diciplinas.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_limpar.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_limpar.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
 class CadastrarDisciplina extends StatefulWidget {

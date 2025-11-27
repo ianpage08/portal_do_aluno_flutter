@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'package:portal_do_aluno/features/admin/data/datasources/contrato_pdf_service.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/contrato_pdf_firestore.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_aluno.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
 import 'package:printing/printing.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';

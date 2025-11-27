@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/tokens_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/menu_navigation_card.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/stream_referencia_id.dart';
+import 'package:portal_do_aluno/shared/widgets/menu_navigation_card.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/stream_referencia_id.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';

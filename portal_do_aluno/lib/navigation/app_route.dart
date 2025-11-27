@@ -7,11 +7,11 @@ import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart'
 import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios_aluno_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/boletim_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro_turma.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro_turma_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/conteudo_dado.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/controle_de_calendario.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/controle_de_calendario_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/cadastro_exercicio.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/frequencia_alunos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/configuracao_page.dart';

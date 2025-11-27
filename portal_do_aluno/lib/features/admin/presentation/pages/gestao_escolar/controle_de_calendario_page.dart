@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/calendario_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/calendario.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/botao_salvar.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 

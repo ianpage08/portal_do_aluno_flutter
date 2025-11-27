@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_aluno.dart';
-import 'package:portal_do_aluno/features/admin/presentation/widgets/widget_value_notifier/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_aluno.dart';
+import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
 
 import 'package:portal_do_aluno/core/utils/formatters.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
