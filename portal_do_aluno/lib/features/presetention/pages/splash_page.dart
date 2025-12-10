@@ -21,7 +21,6 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     super.initState();
-    checkToken();
 
     // Animation Controller corrigido
     _controller = AnimationController(
@@ -41,7 +40,9 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.forward();
 
-    // Timer para navegação
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkToken();
+    });
   }
 
   Future<void> checkToken() async {

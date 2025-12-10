@@ -3,6 +3,7 @@ import 'package:portal_do_aluno/core/notifications/pages/notification_poup.dart'
 import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/services/auth_storage_token.dart';
 import 'package:provider/provider.dart';
 
@@ -42,11 +43,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         NotificationPoup(userId: userId, route: nameRoute),
         IconButton(
           onPressed: () async {
-            await AuthStorageService().deleteToken();
-            debugPrint('Token deletado');
-            await AuthStorageService().deleteUser();
-            debugPrint('Usuario deletado');
-            NavigatorService.navigateAndRemoveUntil(RouteNames.login);
+            final sair = await showConfirmationDialog(
+              context: context,
+              title: 'Deseja Sair?',
+              content: 'voce realmente deseja sair?',
+              buttonText1: 'Sair',
+              buttonText2: 'Cancelar',
+            );
+            if (sair == true) {
+              await AuthStorageService().deleteToken();
+              debugPrint('Token deletado');
+              await AuthStorageService().deleteUser();
+              debugPrint('Usuario deletado');
+              NavigatorService.navigateAndRemoveUntil(RouteNames.login);
+            }
           },
           icon: const Icon(Icons.logout),
         ),
