@@ -1,9 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:portal_do_aluno/app.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_firestore.dart';
-
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/core/services/notification_service_remote.dart';
@@ -11,7 +9,7 @@ import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/firebase/firebase_options.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/providers/presenca_provider.dart';
 import 'package:portal_do_aluno/core/notifications/notification_service_local.dart';
-import 'package:portal_do_aluno/shared/services/auth_storafe_token.dart';
+import 'package:portal_do_aluno/shared/services/auth_storage_token.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,11 +19,8 @@ void main() async {
   await NotificationService().init();
 
   ExercicioSevice().excluirPorDataexpiracao();
-  final token = await AuthStorageService().getToken();
 
-  if(token != null){
-    
-  }
+  
 
   runApp(
     MultiProvider(
@@ -35,7 +30,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SelectedProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(
+        
+      ),
     ),
   );
 }

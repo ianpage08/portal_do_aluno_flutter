@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:bcrypt/bcrypt.dart';
-import 'package:portal_do_aluno/shared/services/auth_storafe_token.dart';
+import 'package:portal_do_aluno/shared/services/auth_storage_token.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -31,11 +31,7 @@ class AuthServico {
     final token = _gerarToken();
 
     await AuthStorageService().saveToken(token);
-
-    
-
-
-
+    await AuthStorageService().saveUsuario(Usuario.fromJson(data));
     return Usuario.fromJson(data);
   }
   String _gerarToken(){

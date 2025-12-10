@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 
 import 'package:portal_do_aluno/navigation/route_names.dart';
+
+import 'package:portal_do_aluno/shared/services/auth_storage_token.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -18,6 +21,7 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     super.initState();
+    checkToken();
 
     // Animation Controller corrigido
     _controller = AnimationController(
@@ -38,11 +42,23 @@ class _SplashPageState extends State<SplashPage>
     _controller.forward();
 
     // Timer para navegação
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed(RouteNames.login);
-      }
-    });
+  }
+
+  Future<void> checkToken() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final token = await AuthStorageService().getToken();
+    final user = await AuthStorageService().getUser();
+
+    if (!mounted) {
+      return;
+    }
+
+    if (token != null && user != null && mounted) {
+      NavigatorService.navigateToDashboard(user);
+    } else {
+      NavigatorService.navigateTo(RouteNames.login);
+    }
   }
 
   @override

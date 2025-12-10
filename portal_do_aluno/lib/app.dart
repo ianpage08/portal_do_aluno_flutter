@@ -9,10 +9,9 @@ import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  
+  const MyApp({super.key, });
 
   @override
   Widget build(BuildContext context) {
