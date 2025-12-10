@@ -56,8 +56,10 @@ class _SplashPageState extends State<SplashPage>
 
     if (token != null && user != null && mounted) {
       NavigatorService.navigateToDashboard(user);
+      debugPrint('Usuario já estava logado');
     } else {
       NavigatorService.navigateTo(RouteNames.login);
+      debugPrint('Usuario não estava logado');
     }
   }
 

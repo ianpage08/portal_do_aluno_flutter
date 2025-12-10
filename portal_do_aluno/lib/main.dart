@@ -9,7 +9,7 @@ import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/firebase/firebase_options.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/providers/presenca_provider.dart';
 import 'package:portal_do_aluno/core/notifications/notification_service_local.dart';
-import 'package:portal_do_aluno/shared/services/auth_storage_token.dart';
+
 import 'package:provider/provider.dart';
 
 void main() async {

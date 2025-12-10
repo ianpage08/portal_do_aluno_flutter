@@ -41,7 +41,7 @@ class AuthStorageService {
     return Usuario.fromJson(jsonDecode(userJson));
   }
   //deleta o usuário do dispositivo
-  Future<void> deleteUsuario() async {
+  Future<void> deleteUser() async {
     await _storage.delete(key: 'usuario');
   }
 }
