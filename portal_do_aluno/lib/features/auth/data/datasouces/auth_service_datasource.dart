@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:portal_do_aluno/shared/services/auth_storafe_token.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -25,8 +28,21 @@ class AuthServico {
     if (!BCrypt.checkpw(senha, senhaHash)) {
       throw Exception('Senha incorreta');
     }
+    final token = _gerarToken();
+
+    await AuthStorageService().saveToken(token);
+
+    
+
+
 
     return Usuario.fromJson(data);
+  }
+  String _gerarToken(){
+    const char = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return List.generate(32, (index) => char[random.nextInt(char.length)]).join();
+
   }
 
   /// Stream para escutar mudanças de usuário logado (opcional)

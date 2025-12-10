@@ -1,14 +1,14 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class SecureStorageService {
-  static final SecureStorageService _instance =
-      SecureStorageService._internal();
+class AuthStorageService {
+  static final AuthStorageService _instance =
+      AuthStorageService._internal();
 
-  factory SecureStorageService() {
+  factory AuthStorageService() {
     return _instance;
   }
 
-  SecureStorageService._internal();
+  AuthStorageService._internal();
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   //Salva o token no dispositivo
