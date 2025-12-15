@@ -47,8 +47,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               context: context,
               title: 'Deseja Sair?',
               content: 'voce realmente deseja sair?',
-              buttonText1: 'Sair',
-              buttonText2: 'Cancelar',
+              confirmText: 'Sair',
             );
             if (sair == true) {
               await AuthStorageService().deleteToken();

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
 
 import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
@@ -156,10 +157,17 @@ class _MatriculasPageState extends State<MatriculasPage> {
                         MenuItemConfig(
                           value: 'excluir',
                           label: 'Excluir',
-                          onSelected: (id, context, extra) {
+                          onSelected: (id, context, extra) async {
                             if (id != null) {
                               try {
-                                _matriculaService.excluirMatricula(id);
+                                final excluir = await showConfirmationDialog(
+                                  context: context,
+                                  title: 'Deseja Excluir essa Matricula?',
+                                  content: 'Essa ação é irreversível',
+                                );
+                                if (excluir == true) {
+                                  _matriculaService.excluirMatricula(id);
+                                }
                               } catch (e) {
                                 if (e is Exception) {
                                   ScaffoldMessenger.of(context).showSnackBar(

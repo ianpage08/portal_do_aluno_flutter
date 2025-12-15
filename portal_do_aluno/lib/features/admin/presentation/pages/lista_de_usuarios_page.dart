@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
 
 class ListaDeUsuariosPage extends StatefulWidget {
   const ListaDeUsuariosPage({super.key});
@@ -205,11 +206,12 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
   // ----------------------------------
   // MENU PONTINHO
   // ----------------------------------
+
   Widget _menuPontinho(String usuarioId) {
     return PopupMenuButton(
       offset: const Offset(0, 30),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onSelected: (String value) {
+      onSelected: (String value) async {
         switch (value) {
           case 'resetar':
             NavigatorService.navigateTo(
@@ -219,7 +221,14 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
             break;
 
           case 'excluir':
-            _cadastroService.deletarUsuario(usuarioId);
+            final excluir = await showConfirmationDialog(
+              context: context,
+              title: 'Deseja excluir esse usuário?',
+              content: 'Essa ação é irreversível',
+            );
+            if (excluir == true) {
+              _cadastroService.deletarUsuario(usuarioId);
+            }
             break;
         }
       },

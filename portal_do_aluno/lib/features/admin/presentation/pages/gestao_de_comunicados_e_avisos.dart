@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
+import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
@@ -481,8 +482,16 @@ class _ComunicacaoInstitucionalPageState
                         MenuItemConfig(
                           value: 'Excluir',
                           label: 'Excluir',
-                          onSelected: (id, context, extra) {
-                            _comunicadoService.excluirComunicado(id!);
+                          onSelected: (id, context, extra) async {
+                            final excluir = await showConfirmationDialog(
+                              context: context,
+                              title: 'Deseja Excluir esse Comunicado?',
+                              content: 'Essa ação é irreversível',
+                              confirmText: 'Excluir',
+                            );
+                            if (excluir == true) {
+                              _comunicadoService.excluirComunicado(id!);
+                            }
                           },
                         ),
                       ],

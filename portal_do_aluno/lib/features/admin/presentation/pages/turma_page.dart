@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
@@ -97,9 +98,17 @@ class _TurmaPageState extends State<TurmaPage> {
                             MenuItemConfig(
                               value: 'Excluir',
                               label: 'Excluir',
-                              onSelected: (id, context, extra) {
+                              onSelected: (id, context, extra) async {
                                 if (id != null) {
-                                  _cadastroTurmaService.excluirTurma(id);
+                                  final excluir = await showConfirmationDialog(
+                                    context: context,
+                                    title: 'Deseja Excluir essa Turma?',
+                                    content: 'Essa ação é irreversível',
+                                    confirmText: 'Excluir',
+                                  );
+                                  if (excluir == true) {
+                                    _cadastroTurmaService.excluirTurma(id);
+                                  }
                                 }
                               },
                             ),
