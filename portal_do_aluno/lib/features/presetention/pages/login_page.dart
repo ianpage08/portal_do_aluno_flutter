@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/shared/helpers/single_execution_flag.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
@@ -22,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final SingleExecutionFlag _navigationFlag = SingleExecutionFlag();
 
   bool isLoading = false;
   bool _obscurePassword = true; //  Com underscore
@@ -161,42 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 50,
                         child: ElevatedButton(
                           style: Theme.of(context).elevatedButtonTheme.style,
-                          onPressed: isLoading
-                              ? null
-                              : () async {
-                                  if (!_formKey.currentState!.validate()) {
-                                    return;
-                                  }
-
-                                  setState(() => isLoading = true);
-
-                                  try {
-                                    final cpf = _cpfController.text.trim();
-                                    final senha = _passwordController.text
-                                        .trim();
-
-                                    final usuario = await AuthServico()
-                                        .loginCpfsenha(cpf, senha);
-                                    if (!mounted) return;
-
-                                    // Se chegou aqui, login ok
-                                    NavigatorService.setCurrentUser(usuario);
-                                    await NavigatorService.navigateToDashboard();
-                                  } catch (e) {
-                                    // Aqui você mostra a mensagem de erro
-
-                                    if (mounted) {
-                                      snackBarPersonalizado(
-                                        context: context,
-                                        mensagem: 'Erro ao fazer login',
-                                      );
-                                    }
-                                  } finally {
-                                    if (mounted) {
-                                      setState(() => isLoading = false);
-                                    }
-                                  }
-                                },
+                          onPressed: isLoading ? null : _handleLogin,
                           child:
                               isLoading //  Loading melhorado
                               ? const Row(
@@ -225,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 5),
 
-                      // Link Esqueci Senha
+                      //  Esqueci Senha
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -303,6 +270,39 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+
+    _navigationFlag.execute(() async {
+      try {
+        final cpf = _cpfController.text.trim();
+        final senha = _passwordController.text.trim();
+
+        final usuario = await AuthServico().loginCpfsenha(cpf, senha);
+
+        if (!mounted) return;
+
+        // Define usuário atual e navega
+        NavigatorService.setCurrentUser(usuario);
+        await NavigatorService.navigateToDashboard();
+      } catch (e) {
+        if (mounted) {
+          snackBarPersonalizado(
+            context: context,
+            mensagem: 'Erro ao fazer login',
+          );
+        }
+        _navigationFlag.reset();
+      } finally {
+        if (mounted) {
+          setState(() => isLoading = false);
+        }
+      }
+    });
+  }
+
   // ✅ MÉTODO DENTRO DA CLASSE
   Widget _buildTestUser(String tipo, String cpf, String senha) {
     return Padding(
@@ -327,64 +327,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  /*Future<void> _simularLogin() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isLoading = true);
-
-    try {
-      await Future.delayed(const Duration(seconds: 2));
-      final cpf = _cpfController.text;
-      final password = _passwordController.text;
-
-      UserType userType = UserType.student;
-      if (cpf == '85300011122') {
-        userType = UserType.student;
-      } else if (cpf == '11122233344') {
-        userType = UserType.teacher;
-      } else if (cpf == '55566677788') {
-        userType = UserType.admin;
-      }
-
-      final user = Usuario(
-        id: 'ui d',
-        name: 'Usuário de teste',
-        cpf: cpf,
-        password: password,
-        type: userType,
-      );
-
-      if (mounted) {
-        NavigatorService.setCurrentUser(user);
-        await NavigatorService.navigateToDashboard();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login realizado como ${userType.name}!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro ao fazer login: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }
-*/
-
   void _handleForgotPassword() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Funcionalidade em desenvolvimento')),
+    snackBarPersonalizado(
+      context: context,
+      mensagem: 'Falar com o suporte',
+      cor: Colors.orange,
     );
   }
 }
