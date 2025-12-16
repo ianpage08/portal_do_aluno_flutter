@@ -211,8 +211,7 @@ class NavigatorService {
     case UserType.admin:
       route = RouteNames.adminDashboard;
       break;
-    default:
-      route = RouteNames.login;
+    
   }
 
   await navigateAndRemoveUntil(
@@ -227,53 +226,10 @@ class NavigatorService {
 }
 
 
-  // ---------- Diálogos / util ----------
+ 
 
-  static Future<bool> showConfirmDialog({
-    required String title,
-    required String message,
-    String confirmText = 'Confirmar',
-    String cancelText = 'Cancelar',
-  }) async {
-    final ctx = navigatorKey.currentContext;
-    if (ctx == null) {
-      debugPrint('showConfirmDialog: context nulo');
-      return false;
-    }
-
-    final result = await showDialog<bool>(
-      context: ctx,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(cancelText),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(confirmText),
-          ),
-        ],
-      ),
-    );
-
-    return result ?? false;
-  }
-
-  static Future<void> showLogoutConfirmation() async {
-    final shouldLogout = await showConfirmDialog(
-      title: 'Confirmar Logout',
-      message: 'Tem certeza que deseja sair?',
-      confirmText: 'Sair',
-      cancelText: 'Cancelar',
-    );
-
-    if (shouldLogout) {
-      await logout();
-    }
-  }
+  
+  
 
   // Rotas de erro
   static Future<void> navigateToNotFound() {

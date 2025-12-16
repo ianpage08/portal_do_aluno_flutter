@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/core/utils/validacao.dart';
 import 'package:portal_do_aluno/shared/helpers/single_execution_flag.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 
@@ -105,19 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                         prefixIcon: Icons.person,
                         hintText: '000.000.000-00',
 
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira seu CPF';
-                          }
-                          final cpfLimpo = _cpfController.text.replaceAll(
-                            RegExp(r'\D'),
-                            '',
-                          );
-                          if (cpfLimpo.length != 11) {
-                            return 'CPF deve ter 11 dígitos';
-                          }
-                          return null;
-                        },
+                        validator: (value) => validarCpf(value),
                         enable: !isLoading,
                       ),
                       const SizedBox(height: 16),
@@ -144,15 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
 
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira sua senha';
-                          }
-                          if (value.length < 6) {
-                            return 'Senha deve ter pelo menos 6 caracteres';
-                          }
-                          return null;
-                        },
+                        validator: (value) => validarSenha(value),
 
                         enable: !isLoading,
                       ),
@@ -292,7 +273,8 @@ class _LoginPageState extends State<LoginPage> {
         if (mounted) {
           snackBarPersonalizado(
             context: context,
-            mensagem: 'Erro ao fazer login',
+            mensagem: 'Cpf ou senha inválidos',
+            cor: Colors.red,
           );
         }
         _navigationFlag.reset();
