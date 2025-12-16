@@ -57,7 +57,8 @@ class NavigatorService {
     final state = _navigatorState;
     if (state == null) {
       debugPrint(
-          'NavigatorService.navigateTo: navigator não pronto para $routeName');
+        'NavigatorService.navigateTo: navigator não pronto para $routeName',
+      );
       return null;
     }
     return state.pushNamed<T>(routeName, arguments: arguments);
@@ -65,8 +66,7 @@ class NavigatorService {
 
   /// Versão que tenta usar navigatorKey, e se não estiver pronta, tenta usar
   /// o context (se disponível). Não lança.
-  static Future<T?>? tryNavigateTo<T>(String routeName,
-      {Object? arguments}) {
+  static Future<T?>? tryNavigateTo<T>(String routeName, {Object? arguments}) {
     final state = _navigatorState;
     if (state != null) {
       return state.pushNamed<T>(routeName, arguments: arguments);
@@ -75,12 +75,14 @@ class NavigatorService {
     final ctx = navigatorKey.currentContext;
     if (ctx != null) {
       debugPrint(
-          'NavigatorService.tryNavigateTo: fallback para Navigator.of(context) -> $routeName');
+        'NavigatorService.tryNavigateTo: fallback para Navigator.of(context) -> $routeName',
+      );
       return Navigator.of(ctx).pushNamed<T>(routeName, arguments: arguments);
     }
 
     debugPrint(
-        'NavigatorService.tryNavigateTo: impossível navegar agora -> $routeName');
+      'NavigatorService.tryNavigateTo: impossível navegar agora -> $routeName',
+    );
     return null;
   }
 
@@ -107,8 +109,7 @@ class NavigatorService {
     Animation<double> a,
     Animation<double> sa,
     Widget child,
-  ) =>
-      FadeTransition(opacity: a, child: child);
+  ) => FadeTransition(opacity: a, child: child);
 
   static void showSnackBar(String message) {
     final contextLocal = navigatorKey.currentContext;
@@ -149,7 +150,9 @@ class NavigatorService {
   }) {
     final state = _navigatorState;
     if (state == null) {
-      debugPrint('navigateAndRemoveUntil: navigator não pronto para $routeName');
+      debugPrint(
+        'navigateAndRemoveUntil: navigator não pronto para $routeName',
+      );
       return null;
     }
     return state.pushNamedAndRemoveUntil<T>(
@@ -185,38 +188,44 @@ class NavigatorService {
 
   // ---------- Rotas específicas ----------
 
-  static Future<void> navigateToDashboard([Usuario? user]) {
-    final userToUse = user ?? _currentUser;
-    if (userToUse == null) {
-      return navigateAndRemoveUntil(RouteNames.login) ?? Future.value();
-    }
-    String route;
+  static Future<void> navigateToDashboard([Usuario? user]) async {
+  final userToUse = user ?? _currentUser;
 
-    switch (userToUse.type) {
-      case UserType.student:
-        route = RouteNames.studentDashboard;
-        break;
-      case UserType.teacher:
-        route = RouteNames.teacherDashboard;
-        break;
-      case UserType.parent:
-        route = RouteNames.parentDashboard;
-        break;
-      case UserType.admin:
-        route = RouteNames.adminDashboard;
-        break;
-    }
-    return navigateAndRemoveUntil(
-          route,
-          arguments: {'user': userToUse.toJsonSafe()},
-        ) ??
-        Future.value();
+  if (userToUse == null) {
+    await navigateAndRemoveUntil(RouteNames.login);
+    return;
   }
 
-  static Future<void> logout() {
-    clearUser();
-    return navigateAndRemoveUntil(RouteNames.login) ?? Future.value();
+  late final String route;
+
+  switch (userToUse.type) {
+    case UserType.student:
+      route = RouteNames.studentDashboard;
+      break;
+    case UserType.teacher:
+      route = RouteNames.teacherDashboard;
+      break;
+    case UserType.parent:
+      route = RouteNames.parentDashboard;
+      break;
+    case UserType.admin:
+      route = RouteNames.adminDashboard;
+      break;
+    default:
+      route = RouteNames.login;
   }
+
+  await navigateAndRemoveUntil(
+    route,
+    arguments: {'user': userToUse.toJsonSafe()},
+  );
+}
+
+  static Future<void> logout() async {
+  clearUser();
+  await navigateAndRemoveUntil(RouteNames.login);
+}
+
 
   // ---------- Diálogos / util ----------
 

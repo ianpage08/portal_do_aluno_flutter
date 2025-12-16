@@ -26,6 +26,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> logout() async {
+      // Limpa storage
+      await AuthStorageService().deleteToken();
+      await AuthStorageService().deleteUser();
+      // Navega limpando stack
+      await NavigatorService.navigateAndRemoveUntil(RouteNames.login);
+    }
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     return AppBar(
       title: Text(title),
@@ -49,12 +57,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               content: 'voce realmente deseja sair?',
               confirmText: 'Sair',
             );
-            if (sair == true) {
+            if (sair == true) { 
               await AuthStorageService().deleteToken();
               debugPrint('Token deletado');
               await AuthStorageService().deleteUser();
               debugPrint('Usuario deletado');
-              NavigatorService.navigateAndRemoveUntil(RouteNames.login);
+              logout();
             }
           },
           icon: const Icon(Icons.logout),

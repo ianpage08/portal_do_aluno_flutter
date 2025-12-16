@@ -23,7 +23,6 @@ class _SplashPageState extends State<SplashPage>
   late final Animation<double> _opacity;
 
   // Garante que a navegação ocorra apenas uma vez
-  final SingleExecutionFlag _navigationFlag = SingleExecutionFlag();
 
   @override
   void initState() {
@@ -39,17 +38,13 @@ class _SplashPageState extends State<SplashPage>
     _scale = Tween<double>(
       begin: 0.85,
       end: 1.0,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     // Animação de fade in
     _opacity = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     // Inicia a animação
     _controller.forward();
@@ -69,23 +64,23 @@ class _SplashPageState extends State<SplashPage>
     if (!mounted) return;
 
     // Executa a navegação apenas uma vez
-    _navigationFlag.execute(() async {
-      final token = await AuthStorageService().getToken();
-      final user = await AuthStorageService().getUser();
 
-      // Garante que a tela ainda existe
-      if (!mounted) return;
+    final token = await AuthStorageService().getToken();
+    final user = await AuthStorageService().getUser();
 
-      if (token != null && user != null) {
-        // Usuário autenticado
-        NavigatorService.navigateToDashboard(user);
-        debugPrint('Usuário já estava logado');
-      } else {
-        // Usuário não autenticado
-        NavigatorService.navigateTo(RouteNames.login);
-        debugPrint('Usuário não estava logado');
-      }
-    });
+    // Garante que a tela ainda existe
+    if (!mounted) return;
+
+    if (token != null) {
+      // Usuário autenticado
+      NavigatorService.navigateToDashboard(user);
+      debugPrint('Usuário já estava logado');
+      debugPrint(token);
+    } else {
+      // Usuário não autenticado
+      NavigatorService.navigateTo(RouteNames.login);
+      debugPrint('Usuário não estava logado');
+    }
   }
 
   @override
@@ -102,10 +97,7 @@ class _SplashPageState extends State<SplashPage>
         // Background em gradiente
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 190, 200, 255),
-              Color(0xFF6C88F2),
-            ],
+            colors: [Color.fromARGB(255, 190, 200, 255), Color(0xFF6C88F2)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
