@@ -30,7 +30,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SelectedProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: MyApp(
+      child:const  MyApp(
         
       ),
     ),

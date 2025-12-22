@@ -10,8 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class MyApp extends StatelessWidget {
-  
-  const MyApp({super.key, });
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Portal do Aluno',
       themeMode: themeProvider.themeMode,
       theme: lightTheme,
+
       darkTheme: darkTheme,
 
       initialRoute: RouteNames.slashScreen,

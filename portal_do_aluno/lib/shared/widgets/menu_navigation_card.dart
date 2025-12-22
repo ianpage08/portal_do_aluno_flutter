@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:portal_do_aluno/core/theme/glass_card.dart';
 
 class MenuNavigationCard extends StatelessWidget {
   final BuildContext context;
@@ -16,8 +16,7 @@ class MenuNavigationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
+    return GlassCard(
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -36,7 +35,7 @@ class MenuNavigationCard extends StatelessWidget {
             ],
           ),
         ),
-      ), // inkwell = Efeito de toque no card
+      ),
     );
   }
 }
