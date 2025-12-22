@@ -7,7 +7,7 @@ ThemeData get lightTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     primaryColor: AppColors.lightPrimary,
-    scaffoldBackgroundColor: AppColors.lightBackground,
+    scaffoldBackgroundColor: AppColors.lightBackgroundColor,
 
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.appBar,
@@ -64,8 +64,8 @@ ThemeData get lightTheme {
         fontWeight: FontWeight.bold,
         color: AppColors.lightTextPrimary,
       ),
-      titleMedium: TextStyle(fontSize: 16, color: AppColors.lightTextPrimary),
-      titleSmall: TextStyle(fontSize: 14, color: AppColors.lightTextPrimary),
+      titleMedium: TextStyle(fontSize: 14, color: AppColors.lightTextPrimary),
+      titleSmall: TextStyle(fontSize: 12, color: AppColors.lightTextPrimary),
     ),
     colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(162, 170, 170, 170),

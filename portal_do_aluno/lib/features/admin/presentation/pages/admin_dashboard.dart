@@ -125,26 +125,28 @@ class _AdminDashboardState extends State<AdminDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.2,
+                childAspectRatio: 1.5,
                 mainAxisSpacing: 16,
                 physics: const BouncingScrollPhysics(),
                 children: [
                   // MenuNavigationCard: widget personalizado dos botões do menu.
                   // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
                   MenuNavigationCard(
-                    context: context,
+                    highlight: true,
                     icon: CupertinoIcons.person_2_square_stack,
-                    title: 'Nova Matricula',
+                    title: 'Nova Matrícula',
+                    subtitle: 'Cadastrar novos alunos',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminMatriculaCadastro,
                       );
                     },
                   ),
+
                   MenuNavigationCard(
-                    context: context,
                     icon: CupertinoIcons.home,
                     title: 'Gestão Escolar',
+                    subtitle: 'Cursos, turmas e séries',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminGestaoEscolar,
@@ -153,28 +155,29 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
 
                   MenuNavigationCard(
-                    context: context,
                     icon: CupertinoIcons.person_add,
-                    title: 'Gestão de Usuários',
+                    title: 'Usuários',
+                    subtitle: 'Gerenciar contas e perfis',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.adminGestao);
                     },
                   ),
 
                   MenuNavigationCard(
-                    context: context,
                     icon: CupertinoIcons.doc_on_doc,
-                    title: 'Relatorios e Documentos',
+                    title: 'Relatórios',
+                    subtitle: 'Documentos e registros',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminGeracaoDocumentos,
                       );
                     },
                   ),
+
                   MenuNavigationCard(
-                    context: context,
                     icon: CupertinoIcons.chat_bubble_2_fill,
-                    title: 'Comunicação Institicional',
+                    title: 'Comunicação',
+                    subtitle: 'Avisos e comunicados',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminComunicacaoInstiticional,
@@ -183,9 +186,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
 
                   MenuNavigationCard(
-                    context: context,
                     icon: CupertinoIcons.lock_shield,
-                    title: 'Segurança e Permissões',
+                    title: 'Segurança',
+                    subtitle: 'Permissões e acessos',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminSegurancaEPermissoes,
@@ -194,9 +197,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
 
                   MenuNavigationCard(
-                    context: context,
                     icon: Icons.settings,
                     title: 'Configurações',
+                    subtitle: 'Preferências do sistema',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.studentSettings);
                     },

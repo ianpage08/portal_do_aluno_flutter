@@ -77,43 +77,47 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                           final data = snapshot.data!.data()!;
 
                           final dadosUsuario = Usuario.fromJson(data);
-                          return Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Color.fromARGB(
-                                  255,
-                                  88,
-                                  70,
-                                  20,
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Color.fromARGB(
+                                    255,
+                                    152,
+                                    177,
+                                    243,
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.person,
-                                  size: 30,
-                                  color: Colors.white,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Admin: ${dadosUsuario.name}',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleMedium,
+                                      ),
+                                      Text(
+                                        'Escola: AEEC',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleSmall,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Admin: ${dadosUsuario.name}',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium,
-                                    ),
-                                    Text(
-                                      'Escola: AEEC',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleSmall,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         },
                       ),
@@ -131,72 +135,77 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 child: GridView.count(
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
-                  childAspectRatio: 1.2,
+                  childAspectRatio: 1.5,
                   physics: const BouncingScrollPhysics(),
-                  mainAxisSpacing: 16,
+                  mainAxisSpacing: 10,
                   children: [
                     // MenuNavigationCard: widget personalizado dos botões do menu.
                     // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
                     MenuNavigationCard(
-                      context: context,
+                      highlight: true,
                       icon: Icons.school,
                       title: 'Frequência',
+                      subtitle: 'Lista de presença',
                       onTap: () {
-                        // ver depois para user o route names
                         NavigatorService.navigateToWithAnimation(
                           const FrequenciaAdmin(),
                         );
                       },
                     ),
+
                     MenuNavigationCard(
-                      context: context,
                       icon: Icons.assignment,
                       title: 'Lançar Notas',
+                      subtitle: 'Notas dos alunos',
                       onTap: () {
                         NavigatorService.navigateTo(RouteNames.boletim);
                       },
                     ),
+
                     MenuNavigationCard(
-                      context: context,
                       icon: Icons.menu_book,
                       title: 'Conteúdo da Aula',
+                      subtitle: 'Conteúdo lecionado',
                       onTap: () {
                         NavigatorService.navigateTo(RouteNames.addOqueFoiDado);
                       },
                     ),
 
                     MenuNavigationCard(
-                      context: context,
                       icon: Icons.note_add,
-                      title: 'Exercicios',
+                      title: 'Exercícios',
+                      subtitle: 'Cadastrar atividades',
                       onTap: () {
                         NavigatorService.navigateTo(
                           RouteNames.teacherExercicios,
                         );
                       },
                     ),
+
                     MenuNavigationCard(
-                      context: context,
                       icon: Icons.event,
-                      title: 'calendario Escolar',
+                      title: 'Calendário',
+                      subtitle: 'Calendário escolar',
                       onTap: () {
                         NavigatorService.navigateTo(RouteNames.teacherCalendar);
                       },
                     ),
+
                     MenuNavigationCard(
-                      context: context,
                       icon: Icons.message,
                       title: 'Comunicados',
+                      subtitle: 'Avisos e mensagens',
                       onTap: () {
                         NavigatorService.navigateTo(
                           RouteNames.comunicadosProfessor,
                         );
                       },
                     ),
+
                     MenuNavigationCard(
-                      context: context,
                       icon: Icons.settings,
                       title: 'Configurações',
+                      subtitle: 'Preferências do sistema',
                       onTap: () {
                         NavigatorService.navigateTo(RouteNames.studentSettings);
                       },

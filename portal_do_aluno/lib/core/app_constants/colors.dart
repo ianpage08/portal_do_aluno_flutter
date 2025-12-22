@@ -16,6 +16,8 @@ class AppColors {
   static const Color darkAppBar = Color(0xFF2E003E);
 
   // Light Theme Colors
+  static const Color lightBackgroundColor = Color(0xFFF8FAFC);
+
   static const Color appBar = Color(0xFFD6DEE7); // Cinza azulado claro — estilo
   // Fundo AppBar
   static const Color lightPrimary = Color(
@@ -24,9 +26,7 @@ class AppColors {
   static const Color lightSecondary = Color(
     0xFF5C86C5,
   ); // Azul mais suave para realces
-  static const Color lightBackground = Color(
-    0xFFF7F8FA,
-  ); // Fundo quase branco com leve toque azulado
+  // Fundo quase branco com leve toque azulado
   static const Color lightCard = Color(
     0xFFFFFFFF,
   ); // Cartões e painéis brancos limpos

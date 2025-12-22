@@ -128,15 +128,16 @@ class _StudentDashboardState extends State<StudentDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.2,
+                childAspectRatio: 1.5,
                 mainAxisSpacing: 16,
                 children: [
                   // MenuNavigationCard: widget personalizado dos botões do menu.
                   // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
                   MenuNavigationCard(
-                    context: context,
+                    highlight: true,
                     icon: Icons.school,
-                    title: 'Notas e Frequência',
+                    title: 'Boletim',
+                    subtitle: 'Notas e frequência',
                     onTap: () {
                       Navigator.pushNamed(
                         context,
@@ -145,36 +146,40 @@ class _StudentDashboardState extends State<StudentDashboard> {
                       );
                     },
                   ),
+
                   MenuNavigationCard(
-                    context: context,
                     icon: Icons.assignment,
                     title: 'Tarefas',
+                    subtitle: 'Atividades e exercícios',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.studentExercicios);
                     },
                   ),
+
                   MenuNavigationCard(
-                    context: context,
                     icon: Icons.event,
-                    title: 'Calendário Escolar',
+                    title: 'Calendário',
+                    subtitle: 'Datas e eventos',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.studentCalendar);
                     },
                   ),
+
                   MenuNavigationCard(
-                    context: context,
                     icon: Icons.message,
-                    title: 'Comunicado',
+                    title: 'Comunicados',
+                    subtitle: 'Avisos da escola',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.studentComunicados,
                       );
                     },
                   ),
+
                   MenuNavigationCard(
-                    context: context,
                     icon: Icons.settings,
                     title: 'Configurações',
+                    subtitle: 'Preferências do app',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.studentSettings);
                     },
